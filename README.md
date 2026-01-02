@@ -3,6 +3,7 @@
 **Turn your EPUBs into audiobooks with neural text-to-speech — entirely in your browser.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/demo-epubplayer.com-purple)](https://epubplayer.com)
 
 ---
 
@@ -36,7 +37,7 @@ EPUB Player is a free, open-source Progressive Web App (PWA) that transforms you
 
 ## Try It
 
-**[→ Try EPUB Player](https://epubplayer.app)** *(coming soon)*
+**[→ Try EPUB Player](https://epubplayer.com)** — it's live and free!
 
 Or run it locally:
 

@@ -328,7 +328,7 @@ export function LandingPage() {
             EPUB Player is open source under the{' '}
             <strong className="text-text-primary">MIT License</strong>.{' '}
             <a 
-              href="https://github.com" 
+              href="https://github.com/grworg/epubplayer" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-accent hover:underline"
@@ -410,7 +410,7 @@ export function LandingPage() {
                 Terms &amp; Privacy
               </Link>
               <a 
-                href="https://github.com" 
+                href="https://github.com/grworg/epubplayer" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="hover:text-text-primary transition-colors"
