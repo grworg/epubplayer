@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import { AppShell } from '@/app/AppShell'
 import { LandingPage } from '@/features/landing/LandingPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
@@ -13,7 +14,9 @@ import { ShareLibraryPage, ReceiveLibraryPage } from '@/features/transfer'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <>
+      <Analytics />
+      <BrowserRouter>
       <Routes>
         {/* Landing page */}
         <Route path="/" element={<LandingPage />} />
@@ -33,5 +36,6 @@ export default function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </>
   )
 }
