@@ -51,6 +51,29 @@ export default defineConfig({
             icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }],
           },
         ],
+        screenshots: [
+          {
+            src: 'screenshots/library.png',
+            sizes: '1080x2340',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Library - Your audiobook collection',
+          },
+          {
+            src: 'screenshots/now-playing.png',
+            sizes: '1080x2340',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Now Playing - Listen with full controls',
+          },
+          {
+            src: 'screenshots/settings.png',
+            sizes: '1080x2340',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Settings - Customize TTS and playback',
+          },
+        ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],

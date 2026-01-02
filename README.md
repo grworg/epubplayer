@@ -13,6 +13,12 @@ EPUB Player is a free, open-source Progressive Web App (PWA) that transforms you
 
 **No accounts. No uploads. No subscriptions. Just your books, as audio.**
 
+<p align="center">
+  <img src="public/screenshots/library.png" alt="Library view" width="200" />
+  <img src="public/screenshots/now-playing.png" alt="Now Playing" width="200" />
+  <img src="public/screenshots/settings.png" alt="Settings" width="200" />
+</p>
+
 ### Features
 
 - 📚 **Import any EPUB** — drag and drop or select files
