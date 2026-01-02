@@ -355,7 +355,7 @@ export function LandingPage() {
           </p>
 
           <a
-            href="https://buymeacoffee.com"
+            href="https://buymeacoffee.com/grworg"
             target="_blank"
             rel="noopener noreferrer"
             className="pressable inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all hover:shadow-xl"

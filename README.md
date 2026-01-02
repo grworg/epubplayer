@@ -155,6 +155,16 @@ Your data is stored in your browser's IndexedDB and never transmitted anywhere.
 
 ---
 
+## Support
+
+EPUB Player is free and always will be. If you find it useful and want to support development:
+
+☕ **[Buy Me a Coffee](https://buymeacoffee.com/grworg)**
+
+No pressure — using and sharing the app is support enough!
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
