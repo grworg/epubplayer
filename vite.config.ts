@@ -10,17 +10,21 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'og-image.png'],
       manifest: {
         name: 'EPUB Player',
         short_name: 'EPUBPlayer',
-        description: 'Turn your EPUBs into audiobooks with AI-powered text-to-speech',
+        description: 'Turn your EPUBs into audiobooks with AI-powered text-to-speech. Free, offline, private.',
         theme_color: '#0a0a0f',
         background_color: '#0a0a0f',
         display: 'standalone',
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
+        id: 'com.epubplayer.app',
+        categories: ['books', 'entertainment', 'productivity'],
+        lang: 'en',
+        dir: 'ltr',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -36,7 +40,15 @@ export default defineConfig({
             src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable',
+            purpose: 'maskable',
+          },
+        ],
+        shortcuts: [
+          {
+            name: 'Open Library',
+            short_name: 'Library',
+            url: '/app',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }],
           },
         ],
       },

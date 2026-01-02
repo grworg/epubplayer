@@ -76,6 +76,9 @@ npm run lint         # ESLint
 npm run format       # Prettier
 npm run test         # Run unit tests
 npm run test:e2e     # Run Playwright e2e tests
+
+# SEO
+SITE_URL=https://epubplayer.com npm run seo:sitemap  # Generate sitemap.xml
 ```
 
 ### Testing on Mobile

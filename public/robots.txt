@@ -1,4 +1,12 @@
+# EPUB Player robots.txt
+# https://epubplayer.com
+
 User-agent: *
 Allow: /
 
+# Sitemap
+Sitemap: https://epubplayer.com/sitemap.xml
 
+# Disallow internal app state URLs (these are client-side routes with IDs)
+Disallow: /app/book/
+Disallow: /app/playing

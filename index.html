@@ -2,55 +2,153 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- Primary Meta Tags -->
+    <title>EPUB Player — Turn Your EPUBs into Audiobooks | Free & Open Source</title>
+    <meta
+      name="description"
+      content="Turn EPUB ebooks into audiobooks with AI text-to-speech. 100% free, runs entirely in your browser. No accounts, no uploads — your books stay on your device."
+    />
+    <meta
+      name="keywords"
+      content="epub to audio, epub to audiobook, audiobook generator, ebook to audio, text to speech, offline ebook player, local tts, epub reader, ai tts, free audiobook maker, epub converter"
+    />
+    <meta name="author" content="EPUB Player" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://epubplayer.com/" />
+    
+    <!-- Viewport and Mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
     <meta name="theme-color" content="#0a0a0f" />
     <meta name="color-scheme" content="dark" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <title>EPUB Player — Offline EPUB to Audiobook (Local Text-to-Speech)</title>
-    <meta
-      name="description"
-      content="Turn EPUB ebooks into audiobooks with local text-to-speech. Offline-first EPUB reader + audiobook generator — your books, audio, and settings stay on your device."
-    />
-    <meta
-      name="keywords"
-      content="epub to audio, epub to audiobook, audiobook generator, ebook to audio, text to speech, offline ebook player, local tts, epub reader, ai tts"
-    />
-    <meta name="robots" content="index,follow" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="EPUB Player" />
+    <meta name="application-name" content="EPUB Player" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
 
-    <!-- Open Graph / social sharing -->
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="mask-icon" href="/favicon.svg" color="#8b5cf6" />
+
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="EPUB Player — Offline EPUB to Audiobook (Local Text-to-Speech)" />
+    <meta property="og:url" content="https://epubplayer.com/" />
+    <meta property="og:site_name" content="EPUB Player" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="EPUB Player — Turn Your EPUBs into Audiobooks" />
     <meta
       property="og:description"
-      content="Convert EPUB ebooks to audiobook-style audio with local text-to-speech. Offline-first, privacy-focused: your library stays on your device."
+      content="Free, open-source app that converts your EPUB ebooks into audiobooks using AI text-to-speech. Works offline, 100% private — your books never leave your device."
     />
-    <meta property="og:image" content="/pwa-512x512.png" />
-    <meta property="og:image:alt" content="EPUB Player icon" />
+    <meta property="og:image" content="https://epubplayer.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="EPUB Player — Turn your EPUBs into audiobooks with AI text-to-speech" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="EPUB Player — Offline EPUB to Audiobook (Local Text-to-Speech)" />
+    <meta name="twitter:url" content="https://epubplayer.com/" />
+    <meta name="twitter:title" content="EPUB Player — Turn Your EPUBs into Audiobooks" />
     <meta
       name="twitter:description"
-      content="Turn EPUB ebooks into audiobooks with local text-to-speech. Offline-first and privacy-focused."
+      content="Free, open-source app that converts EPUB ebooks into audiobooks. AI text-to-speech, works offline, 100% private."
     />
-    <meta name="twitter:image" content="/pwa-512x512.png" />
+    <meta name="twitter:image" content="https://epubplayer.com/og-image.png" />
+    <meta name="twitter:image:alt" content="EPUB Player — Turn your EPUBs into audiobooks" />
 
-    <!-- Structured data -->
+    <!-- Performance: Preconnect to external resources -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://esm.run" crossorigin />
+    <link rel="preconnect" href="https://huggingface.co" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <link rel="dns-prefetch" href="https://esm.run" />
+    <link rel="dns-prefetch" href="https://huggingface.co" />
+
+    <!-- Structured Data: WebApplication -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "EPUB Player",
-        "description": "Offline-first EPUB reader and audiobook generator that converts EPUB ebooks to audio using local text-to-speech.",
+        "alternateName": "EPUBPlayer",
+        "url": "https://epubplayer.com",
+        "description": "Free, open-source Progressive Web App that converts EPUB ebooks into audiobooks using AI text-to-speech. Works offline, runs entirely in your browser.",
         "applicationCategory": "MultimediaApplication",
+        "applicationSubCategory": "Audiobook Player",
         "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript, WebGPU for best performance",
+        "softwareVersion": "1.0.0",
         "isAccessibleForFree": true,
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "license": "https://opensource.org/licenses/MIT"
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "creator": {
+          "@type": "Organization",
+          "name": "EPUB Player",
+          "url": "https://github.com/grworg/epubplayer"
+        },
+        "license": "https://opensource.org/licenses/MIT",
+        "featureList": [
+          "EPUB to audiobook conversion",
+          "AI text-to-speech (Supertonic, Kokoro)",
+          "Offline playback",
+          "Bookmarks and sleep timer",
+          "Speed control",
+          "Chapter navigation",
+          "Progress sync across sessions"
+        ],
+        "screenshot": "https://epubplayer.com/og-image.png"
+      }
+    </script>
+
+    <!-- Structured Data: FAQ -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is EPUB Player really free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, EPUB Player is 100% free and open source. There are no subscriptions, premium tiers, or hidden costs. It's a labor of love."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do my books get uploaded anywhere?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Everything runs locally in your browser. Your EPUB files, generated audio, bookmarks, and settings are all stored on your device using IndexedDB. Nothing is ever uploaded to any server."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does it work offline?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! EPUB Player is a Progressive Web App (PWA). After your first visit, you can install it and use it completely offline. The AI models are downloaded once and cached locally."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What TTS voices are available?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "EPUB Player offers multiple TTS engines: Supertonic (fast, reliable AI voice), Kokoro (highest quality, needs good GPU), and your browser's built-in voices for instant playback without downloads."
+            }
+          }
+        ]
       }
     </script>
   </head>
