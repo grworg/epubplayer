@@ -459,13 +459,13 @@ function StepCard({
   description: string
 }) {
   return (
-    <div className="relative rounded-2xl bg-surface-1 p-6 md:p-8">
+    <div className="relative rounded-2xl bg-surface-1 p-6 md:p-8 text-center">
       {/* Step number */}
-      <div className="absolute -top-4 left-6 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white shadow-lg">
+      <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white shadow-lg">
         {number}
       </div>
       
-      <div className="mb-4 mt-2 text-accent">{icon}</div>
+      <div className="mb-4 mt-2 flex justify-center text-accent">{icon}</div>
       <h3 className="mb-2 text-xl font-semibold">{title}</h3>
       <p className="text-text-secondary">{description}</p>
     </div>
@@ -502,10 +502,10 @@ function InstallCard({
   steps: string[]
 }) {
   return (
-    <div className="rounded-2xl bg-surface-1 p-6">
+    <div className="rounded-2xl bg-surface-1 p-6 text-center">
       <div className="mb-3 text-3xl">{icon}</div>
-      <h3 className="mb-3 text-lg font-semibold text-text-primary">{platform}</h3>
-      <ol className="space-y-2">
+      <h3 className="mb-4 text-lg font-semibold text-text-primary">{platform}</h3>
+      <ol className="inline-flex flex-col items-start space-y-2">
         {steps.map((step, i) => (
           <li key={i} className="flex items-center gap-2 text-sm text-text-secondary">
             <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-accent/20 text-xs font-bold text-accent">
