@@ -19,6 +19,15 @@ EPUB Player is a free, open-source Progressive Web App (PWA) that transforms you
   <img src="public/screenshots/settings.png" alt="Settings" width="200" />
 </p>
 
+### Philosophy
+
+| Principle | What it means |
+|-----------|---------------|
+| **Local-first** | Your books, audio, and settings live in your browser's storage. Nothing is ever sent to a server. |
+| **Mobile-first** | Designed for phones first, with responsive layouts for tablets and desktops. |
+| **Offline-capable** | After the first load, the app works without internet. Listen anywhere. |
+| **Privacy by default** | No accounts, no tracking, no analytics. Your reading habits are yours alone. |
+
 ### Features
 
 - 📚 **Import any EPUB** — drag and drop or select files
