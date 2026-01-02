@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>EPUB Player — Offline EPUB to Audiobook (Local Text-to-Speech)</title>
+    <meta
+      name="description"
+      content="Turn EPUB ebooks into audiobooks with local text-to-speech. Offline-first EPUB reader + audiobook generator — your books, audio, and settings stay on your device."
+    />
+    <meta
+      name="keywords"
+      content="epub to audio, epub to audiobook, audiobook generator, ebook to audio, text to speech, offline ebook player, local tts, epub reader, ai tts"
+    />
+    <meta name="robots" content="index,follow" />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="EPUB Player — Offline EPUB to Audiobook (Local Text-to-Speech)" />
+    <meta
+      property="og:description"
+      content="Convert EPUB ebooks to audiobook-style audio with local text-to-speech. Offline-first, privacy-focused: your library stays on your device."
+    />
+    <meta property="og:image" content="/pwa-512x512.png" />
+    <meta property="og:image:alt" content="EPUB Player icon" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="EPUB Player — Offline EPUB to Audiobook (Local Text-to-Speech)" />
+    <meta
+      name="twitter:description"
+      content="Turn EPUB ebooks into audiobooks with local text-to-speech. Offline-first and privacy-focused."
+    />
+    <meta name="twitter:image" content="/pwa-512x512.png" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "EPUB Player",
+        "description": "Offline-first EPUB reader and audiobook generator that converts EPUB ebooks to audio using local text-to-speech.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "license": "https://opensource.org/licenses/MIT"
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#6d28d9"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#grad)"/>
+  <g fill="white">
+    <!-- Headphones -->
+    <path d="M256 120c-77.3 0-140 62.7-140 140v100h30v-100c0-60.7 49.3-110 110-110s110 49.3 110 110v100h30V260c0-77.3-62.7-140-140-140z"/>
+    <!-- Left ear cup -->
+    <rect x="116" y="300" width="50" height="80" rx="12"/>
+    <!-- Right ear cup -->
+    <rect x="346" y="300" width="50" height="80" rx="12"/>
+    <!-- Sound waves -->
+    <path d="M256 200c-33.1 0-60 26.9-60 60v20h20v-20c0-22.1 17.9-40 40-40s40 17.9 40 40v20h20v-20c0-33.1-26.9-60-60-60z" opacity="0.7"/>
+  </g>
+</svg>
+

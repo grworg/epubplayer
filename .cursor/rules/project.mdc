@@ -1,0 +1,110 @@
+---
+description: EPUB Player project rules and architecture guide
+globs: 
+alwaysApply: true
+---
+
+# EPUB Player — Cursor Rules
+
+## What This App Does
+
+EPUB Player is a **local-first PWA** that transforms EPUB ebooks into audiobooks using text-to-speech. Users import EPUBs, select a TTS engine/voice, and listen with full audiobook player controls. Everything runs in the browser — no server, no accounts, no uploads.
+
+## Core Principles
+
+1. **Local-first**: All data (books, audio, settings) lives in IndexedDB. Nothing leaves the device.
+2. **Mobile-first, desktop-ready**: UI designed for phones first, with responsive adaptations for larger screens.
+3. **Offline-capable**: PWA with service worker. Works without internet after initial load.
+4. **Privacy by default**: No analytics, no tracking, no accounts.
+
+## Tech Stack
+
+- **React 18** + TypeScript
+- **Vite** for bundling + PWA plugin
+- **Tailwind CSS v4** (uses `@theme` for design tokens in `index.css`)
+- **React Router** for navigation
+- **Dexie** (IndexedDB wrapper) for local storage
+- **Zustand** for player state
+- **Web Workers** for TTS generation (keeps UI responsive)
+
+## Directory Structure
+
+```
+src/
+├── app/           # App shell, routing wrapper
+├── features/      # Feature-based modules (library, player, settings, etc.)
+├── services/      # Core services (storage, TTS, EPUB parsing)
+└── ui/            # Shared UI (icons, components, design system)
+```
+
+Each feature is self-contained with its own components, hooks, and logic.
+
+## Key Architectural Concepts
+
+### TTS Architecture (the complex part)
+
+Three TTS engines, abstracted behind `ttsManager`:
+- **Browser TTS**: Web Speech API — instant, no loading, quality varies by device
+- **Kokoro**: Neural TTS via Web Worker + WebGPU/WASM — best quality, requires model download
+- **Piper**: Lighter neural TTS — experimental
+
+Audio generation happens in Web Workers to avoid blocking the main thread. Generated audio is cached in IndexedDB for instant replay.
+
+Key files:
+- `ttsManager.ts` — orchestrates engine selection
+- `ttsService.ts` — Kokoro worker management
+- `ttsWorker.ts` — runs Kokoro inference off main thread
+- `TTSBufferManager.ts` — background buffering of upcoming chunks
+
+### Playback System
+
+- `PlaybackController.ts` — main orchestrator for play/pause/seek
+- `PlaybackStateMachine.ts` — state machine (ready/playing/paused/buffering)
+- `playerStore.ts` — Zustand store for UI state
+- `ChunkManager.ts` — splits text into TTS-friendly chunks with stable hashes for caching
+
+### Storage Layer
+
+- `db.ts` — Dexie database schema (books, sections, audio chunks, bookmarks, settings)
+- `*Repository.ts` files — data access patterns for each entity
+
+## Design System
+
+Dark theme with purple accent. Colors defined as CSS variables in `index.css` under `@theme`:
+- `surface-0` through `surface-4` for backgrounds
+- `accent` for primary actions
+- `text-primary`, `text-secondary`, `text-muted` for typography
+
+Mobile uses bottom sheets; desktop uses centered modals (same components, responsive classes).
+
+## Routes
+
+- `/` — Landing page (marketing)
+- `/app` — Library (main app entry)
+- `/app/book/:id` — Book details + chapter list
+- `/app/playing` — Now Playing (full player UI)
+- `/app/settings` — Settings
+- `/app/help`, `/app/terms` — Info pages
+
+## Common Patterns
+
+- **Responsive layouts**: Mobile-first with `md:` and `lg:` breakpoints
+- **Pressable buttons**: Add `pressable` class for touch feedback
+- **Sheets/Modals**: Use `items-end md:items-center` pattern for bottom sheet → modal
+- **Settings**: Use `settingsRepository.get/set` for persistent user preferences
+- **Icons**: Inline SVGs in `ui/icons/index.tsx` — no icon library dependency
+
+## When Making Changes
+
+1. **TTS changes**: Test both Browser and Kokoro modes; Kokoro has async loading
+2. **UI changes**: Test mobile AND desktop viewports
+3. **Storage changes**: Update Dexie schema version if modifying `db.ts`
+4. **New features**: Create under `features/` with colocated components/hooks
+5. **Run `npx tsc --noEmit`** before committing to catch type errors
+
+## Performance Considerations
+
+- Audio generation is CPU/GPU intensive — always use workers
+- Large EPUBs can have hundreds of sections — virtualize lists if needed
+- IndexedDB operations are async — don't block render on them
+- Kokoro model is ~80MB — show clear loading states

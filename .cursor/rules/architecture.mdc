@@ -1,0 +1,111 @@
+---
+description: Guidelines for maintaining the architecture documentation
+globs:
+alwaysApply: true
+---
+
+# Architecture Documentation Guidelines
+
+The project maintains architecture documentation in the `docs/` folder:
+
+- **`docs/architecture.md`** — High-level system overview (how things work)
+- **`docs/decisions/`** — Architecture Decision Records (why things are the way they are)
+
+## When to Update
+
+### Update `architecture.md` when:
+
+- Adding a new subsystem or major component
+- Changing how data flows between components
+- Modifying storage schemas
+- Changing the TTS pipeline significantly
+- Adding new user flows (onboarding, import methods, etc.)
+
+### Create a new ADR when:
+
+- Making a significant architectural decision
+- Choosing between multiple viable approaches
+- Adopting a new technology or library
+- Changing an approach from a previous ADR (supersede it)
+
+### Do NOT update for:
+
+- Bug fixes that don't change architecture
+- UI styling or minor UX changes
+- Refactors that preserve existing patterns
+- Adding pages/features that follow established patterns
+
+## Architecture Decision Records (ADRs)
+
+ADRs capture **why** decisions were made, not just what exists. They're located in `docs/decisions/`.
+
+### ADR Format
+
+Each ADR follows a standard template (see `docs/decisions/template.md`):
+
+1. **Context**: What problem or situation prompted this decision?
+2. **Decision**: What did we decide to do?
+3. **Consequences**: What are the tradeoffs (positive, negative, neutral)?
+4. **Alternatives Considered**: What other options were evaluated?
+
+### Creating an ADR
+
+1. Copy `docs/decisions/template.md` to `docs/decisions/XXXX-short-title.md`
+2. Use the next number in sequence
+3. Fill in all sections thoughtfully
+4. Add an entry to `docs/decisions/README.md` index
+5. Submit with your code changes
+
+### ADR Lifecycle
+
+- **Proposed**: Under discussion
+- **Accepted**: Decision made, in effect
+- **Deprecated**: No longer relevant (feature removed)
+- **Superseded**: Replaced by a newer ADR
+
+ADRs are **immutable** once accepted. If a decision changes, create a new ADR that supersedes the old one — this preserves history.
+
+## Writing Quality Guidelines
+
+### Keep the Right Abstraction Level
+
+- ✅ Explain subsystems, data flows, and interactions
+- ✅ Document design decisions and tradeoffs
+- ❌ Don't include extensive code snippets (they go stale)
+- ❌ Don't document every function or implementation detail
+
+### Use Visual Aids
+
+- ASCII diagrams for architecture and data flow
+- Tables for comparing options
+- State machine diagrams for complex flows
+- Keep diagrams simple enough to maintain
+
+### Focus on "Why"
+
+Good documentation explains:
+- Why a decision was made
+- What tradeoffs were considered
+- How failure cases are handled
+- What the intended user experience is
+
+## File Locations
+
+```
+docs/
+├── architecture.md           # System overview
+└── decisions/
+    ├── README.md             # Index of all ADRs
+    ├── template.md           # Template for new ADRs
+    ├── 0001-*.md             # Individual decisions
+    └── ...
+```
+
+## Responsibility
+
+When making architectural changes:
+
+1. Make your code changes
+2. Update `docs/architecture.md` if the system overview changed
+3. Create an ADR if you made a significant decision
+4. Submit documentation updates in the same PR as code changes
