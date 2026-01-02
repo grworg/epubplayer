@@ -112,21 +112,14 @@ async function detectGPU(): Promise<GPUInfo> {
 function getEngineRecommendation(capabilities: DeviceCapabilities): EngineRecommendation {
   const { gpu, isMobile, hasSpeechSynthesis } = capabilities
   
-  // Desktop with WebGPU (especially with a good GPU) → Kokoro
-  if (gpu.available && !isMobile) {
-    return {
-      engine: 'kokoro',
-      reason: gpu.isHighPerformance 
-        ? `Best quality — your ${gpu.description || 'GPU'} can handle it` 
-        : 'Best quality — your device has WebGPU',
-    }
-  }
-  
-  // Mobile with WebGPU → Supertonic
-  if (gpu.available && isMobile) {
+  // WebGPU available → Supertonic (fast, reliable, works well on all WebGPU devices)
+  // Kokoro is higher quality but requires more GPU power and can be unstable
+  if (gpu.available) {
     return {
       engine: 'supertonic',
-      reason: 'Optimized for mobile — fast and great quality',
+      reason: isMobile 
+        ? 'Optimized for mobile — fast and great quality'
+        : 'Fast and reliable — great quality with WebGPU',
     }
   }
   
@@ -374,33 +367,33 @@ function EngineStep({
         <>
           {/* Engine options */}
           <div className="mb-6 space-y-3">
-            {/* Kokoro - Desktop + WebGPU */}
-            {capabilities.gpu.available && (
-              <EngineOption
-                name="Kokoro"
-                quality="Best"
-                qualityColor="text-emerald-400"
-                description="Highest quality AI voice. Natural and expressive."
-                downloadSize="~80MB"
-                isSelected={selectedEngine === 'kokoro'}
-                isRecommended={recommendation?.engine === 'kokoro'}
-                recommendReason={recommendation?.engine === 'kokoro' ? recommendation.reason : undefined}
-                onSelect={() => onSelectEngine('kokoro')}
-              />
-            )}
-            
-            {/* Supertonic - Mobile + WebGPU or as alternative */}
+            {/* Supertonic - Recommended for all WebGPU devices */}
             {capabilities.gpu.available && (
               <EngineOption
                 name="Supertonic"
-                quality="Great"
-                qualityColor="text-blue-400"
-                description="Fast AI voice that works great on all devices."
+                quality="Recommended"
+                qualityColor="text-emerald-400"
+                description="Fast, reliable AI voice with great quality."
                 downloadSize="~260MB"
                 isSelected={selectedEngine === 'supertonic'}
                 isRecommended={recommendation?.engine === 'supertonic'}
                 recommendReason={recommendation?.engine === 'supertonic' ? recommendation.reason : undefined}
                 onSelect={() => onSelectEngine('supertonic')}
+              />
+            )}
+            
+            {/* Kokoro - Premium option for power users */}
+            {capabilities.gpu.available && (
+              <EngineOption
+                name="Kokoro"
+                quality="Premium"
+                qualityColor="text-purple-400"
+                description="Highest quality, but requires powerful GPU."
+                downloadSize="~80MB"
+                isSelected={selectedEngine === 'kokoro'}
+                isRecommended={recommendation?.engine === 'kokoro'}
+                recommendReason={recommendation?.engine === 'kokoro' ? recommendation.reason : undefined}
+                onSelect={() => onSelectEngine('kokoro')}
               />
             )}
             
@@ -536,21 +529,21 @@ function SelectionInfo({
   let textColor: string
   
   switch (selectedEngine) {
-    case 'kokoro':
-      message = 'Kokoro provides the most natural, expressive speech. Perfect for long listening sessions.'
-      icon = '✨'
-      bgColor = 'bg-emerald-500/10'
-      textColor = 'text-emerald-400'
-      break
     case 'supertonic':
       if (isMobile) {
         message = 'Supertonic is optimized for mobile — you\'ll get great quality with smooth performance.'
       } else {
-        message = 'Supertonic offers great quality and fast generation on all devices.'
+        message = 'Supertonic offers the best balance of quality and reliability for most devices.'
       }
-      icon = '⚡'
-      bgColor = 'bg-blue-500/10'
-      textColor = 'text-blue-400'
+      icon = '✨'
+      bgColor = 'bg-emerald-500/10'
+      textColor = 'text-emerald-400'
+      break
+    case 'kokoro':
+      message = 'Kokoro provides the highest quality speech, but requires a powerful GPU for smooth playback. Best for high-end desktops.'
+      icon = '💎'
+      bgColor = 'bg-purple-500/10'
+      textColor = 'text-purple-400'
       break
     case 'browser':
       if (!gpu.available) {

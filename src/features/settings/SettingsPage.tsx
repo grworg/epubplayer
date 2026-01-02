@@ -22,10 +22,10 @@ function getBrowserVoices(): { id: string; name: string }[] {
 // TTS Engine options - derived from registry for UI customization
 // (we could use ttsManager.getAvailableEngines() but we want custom descriptions for UI)
 const TTS_ENGINES: { id: TTSEngine; name: string; description: string }[] = [
-  { id: 'browser', name: 'Browser (Instant)', description: 'Uses your device\'s best voices. Fast and reliable.' },
-  { id: 'supertonic', name: 'Supertonic (Fast & Quality)', description: 'Fast AI voice. Great quality on all devices. ~260MB download.' },
+  { id: 'browser', name: 'Browser (Instant)', description: 'Uses your device\'s built-in voices. Fast and reliable.' },
+  { id: 'supertonic', name: 'Supertonic (Recommended)', description: 'AI voice with great quality and speed. Works on most devices. ~260MB download.' },
+  { id: 'kokoro', name: 'Kokoro (Premium)', description: 'Highest quality AI voice. Requires powerful GPU for smooth playback.' },
   { id: 'piper', name: 'Piper (Experimental)', description: '⚠️ Under development - may not work yet.' },
-  { id: 'kokoro', name: 'Kokoro (Best Quality)', description: 'AI voice. Best quality but needs GPU for good speed.' },
 ]
 
 // Kokoro voice options
