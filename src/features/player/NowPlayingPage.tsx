@@ -586,6 +586,15 @@ export function NowPlayingPage() {
                       <span className="text-xs">Mark</span>
                     </button>
 
+                    <button
+                      onClick={() => navigate('/app/settings')}
+                      className="pressable flex flex-col items-center gap-0.5 text-text-secondary hover:text-text-primary"
+                      aria-label="Settings"
+                    >
+                      <SettingsIcon className="h-5 w-5" />
+                      <span className="text-xs">Settings</span>
+                    </button>
+
                     {/* Lyrics toggle - desktop only */}
                     <button
                       onClick={() => setShowLyrics(!showLyrics)}

@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useLibrary } from './useLibrary'
 import { useImportEPUB } from '@/features/import/useImportEPUB'
-import { PlusIcon, UploadIcon, HeadphonesIcon, LoaderIcon, SettingsIcon, BellIcon, SmartphoneIcon } from '@/ui/icons'
+import { PlusIcon, UploadIcon, HeadphonesIcon, LoaderIcon, SettingsIcon, BellIcon, SmartphoneIcon, GitHubIcon } from '@/ui/icons'
 import { OnboardingSetup } from '@/features/onboarding/OnboardingSetup'
 import { settingsRepository } from '@/services/storage/settingsRepository'
 import { usePWAInstall } from '@/features/pwa/usePWAInstall'
@@ -81,6 +81,17 @@ export function LibraryPage() {
               <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-accent shadow-lg shadow-accent/50" />
             </button>
           )}
+          {/* GitHub link */}
+          <a
+            href="https://github.com/grworg/epubplayer"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-surface-1 text-text-primary hover:bg-surface-2"
+            aria-label="View on GitHub"
+            title="View on GitHub"
+          >
+            <GitHubIcon className="h-5 w-5" />
+          </a>
           {/* Device sync - share/import library */}
           <button
             onClick={() => navigate('/app/share-library')}
