@@ -502,12 +502,19 @@ class PlaybackController {
 
   /**
    * Skip backward (restart chunk for browser TTS, seek for audio blob)
+   * 
+   * For audio blob backends (Kokoro/Piper/Supertonic):
+   * - If current position > threshold, seek back 30 seconds within current chunk
+   * - If current position <= threshold (or would seek past start), go to previous chunk
+   * This matches standard audiobook behavior where tapping back near the start
+   * goes to the previous track.
    */
   async skipBack(): Promise<void> {
+    const state = playbackStateMachine.getState()
+    const wasPlaying = state.status === 'playing' || state.status === 'buffering'
+
     if (this.currentEngine === 'browser') {
-      // Restart current chunk
-      const state = playbackStateMachine.getState()
-      const wasPlaying = state.status === 'playing' || state.status === 'buffering'
+      // Browser TTS: restart current chunk (can't seek within synthesized speech)
       this.audioBackend.stop()
       
       // Reset state to ready by dispatching SEEK_CHUNK to current position
@@ -521,7 +528,51 @@ class PlaybackController {
         await this.playCurrentChunk()
       }
     } else if (this.audioBackend instanceof AudioBlobBackend) {
-      this.audioBackend.seekRelative(-30)
+      const currentTime = this.audioBackend.getCurrentTime()
+      const THRESHOLD_SECONDS = 3 // If within 3 seconds of start, go to previous chunk
+      
+      // Check if we should go to previous chunk instead of just seeking within current
+      if (currentTime <= THRESHOLD_SECONDS) {
+        // Go to previous chunk
+        const prevPos = chunkManager.getPreviousPosition({
+          sectionIndex: state.sectionIndex,
+          chunkIndex: state.chunkIndex,
+        })
+        
+        if (prevPos) {
+          log.debug('Skip back to previous chunk', { 
+            from: `s${state.sectionIndex}c${state.chunkIndex}`, 
+            to: `s${prevPos.sectionIndex}c${prevPos.chunkIndex}` 
+          })
+          
+          this.audioBackend.stop()
+          this.clearPendingSeekTime()
+          
+          // Check if we need to load the previous section
+          if (prevPos.sectionIndex !== state.sectionIndex) {
+            await this.loadSectionChunks(prevPos.sectionIndex)
+          }
+          
+          playbackStateMachine.dispatch({
+            type: 'SEEK_CHUNK',
+            sectionIndex: prevPos.sectionIndex,
+            chunkIndex: prevPos.chunkIndex,
+          })
+          
+          ttsBufferManager.setBufferTarget(prevPos.sectionIndex, prevPos.chunkIndex)
+          await this.savePosition()
+          
+          if (wasPlaying) {
+            await this.playCurrentChunk()
+          }
+        } else {
+          // At the beginning of the book - just seek to start of current chunk
+          this.audioBackend.seekTo(0)
+        }
+      } else {
+        // Seek back 30 seconds within current chunk
+        this.audioBackend.seekRelative(-30)
+      }
     }
   }
 
@@ -955,10 +1006,19 @@ class PlaybackController {
     }
 
     const nextPosStr = `s${nextPos.sectionIndex}c${nextPos.chunkIndex}`
-    log.debug('Advancing chunk', { from: pos, to: nextPosStr })
+    const isNewSection = nextPos.sectionIndex !== state.sectionIndex
+    
+    if (isNewSection) {
+      log.info('Transitioning to new section', { 
+        from: state.sectionIndex, 
+        to: nextPos.sectionIndex 
+      })
+    } else {
+      log.debug('Advancing chunk', { from: pos, to: nextPosStr })
+    }
 
     // Check if we need to load a new section
-    if (nextPos.sectionIndex !== state.sectionIndex) {
+    if (isNewSection) {
       log.debug('Loading new section', { section: nextPos.sectionIndex })
       await this.loadSectionChunks(nextPos.sectionIndex)
     }
@@ -983,6 +1043,24 @@ class PlaybackController {
 
     // Play next chunk
     await this.playCurrentChunk()
+    
+    // PRE-LOAD: While playing, proactively load the NEXT section's chunks
+    // if we're within a few chunks of the end. This ensures ChunkManager
+    // has the section data ready before we need it.
+    const currentSectionChunkCount = chunkManager.getSectionChunkCount(nextPos.sectionIndex)
+    const chunksRemainingInSection = currentSectionChunkCount - nextPos.chunkIndex
+    const PRELOAD_THRESHOLD = 3
+    
+    if (chunksRemainingInSection <= PRELOAD_THRESHOLD) {
+      const nextSection = nextPos.sectionIndex + 1
+      if (nextSection < this.sections.length && !chunkManager.isSectionLoaded(nextSection)) {
+        log.debug('Pre-loading next section', { nextSection })
+        // Load in background - don't await
+        this.loadSectionChunks(nextSection).catch(err => {
+          log.warn('Failed to pre-load next section', err)
+        })
+      }
+    }
   }
 
   // ============================================================================

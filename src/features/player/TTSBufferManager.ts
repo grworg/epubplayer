@@ -295,24 +295,38 @@ export class TTSBufferManager {
     await this.ensureSectionLoaded(startSection)
 
     const chunks: ChunkInfo[] = []
+    const allSections = this.ctx.sections
+    if (allSections.length === 0) return []
 
-    const pushFrom = async (sectionIndex: number, fromChunkIndex: number) => {
+    const pushFrom = async (sectionIndex: number, fromChunkIndex: number, limit?: number) => {
       await this.ensureSectionLoaded(sectionIndex)
       const count = chunkManager.getSectionChunkCount(sectionIndex)
+      let added = 0
       for (let i = fromChunkIndex; i < count; i++) {
+        if (limit !== undefined && added >= limit) break
         const c = chunkManager.getChunk({ sectionIndex, chunkIndex: i })
-        if (c) chunks.push(c)
+        if (c) {
+          chunks.push(c)
+          added++
+        }
       }
     }
 
     if (mode === 'chapter') {
+      // Buffer current chapter
       await pushFrom(startSection, startChunk)
+      
+      // CROSS-CHAPTER LOOKAHEAD: Always buffer first few chunks of next section
+      // to ensure smooth chapter transitions. This prevents lag when rolling
+      // over to a new chapter.
+      const LOOKAHEAD_CHUNKS = 5 // Buffer first 5 chunks of next chapter
+      const nextSection = startSection + 1
+      if (nextSection < allSections.length) {
+        await pushFrom(nextSection, 0, LOOKAHEAD_CHUNKS)
+      }
+      
       return chunks
     }
-
-    // In both 'minutes' and 'book' modes, we buffer beyond the current section.
-    const allSections = this.ctx.sections
-    if (allSections.length === 0) return []
 
     if (mode === 'book') {
       await pushFrom(startSection, startChunk)
@@ -342,6 +356,21 @@ export class TTSBufferManager {
         if (!c) continue
         addChunk(c)
         if (acc >= targetSeconds) return chunks
+      }
+    }
+
+    // Even in minutes mode, ensure we have cross-chapter lookahead
+    // if we're near the end of current section
+    const currentSectionChunkCount = chunkManager.getSectionChunkCount(startSection)
+    const chunksRemainingInSection = currentSectionChunkCount - startChunk
+    const NEAR_END_THRESHOLD = 5
+    const nextSection = startSection + 1
+    
+    if (chunksRemainingInSection <= NEAR_END_THRESHOLD && nextSection < allSections.length) {
+      // Check if we already have chunks from next section
+      const hasNextSection = chunks.some(c => c.sectionIndex === nextSection)
+      if (!hasNextSection) {
+        await pushFrom(nextSection, 0, NEAR_END_THRESHOLD)
       }
     }
 
