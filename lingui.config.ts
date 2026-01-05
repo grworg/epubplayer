@@ -10,7 +10,8 @@ const config: LinguiConfig = {
     },
   ],
   format: 'po',
-  compileNamespace: 'es',
+  // Compile to TypeScript with explicit messages
+  compileNamespace: 'ts',
 }
 
 export default config
