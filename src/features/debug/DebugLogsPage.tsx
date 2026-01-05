@@ -85,17 +85,21 @@ export function DebugLogsPage() {
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
+          <label htmlFor="log-filter" className="sr-only">Filter logs</label>
           <input
+            id="log-filter"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Filter logs…"
             className="h-10 flex-1 min-w-[120px] rounded-lg bg-surface-1 px-3 text-sm text-text-primary outline-none ring-1 ring-border-muted"
           />
+          <label htmlFor="log-level" className="sr-only">Filter by log level</label>
           <select
+            id="log-level"
             value={level}
             onChange={(e) => setLevel(e.target.value as typeof level)}
             className="h-10 rounded-lg bg-surface-1 px-3 text-sm text-text-primary outline-none ring-1 ring-border-muted"
-            title="Filter by level"
+            aria-label="Filter by level"
           >
             <option value="all">All Levels</option>
             <option value="error">Error</option>
@@ -104,11 +108,13 @@ export function DebugLogsPage() {
             <option value="log">Log</option>
             <option value="debug">Debug</option>
           </select>
+          <label htmlFor="log-subsystem" className="sr-only">Filter by subsystem</label>
           <select
+            id="log-subsystem"
             value={subsystem}
             onChange={(e) => setSubsystem(e.target.value)}
             className="h-10 rounded-lg bg-surface-1 px-3 text-sm text-text-primary outline-none ring-1 ring-border-muted"
-            title="Filter by subsystem"
+            aria-label="Filter by subsystem"
           >
             <option value="all">All Subsystems</option>
             {subsystems.map((s) => (

@@ -1,5 +1,6 @@
 import { InstallIcon, CheckIcon } from '@/ui/icons'
 import { usePWAInstall, getInstallInstructions } from './usePWAInstall'
+import { useFocusTrap } from '@/ui/accessibility'
 
 interface InstallPromptSheetProps {
   isOpen: boolean
@@ -9,6 +10,11 @@ interface InstallPromptSheetProps {
 export function InstallPromptSheet({ isOpen, onClose }: InstallPromptSheetProps) {
   const { platform, canPromptNatively, triggerNativeInstall, dismissPrompt } = usePWAInstall()
   const instructions = getInstallInstructions(platform)
+  
+  const sheetRef = useFocusTrap<HTMLDivElement>({
+    isActive: isOpen,
+    onEscape: onClose,
+  })
 
   if (!isOpen) return null
 
@@ -25,12 +31,18 @@ export function InstallPromptSheet({ isOpen, onClose }: InstallPromptSheetProps)
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
 
       {/* Sheet/Modal */}
-      <div className="relative w-full max-w-lg animate-slide-up rounded-t-3xl bg-surface-1 pb-[max(1.5rem,var(--safe-area-bottom))] md:animate-fade-in md:rounded-xl">
+      <div 
+        ref={sheetRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="install-prompt-title"
+        className="relative w-full max-w-lg animate-slide-up rounded-t-3xl bg-surface-1 pb-[max(1.5rem,var(--safe-area-bottom))] md:animate-fade-in md:rounded-xl"
+      >
         {/* Handle */}
-        <div className="flex justify-center py-3 md:hidden">
+        <div className="flex justify-center py-3 md:hidden" aria-hidden="true">
           <div className="h-1 w-10 rounded-full bg-surface-4" />
         </div>
 
@@ -40,7 +52,7 @@ export function InstallPromptSheet({ isOpen, onClose }: InstallPromptSheetProps)
             <InstallIcon className="h-7 w-7 text-accent" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-text-primary">{instructions.title}</h2>
+            <h2 id="install-prompt-title" className="text-xl font-bold text-text-primary">{instructions.title}</h2>
             <p className="text-sm text-text-secondary">Get the full app experience</p>
           </div>
         </div>

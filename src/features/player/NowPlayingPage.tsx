@@ -8,6 +8,7 @@ import { BookmarkSheet } from '@/ui/components/BookmarkSheet'
 import { SpeedSheet } from '@/ui/components/SpeedSheet'
 import { LyricsView } from './LyricsView'
 import { ttsManager } from '@/services/tts'
+import { useAnnounce } from '@/ui/accessibility'
 import {
   ChevronLeftIcon,
   PlayIcon,
@@ -93,6 +94,42 @@ export function NowPlayingPage() {
     const percentage = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100))
     setDragProgress(percentage)
   }, [chunkInfo.total])
+
+  // Handle keyboard navigation on progress bar
+  const { announce } = useAnnounce()
+  const handleProgressBarKeyDown = useCallback(async (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (chunkInfo.total <= 0) return
+    
+    const step = e.shiftKey ? 10 : 1 // Hold Shift for larger jumps
+    let targetChunk = chunkInfo.current - 1 // Convert to 0-indexed
+    
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowUp':
+        e.preventDefault()
+        targetChunk = Math.min(chunkInfo.total - 1, targetChunk + step)
+        break
+      case 'ArrowLeft':
+      case 'ArrowDown':
+        e.preventDefault()
+        targetChunk = Math.max(0, targetChunk - step)
+        break
+      case 'Home':
+        e.preventDefault()
+        targetChunk = 0
+        break
+      case 'End':
+        e.preventDefault()
+        targetChunk = chunkInfo.total - 1
+        break
+      default:
+        return
+    }
+    
+    await playbackController.goToChunk(targetChunk)
+    const newProgress = Math.round((targetChunk / chunkInfo.total) * 100)
+    announce(`${newProgress}% complete, part ${targetChunk + 1} of ${chunkInfo.total}`)
+  }, [chunkInfo.total, chunkInfo.current, announce])
 
   // Handle drag move
   useEffect(() => {
@@ -231,10 +268,18 @@ export function NowPlayingPage() {
                 <div className="w-full max-w-sm flex-shrink-0">
                   <div 
                     ref={progressBarRef}
-                    className="relative h-8 w-full cursor-pointer touch-none"
+                    role="slider"
+                    tabIndex={0}
+                    aria-label="Playback progress"
+                    aria-valuemin={0}
+                    aria-valuemax={chunkInfo.total}
+                    aria-valuenow={chunkInfo.current}
+                    aria-valuetext={`Part ${chunkInfo.current} of ${chunkInfo.total}, ${Math.round(chunkInfo.progress)}% complete`}
+                    className="relative h-8 w-full cursor-pointer touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0"
                     onClick={handleProgressBarClick}
                     onMouseDown={handleDragStart}
                     onTouchStart={handleDragStart}
+                    onKeyDown={handleProgressBarKeyDown}
                   >
                     <div className="absolute left-0 right-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-surface-3">
                       <div
@@ -249,9 +294,10 @@ export function NowPlayingPage() {
                     <div 
                       className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-lg transition-transform active:scale-125"
                       style={{ left: `${isDragging ? dragProgress : chunkInfo.progress}%` }}
+                      aria-hidden="true"
                     />
                   </div>
-                  <div className="flex justify-between text-xs text-text-muted">
+                  <div className="flex justify-between text-xs text-text-muted" aria-hidden="true">
                     <span>{chunkInfo.total > 0 ? `Part ${chunkInfo.current} of ${chunkInfo.total}` : 'Loading...'}</span>
                     <span>{isBuffering ? 'Generating...' : `${Math.round(chunkInfo.progress)}%`}</span>
                   </div>
@@ -348,23 +394,31 @@ export function NowPlayingPage() {
                       
                       {/* Progress bar */}
                       <div className="flex w-full max-w-md items-center gap-3">
-                        <span className="w-16 text-right text-xs text-text-muted">
+                        <span className="w-16 text-right text-xs text-text-muted" aria-hidden="true">
                           {chunkInfo.total > 0 ? `${chunkInfo.current}/${chunkInfo.total}` : '—'}
                         </span>
                         <div 
                           ref={progressBarRef}
-                          className="relative h-6 flex-1 cursor-pointer touch-none"
+                          role="slider"
+                          tabIndex={0}
+                          aria-label="Playback progress"
+                          aria-valuemin={0}
+                          aria-valuemax={chunkInfo.total}
+                          aria-valuenow={chunkInfo.current}
+                          aria-valuetext={`Part ${chunkInfo.current} of ${chunkInfo.total}, ${Math.round(chunkInfo.progress)}% complete`}
+                          className="relative h-6 flex-1 cursor-pointer touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0"
                           onClick={handleProgressBarClick}
                           onMouseDown={handleDragStart}
                           onTouchStart={handleDragStart}
+                          onKeyDown={handleProgressBarKeyDown}
                         >
                           <div className="absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 overflow-hidden rounded-full bg-surface-3">
                             <div className="absolute h-full bg-accent/30 transition-all duration-200" style={{ width: `${Math.max(bufferProgress, isDragging ? dragProgress : chunkInfo.progress)}%` }} />
                             <div className="absolute h-full bg-accent transition-all duration-150" style={{ width: `${isDragging ? dragProgress : chunkInfo.progress}%` }} />
                           </div>
-                          <div className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-md transition-transform hover:scale-125" style={{ left: `${isDragging ? dragProgress : chunkInfo.progress}%` }} />
+                          <div className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-md transition-transform hover:scale-125" style={{ left: `${isDragging ? dragProgress : chunkInfo.progress}%` }} aria-hidden="true" />
                         </div>
-                        <span className="w-16 text-xs text-text-muted">
+                        <span className="w-16 text-xs text-text-muted" aria-hidden="true">
                           {isBuffering ? 'Gen...' : `${Math.round(chunkInfo.progress)}%`}
                         </span>
                       </div>
@@ -443,10 +497,18 @@ export function NowPlayingPage() {
                   {/* Interactive progress track */}
                   <div 
                     ref={progressBarRef}
-                    className="relative h-8 w-full cursor-pointer touch-none lg:h-10"
+                    role="slider"
+                    tabIndex={0}
+                    aria-label="Playback progress"
+                    aria-valuemin={0}
+                    aria-valuemax={chunkInfo.total}
+                    aria-valuenow={chunkInfo.current}
+                    aria-valuetext={`Part ${chunkInfo.current} of ${chunkInfo.total}, ${Math.round(chunkInfo.progress)}% complete`}
+                    className="relative h-8 w-full cursor-pointer touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0 lg:h-10"
                     onClick={handleProgressBarClick}
                     onMouseDown={handleDragStart}
                     onTouchStart={handleDragStart}
+                    onKeyDown={handleProgressBarKeyDown}
                   >
                     {/* Track background */}
                     <div className="absolute left-0 right-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-surface-3 lg:h-2">
@@ -466,11 +528,12 @@ export function NowPlayingPage() {
                     <div 
                       className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-lg transition-transform active:scale-125 lg:h-5 lg:w-5"
                       style={{ left: `${isDragging ? dragProgress : chunkInfo.progress}%` }}
+                      aria-hidden="true"
                     />
                     
                     {/* Chunk markers (subtle dots) */}
                     {chunkInfo.total > 1 && chunkInfo.total <= 20 && (
-                      <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2">
+                      <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2" aria-hidden="true">
                         {Array.from({ length: chunkInfo.total }).map((_, i) => (
                           <div
                             key={i}

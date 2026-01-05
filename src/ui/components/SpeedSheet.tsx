@@ -1,4 +1,5 @@
 import { SpeedIcon, CheckIcon } from '@/ui/icons'
+import { useFocusTrap } from '@/ui/accessibility'
 
 interface SpeedSheetProps {
   isOpen: boolean
@@ -18,6 +19,11 @@ const SPEED_OPTIONS = [
 ]
 
 export function SpeedSheet({ isOpen, onClose, currentSpeed, onSpeedChange }: SpeedSheetProps) {
+  const sheetRef = useFocusTrap<HTMLDivElement>({
+    isActive: isOpen,
+    onEscape: onClose,
+  })
+
   if (!isOpen) return null
 
   const handleSelect = (speed: number) => {
@@ -30,13 +36,20 @@ export function SpeedSheet({ isOpen, onClose, currentSpeed, onSpeedChange }: Spe
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
-        onClick={onClose} 
+        onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Sheet - bottom on mobile, centered modal on desktop */}
-      <div className="relative w-full max-w-md rounded-t-3xl bg-surface-1 pb-[max(1.5rem,var(--safe-area-bottom))] md:rounded-2xl md:pb-6">
+      <div 
+        ref={sheetRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="speed-sheet-title"
+        className="relative w-full max-w-md rounded-t-3xl bg-surface-1 pb-[max(1.5rem,var(--safe-area-bottom))] md:rounded-2xl md:pb-6"
+      >
         {/* Handle - mobile only */}
-        <div className="flex justify-center py-3 md:hidden">
+        <div className="flex justify-center py-3 md:hidden" aria-hidden="true">
           <div className="h-1 w-10 rounded-full bg-surface-4" />
         </div>
 
@@ -46,7 +59,7 @@ export function SpeedSheet({ isOpen, onClose, currentSpeed, onSpeedChange }: Spe
             <SpeedIcon className="h-5 w-5 text-accent" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-text-primary">Playback Speed</h2>
+            <h2 id="speed-sheet-title" className="text-lg font-semibold text-text-primary">Playback Speed</h2>
             <p className="text-sm text-text-secondary">
               Currently {currentSpeed}×
             </p>

@@ -1,11 +1,19 @@
-// Icon components using inline SVGs for zero-dependency icons
-// Sized at 24x24 by default, use className to override
+/**
+ * Icon Components
+ * 
+ * Inline SVG icons for zero-dependency usage.
+ * All icons include aria-hidden="true" by default since they are decorative
+ * and should be accompanied by aria-label on the parent interactive element.
+ * 
+ * Sized at 24x24 by default, use className to override.
+ */
 
 type IconProps = React.SVGProps<SVGSVGElement>
 
 export function LibraryIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -22,7 +30,7 @@ export function LibraryIcon(props: IconProps) {
 
 export function PlayIcon(props: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
       <path d="M8 5.14v14l11-7-11-7z" />
     </svg>
   )
@@ -30,7 +38,7 @@ export function PlayIcon(props: IconProps) {
 
 export function PauseIcon(props: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
       <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
     </svg>
   )
@@ -39,6 +47,7 @@ export function PauseIcon(props: IconProps) {
 export function SettingsIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -57,6 +66,7 @@ export function SettingsIcon(props: IconProps) {
 export function SkipBackIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -75,6 +85,7 @@ export function SkipBackIcon(props: IconProps) {
 export function SkipForwardIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -93,6 +104,7 @@ export function SkipForwardIcon(props: IconProps) {
 export function RewindIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -114,6 +126,7 @@ export function RewindIcon(props: IconProps) {
 export function FastForwardIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -135,6 +148,7 @@ export function FastForwardIcon(props: IconProps) {
 export function PlusIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -153,6 +167,7 @@ export function PlusIcon(props: IconProps) {
 export function ChevronLeftIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -170,6 +185,7 @@ export function ChevronLeftIcon(props: IconProps) {
 export function ChevronRightIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -187,6 +203,7 @@ export function ChevronRightIcon(props: IconProps) {
 export function MenuIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -206,6 +223,7 @@ export function MenuIcon(props: IconProps) {
 export function SpeedIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -224,6 +242,7 @@ export function SpeedIcon(props: IconProps) {
 export function MoonIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -241,6 +260,7 @@ export function MoonIcon(props: IconProps) {
 export function BookmarkIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -258,6 +278,7 @@ export function BookmarkIcon(props: IconProps) {
 export function TrashIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -277,6 +298,7 @@ export function TrashIcon(props: IconProps) {
 export function EraserIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -296,6 +318,7 @@ export function EraserIcon(props: IconProps) {
 export function VolumeIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -315,6 +338,7 @@ export function VolumeIcon(props: IconProps) {
 export function ListIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -337,6 +361,7 @@ export function ListIcon(props: IconProps) {
 export function HeadphonesIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -355,6 +380,7 @@ export function HeadphonesIcon(props: IconProps) {
 export function UploadIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -374,6 +400,7 @@ export function UploadIcon(props: IconProps) {
 export function DownloadIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -393,6 +420,7 @@ export function DownloadIcon(props: IconProps) {
 export function LoaderIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -411,6 +439,7 @@ export function LoaderIcon(props: IconProps) {
 export function CheckIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -428,6 +457,7 @@ export function CheckIcon(props: IconProps) {
 export function TextIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -447,6 +477,7 @@ export function TextIcon(props: IconProps) {
 export function ImageIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -466,6 +497,7 @@ export function ImageIcon(props: IconProps) {
 export function BellIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -484,6 +516,7 @@ export function BellIcon(props: IconProps) {
 export function InstallIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -503,6 +536,7 @@ export function InstallIcon(props: IconProps) {
 export function BookIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -521,6 +555,7 @@ export function BookIcon(props: IconProps) {
 export function SmartphoneIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -539,6 +574,7 @@ export function SmartphoneIcon(props: IconProps) {
 export function QrCodeIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -562,6 +598,7 @@ export function QrCodeIcon(props: IconProps) {
 export function DeviceSyncIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -587,6 +624,7 @@ export function DeviceSyncIcon(props: IconProps) {
 export function WifiIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -607,12 +645,59 @@ export function WifiIcon(props: IconProps) {
 export function GitHubIcon(props: IconProps) {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="currentColor"
       {...props}
     >
       <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+    </svg>
+  )
+}
+
+export function KeyboardIcon(props: IconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+      <line x1="6" y1="8" x2="6.01" y2="8" />
+      <line x1="10" y1="8" x2="10.01" y2="8" />
+      <line x1="14" y1="8" x2="14.01" y2="8" />
+      <line x1="18" y1="8" x2="18.01" y2="8" />
+      <line x1="6" y1="12" x2="6.01" y2="12" />
+      <line x1="10" y1="12" x2="10.01" y2="12" />
+      <line x1="14" y1="12" x2="14.01" y2="12" />
+      <line x1="18" y1="12" x2="18.01" y2="12" />
+      <line x1="8" y1="16" x2="16" y2="16" />
+    </svg>
+  )
+}
+
+export function CloseIcon(props: IconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
   )
 }

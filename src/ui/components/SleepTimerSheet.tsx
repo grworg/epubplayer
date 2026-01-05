@@ -4,6 +4,7 @@ import {
   type SleepTimerDuration,
 } from '@/features/player/useSleepTimer'
 import { MoonIcon } from '@/ui/icons'
+import { useFocusTrap } from '@/ui/accessibility'
 
 interface SleepTimerSheetProps {
   isOpen: boolean
@@ -12,6 +13,10 @@ interface SleepTimerSheetProps {
 
 export function SleepTimerSheet({ isOpen, onClose }: SleepTimerSheetProps) {
   const { remainingMinutes, isActive, setTimer } = useSleepTimer()
+  const sheetRef = useFocusTrap<HTMLDivElement>({
+    isActive: isOpen,
+    onEscape: onClose,
+  })
 
   if (!isOpen) return null
 
@@ -23,12 +28,18 @@ export function SleepTimerSheet({ isOpen, onClose }: SleepTimerSheetProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
 
       {/* Sheet - bottom on mobile, centered modal on desktop */}
-      <div className="relative w-full max-w-lg rounded-t-3xl bg-surface-1 pb-[max(1.5rem,var(--safe-area-bottom))] md:rounded-2xl md:pb-4">
+      <div 
+        ref={sheetRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sleep-timer-title"
+        className="relative w-full max-w-lg rounded-t-3xl bg-surface-1 pb-[max(1.5rem,var(--safe-area-bottom))] md:rounded-2xl md:pb-4"
+      >
         {/* Handle - mobile only */}
-        <div className="flex justify-center py-3 md:hidden">
+        <div className="flex justify-center py-3 md:hidden" aria-hidden="true">
           <div className="h-1 w-10 rounded-full bg-surface-4" />
         </div>
 
@@ -36,7 +47,7 @@ export function SleepTimerSheet({ isOpen, onClose }: SleepTimerSheetProps) {
         <div className="flex items-center gap-3 px-6 pb-4 md:pt-4">
           <MoonIcon className="h-6 w-6 text-accent" />
           <div>
-            <h2 className="text-lg font-semibold text-text-primary">Sleep Timer</h2>
+            <h2 id="sleep-timer-title" className="text-lg font-semibold text-text-primary">Sleep Timer</h2>
             {isActive && (
               <p className="text-sm text-text-secondary">
                 {remainingMinutes} minute{remainingMinutes !== 1 ? 's' : ''} remaining

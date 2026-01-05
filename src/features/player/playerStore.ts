@@ -123,7 +123,14 @@ export const usePlayerStore = create<PlayerState>()(
     {
       name: 'epub-player-state',
       partialize: (state) => ({
-        currentBook: state.currentBook,
+        // Don't persist coverUrl - blob URLs are session-specific and won't work after refresh
+        // The cover will be reloaded from IndexedDB on rehydration
+        currentBook: state.currentBook ? {
+          id: state.currentBook.id,
+          title: state.currentBook.title,
+          author: state.currentBook.author,
+          // coverUrl intentionally omitted
+        } : null,
         position: state.position,
         speed: state.speed,
         volume: state.volume,

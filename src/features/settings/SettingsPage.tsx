@@ -7,6 +7,7 @@ import { PIPER_MODELS } from '@/services/tts/piperService'
 import { SUPERTONIC_VOICES } from '@/services/tts/supertonicService'
 import { playbackController } from '@/features/player/PlaybackController'
 import { ChevronLeftIcon, ChevronRightIcon, VolumeIcon, HeadphonesIcon, TrashIcon, LoaderIcon, CheckIcon, SmartphoneIcon } from '@/ui/icons'
+import { useFocusTrap } from '@/ui/accessibility'
 
 // Helper to get browser voices
 function getBrowserVoices(): { id: string; name: string }[] {
@@ -384,7 +385,7 @@ export function SettingsPage() {
                       {book.audioSizeMB > 0 && (
                         <button
                           onClick={() => handleClearBookAudio(book.id, book.title)}
-                          className="pressable ml-3 flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-surface-2 hover:text-warning"
+                          className="pressable ml-3 flex h-11 w-11 items-center justify-center rounded-full text-text-muted hover:bg-surface-2 hover:text-warning"
                           aria-label={`Clear audio for ${book.title}`}
                         >
                           <TrashIcon className="h-4 w-4" />
@@ -451,6 +452,7 @@ export function SettingsPage() {
             } 
           />
           <SettingsItem label="Debug Logs" description="View/copy logs on mobile (including TTS worker)" onClick={() => navigate('/app/debug-logs')} />
+          <SettingsItem label="Accessibility" description="Keyboard shortcuts, screen reader support" onClick={() => navigate('/app/accessibility')} />
           <SettingsItem label="Help & How it works" onClick={() => navigate('/app/help')} />
           <SettingsItem label="Terms & Privacy" onClick={() => navigate('/app/terms')} />
           <SettingsItem label="License" value="MIT" />
@@ -669,6 +671,14 @@ function SelectionSheet({
   value: string
   onChange: (value: string) => void
 }) {
+  const sheetRef = useFocusTrap<HTMLDivElement>({
+    isActive: isOpen,
+    onEscape: onClose,
+  })
+  
+  // Generate a unique ID for this sheet instance
+  const titleId = `selection-sheet-${title.toLowerCase().replace(/\s+/g, '-')}`
+
   if (!isOpen) return null
 
   return (
@@ -677,25 +687,34 @@ function SelectionSheet({
       <div
         className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
       
       {/* Sheet - bottom on mobile, centered modal on desktop */}
-      <div className="fixed inset-x-0 bottom-0 z-50 max-h-[70vh] overflow-hidden rounded-t-2xl bg-surface-1 shadow-2xl md:inset-auto md:left-1/2 md:top-1/2 md:w-full md:max-w-md md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-2xl">
+      <div 
+        ref={sheetRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="fixed inset-x-0 bottom-0 z-50 max-h-[70vh] overflow-hidden rounded-t-2xl bg-surface-1 shadow-2xl md:inset-auto md:left-1/2 md:top-1/2 md:w-full md:max-w-md md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-2xl"
+      >
         {/* Handle - mobile only */}
-        <div className="flex justify-center py-3 md:hidden">
+        <div className="flex justify-center py-3 md:hidden" aria-hidden="true">
           <div className="h-1 w-10 rounded-full bg-surface-4" />
         </div>
         
         {/* Title */}
-        <h3 className="border-b border-border-muted px-5 pb-3 text-lg font-semibold text-text-primary md:pt-4">
+        <h3 id={titleId} className="border-b border-border-muted px-5 pb-3 text-lg font-semibold text-text-primary md:pt-4">
           {title}
         </h3>
         
         {/* Options */}
-        <div className="max-h-[50vh] overflow-y-auto py-2 md:max-h-[60vh]">
+        <div role="listbox" aria-labelledby={titleId} className="max-h-[50vh] overflow-y-auto py-2 md:max-h-[60vh]">
           {options.map((option) => (
             <button
               key={option.id}
+              role="option"
+              aria-selected={value === option.id}
               onClick={() => onChange(option.id)}
               className="flex w-full items-center gap-3 px-5 py-3 text-left active:bg-surface-2 md:hover:bg-surface-2"
             >
@@ -713,7 +732,7 @@ function SelectionSheet({
         </div>
         
         {/* Safe area padding - mobile only */}
-        <div className="h-safe-bottom bg-surface-1 md:hidden" />
+        <div className="h-safe-bottom bg-surface-1 md:hidden" aria-hidden="true" />
       </div>
     </>
   )

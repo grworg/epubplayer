@@ -348,18 +348,26 @@ function InputState({
       
       {/* Code input */}
       <form onSubmit={handleSubmit} className="mt-8">
+        <label htmlFor="transfer-code" className="sr-only">
+          6-character transfer code
+        </label>
         <input
+          id="transfer-code"
           ref={inputRef}
           type="text"
           value={code}
           onChange={onCodeChange}
           placeholder="ABC123"
+          aria-describedby="transfer-code-hint"
           className="w-full rounded-xl bg-surface-1 px-6 py-4 text-center font-mono text-2xl font-bold tracking-widest text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
           maxLength={6}
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
         />
+        <p id="transfer-code-hint" className="sr-only">
+          Enter the 6-character code displayed on your other device
+        </p>
         
         <button
           type="submit"

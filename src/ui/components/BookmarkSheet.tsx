@@ -3,6 +3,7 @@ import { useBookmarks } from '@/features/player/useBookmarks'
 import { usePlayerStore } from '@/features/player/playerStore'
 import { playbackController } from '@/features/player/PlaybackController'
 import { BookmarkIcon, TrashIcon, PlusIcon } from '@/ui/icons'
+import { useFocusTrap, useAnnounce } from '@/ui/accessibility'
 import type { Bookmark } from '@/services/storage'
 
 interface BookmarkSheetProps {
@@ -15,6 +16,12 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
   const { bookmarks, addBookmark, deleteBookmark } = useBookmarks(currentBook?.id)
   const [isAdding, setIsAdding] = useState(false)
   const [newNote, setNewNote] = useState('')
+  const { announce } = useAnnounce()
+  
+  const sheetRef = useFocusTrap<HTMLDivElement>({
+    isActive: isOpen,
+    onEscape: onClose,
+  })
 
   if (!isOpen) return null
 
@@ -23,14 +30,21 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
       await addBookmark(newNote.trim() || undefined)
       setNewNote('')
       setIsAdding(false)
+      announce('Bookmark added')
     } else {
       setIsAdding(true)
     }
   }
 
+  const handleDeleteBookmark = async (id: string) => {
+    await deleteBookmark(id)
+    announce('Bookmark deleted')
+  }
+
   const handleGoToBookmark = async (bookmark: Bookmark) => {
     await playbackController.goToSection(bookmark.sectionIndex)
     // TODO: Seek to exact chunk/time position
+    announce(`Jumped to ${formatPosition(bookmark)}`)
     onClose()
   }
 
@@ -50,12 +64,18 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
 
       {/* Sheet - bottom on mobile, centered modal on desktop */}
-      <div className="relative max-h-[70vh] w-full max-w-lg overflow-hidden rounded-t-3xl bg-surface-1 pb-[max(1.5rem,var(--safe-area-bottom))] md:rounded-2xl md:pb-4">
+      <div 
+        ref={sheetRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="bookmarks-sheet-title"
+        className="relative max-h-[70vh] w-full max-w-lg overflow-hidden rounded-t-3xl bg-surface-1 pb-[max(1.5rem,var(--safe-area-bottom))] md:rounded-2xl md:pb-4"
+      >
         {/* Handle - mobile only */}
-        <div className="flex justify-center py-3 md:hidden">
+        <div className="flex justify-center py-3 md:hidden" aria-hidden="true">
           <div className="h-1 w-10 rounded-full bg-surface-4" />
         </div>
 
@@ -63,7 +83,7 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
         <div className="flex items-center justify-between px-6 pb-4 md:pt-4">
           <div className="flex items-center gap-3">
             <BookmarkIcon className="h-6 w-6 text-accent" />
-            <h2 className="text-lg font-semibold text-text-primary">Bookmarks</h2>
+            <h2 id="bookmarks-sheet-title" className="text-lg font-semibold text-text-primary">Bookmarks</h2>
           </div>
           <button
             onClick={handleAddBookmark}
@@ -77,7 +97,9 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
         {/* Add bookmark input */}
         {isAdding && (
           <div className="border-b border-border-muted px-4 pb-4">
+            <label htmlFor="bookmark-note" className="sr-only">Bookmark note</label>
             <input
+              id="bookmark-note"
               type="text"
               placeholder="Add a note (optional)"
               value={newNote}
@@ -130,9 +152,9 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
                     </p>
                   </button>
                   <button
-                    onClick={() => deleteBookmark(bookmark.id)}
-                    className="pressable flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-surface-3 hover:text-error"
-                    aria-label="Delete bookmark"
+                    onClick={() => handleDeleteBookmark(bookmark.id)}
+                    className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-muted hover:bg-surface-3 hover:text-error"
+                    aria-label={`Delete bookmark: ${bookmark.note || formatPosition(bookmark)}`}
                   >
                     <TrashIcon className="h-4 w-4" />
                   </button>

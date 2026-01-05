@@ -8,7 +8,7 @@ export function LandingPage() {
   }, [])
 
   return (
-    <div className="h-full overflow-y-auto scroll-smooth bg-surface-0 text-text-primary">
+    <div id="main-content" className="h-full overflow-y-auto scroll-smooth bg-surface-0 text-text-primary">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Gradient background */}

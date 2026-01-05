@@ -124,6 +124,7 @@ export function LibraryPage() {
           accept=".epub,application/epub+zip"
           onChange={handleFileSelect}
           className="hidden"
+          aria-label="Select EPUB file to import"
         />
       </header>
 

@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { MiniPlayer } from '@/features/player/MiniPlayer'
 import { usePlayerStore } from '@/features/player/playerStore'
+import { playbackController } from '@/features/player/PlaybackController'
 import { ttsManager } from '@/services/tts'
 import { settingsRepository } from '@/services/storage/settingsRepository'
+import { bookRepository } from '@/services/storage'
 import { createLogger } from '@/services/logging'
 
 const log = createLogger('app')
@@ -11,7 +13,56 @@ const log = createLogger('app')
 export function AppShell() {
   const location = useLocation()
   const currentBook = usePlayerStore((s) => s.currentBook)
+  const setCurrentBook = usePlayerStore((s) => s.setCurrentBook)
   const [ttsPreloadStatus, setTtsPreloadStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
+  const rehydrationAttempted = useRef(false)
+
+  // Rehydrate playback state after page refresh
+  // When the store has a persisted currentBook but the controller isn't loaded,
+  // we need to reload the book from IndexedDB to restore full playback capability
+  useEffect(() => {
+    const rehydratePlayback = async () => {
+      // Only attempt once per app load
+      if (rehydrationAttempted.current) return
+      rehydrationAttempted.current = true
+
+      // If no persisted book, nothing to rehydrate
+      if (!currentBook?.id) return
+
+      try {
+        // Fetch the full book from IndexedDB (includes coverUrl from blob)
+        const fullBook = await bookRepository.get(currentBook.id)
+        
+        if (!fullBook) {
+          // Book was deleted - clear the stale state
+          log.warn('Persisted book not found in IndexedDB, clearing state', { id: currentBook.id })
+          setCurrentBook(null)
+          return
+        }
+
+        // Build the book object for the player (with fresh coverUrl from IndexedDB)
+        const bookForPlayer = {
+          id: fullBook.id,
+          title: fullBook.title,
+          author: fullBook.author,
+          coverUrl: fullBook.coverUrl, // Fresh blob URL from IndexedDB
+        }
+
+        log.info('Rehydrating playback state', { title: fullBook.title })
+        
+        // Load the book into the playback controller
+        // This restores sections, chunks, saved position, etc.
+        await playbackController.loadBook(bookForPlayer)
+        
+        log.info('Playback state rehydrated successfully')
+      } catch (err) {
+        log.error('Failed to rehydrate playback state', err)
+        // Don't clear the state - user can still navigate to the book manually
+      }
+    }
+
+    rehydratePlayback()
+  }, []) // Run once on mount - currentBook comes from persisted zustand state
 
   // Eager TTS preloading - start model download as soon as app shell mounts
   // This eliminates the 10+ second wait when user first presses play
@@ -111,7 +162,7 @@ export function AppShell() {
       )}
 
       {/* Main content area */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden">
+      <main id="main-content" className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className={isFullBleed ? 'h-full' : 'mx-auto h-full max-w-6xl'}>
           <Outlet />
         </div>
