@@ -29,22 +29,28 @@ export function isValidLocale(locale: string): locale is Locale {
 export async function detectLocale(): Promise<Locale> {
   // Check stored setting first
   const storedLocale = (await settingsRepository.get('locale')) as string
+  console.log('[i18n] Stored locale:', storedLocale)
   if (storedLocale && isValidLocale(storedLocale)) {
+    console.log('[i18n] Using stored locale:', storedLocale)
     return storedLocale
   }
 
   // Try navigator languages
+  console.log('[i18n] Navigator languages:', navigator.languages)
   if (typeof navigator !== 'undefined' && navigator.languages) {
     for (const lang of navigator.languages) {
       // Check exact match first (e.g., 'en-US' -> 'en')
       const primary = lang.split('-')[0].toLowerCase()
+      console.log('[i18n] Checking language:', lang, '-> primary:', primary, 'valid:', isValidLocale(primary))
       if (isValidLocale(primary)) {
+        console.log('[i18n] Detected locale from browser:', primary)
         return primary
       }
     }
   }
 
   // Fallback to default
+  console.log('[i18n] Falling back to default:', defaultLocale)
   return defaultLocale
 }
 
@@ -81,8 +87,11 @@ export async function activateLocale(locale: Locale): Promise<void> {
  * Initialize i18n with the detected/stored locale
  */
 export async function initI18n(): Promise<Locale> {
+  console.log('[i18n] Initializing...')
   const locale = await detectLocale()
+  console.log('[i18n] Activating locale:', locale)
   await activateLocale(locale)
+  console.log('[i18n] Activated! Current locale:', i18n.locale)
   return locale
 }
 
