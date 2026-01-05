@@ -43,15 +43,8 @@ export function ReceiveLibraryPage() {
   const totalBooksRef = useRef(0)
   const skippedBooksRef = useRef(0)
 
-  // Check for peer ID in URL params (from QR code)
-  useEffect(() => {
-    const peerParam = searchParams.get('peer')
-    if (peerParam) {
-      setCode(peerParam)
-      // Auto-connect when coming from QR code
-      handleConnect(peerParam)
-    }
-  }, [searchParams])
+  // Track if we've initiated connection to prevent double-connect (for QR code auto-connect)
+  const hasInitiatedConnectionRef = useRef(false)
 
   const handleMessage = useCallback(async (message: TransferMessage) => {
     const timestamp = new Date().toISOString().split('T')[1].slice(0, 12)
@@ -223,6 +216,24 @@ export function ReceiveLibraryPage() {
       console.log('[Transfer:Receiver] Connection attempt returned null (aborted or failed)')
     }
   }, [code, handleMessage])
+
+  // Check for peer ID in URL params (from QR code) and auto-connect
+  useEffect(() => {
+    const peerParam = searchParams.get('peer')
+    if (peerParam && !hasInitiatedConnectionRef.current) {
+      hasInitiatedConnectionRef.current = true
+      setCode(peerParam)
+      // Auto-connect when coming from QR code
+      handleConnect(peerParam)
+    }
+    
+    // Cleanup: if component unmounts during connection, abort it
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+    }
+  }, [searchParams, handleConnect])
 
   const handleBack = () => {
     abortControllerRef.current?.abort()

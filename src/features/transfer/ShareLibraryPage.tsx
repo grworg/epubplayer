@@ -33,6 +33,8 @@ export function ShareLibraryPage() {
   const connectionRef = useRef<DataConnection | null>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
   const receiverHashesRef = useRef<Set<string> | null>(null)
+  // Promise-based approach for receiving hashes (avoids race condition with polling)
+  const hashesReceivedResolveRef = useRef<((hashes: Set<string>) => void) | null>(null)
 
   // Load books on mount and check which ones can be transferred
   useEffect(() => {
@@ -63,20 +65,29 @@ export function ShareLibraryPage() {
       // Handle receiver's book hashes for deduplication
       if (message.type === 'my-books') {
         console.log(`[Transfer:Sender] Received ${message.hashes.length} hashes from receiver`)
-        receiverHashesRef.current = new Set(message.hashes)
+        const hashes = new Set(message.hashes)
+        receiverHashesRef.current = hashes
+        // Resolve the promise if someone is waiting
+        if (hashesReceivedResolveRef.current) {
+          hashesReceivedResolveRef.current(hashes)
+          hashesReceivedResolveRef.current = null
+        }
       }
     }
 
-    createPeerAndWait(handleStateChange, handleMessage, abortController.signal).then(
-      async (result) => {
+    createPeerAndWait(handleStateChange, handleMessage, abortController.signal)
+      .then(async (result) => {
         if (result) {
           peerRef.current = result.peer
           connectionRef.current = result.connection
           // Start transfer when connected
           await startTransfer(result.connection)
         }
-      }
-    )
+      })
+      .catch((err) => {
+        console.error('[Transfer:Sender] Connection/transfer failed:', err)
+        setState({ phase: 'error', message: err?.message || 'Transfer failed unexpectedly' })
+      })
 
     return () => {
       abortController.abort()
@@ -89,14 +100,32 @@ export function ShareLibraryPage() {
       console.log('[Transfer:Sender] Starting transfer process...')
       setState({ phase: 'comparing' })
       
-      // Wait for receiver to send their book hashes (with timeout)
+      // Wait for receiver to send their book hashes using Promise (avoids race condition)
       console.log('[Transfer:Sender] Waiting for receiver to send their book hashes...')
-      const startWait = Date.now()
-      while (!receiverHashesRef.current && Date.now() - startWait < 10000) {
-        await new Promise(r => setTimeout(r, 100))
+      
+      let receiverHashes: Set<string>
+      
+      // Check if hashes were already received (could happen if receiver was very fast)
+      if (receiverHashesRef.current) {
+        console.log('[Transfer:Sender] Hashes already received')
+        receiverHashes = receiverHashesRef.current
+      } else {
+        // Wait for hashes with timeout using Promise
+        const hashesPromise = new Promise<Set<string>>((resolve) => {
+          hashesReceivedResolveRef.current = resolve
+        })
+        
+        const timeoutPromise = new Promise<Set<string>>((resolve) => {
+          setTimeout(() => {
+            console.log('[Transfer:Sender] Timeout waiting for receiver hashes, proceeding with empty set')
+            resolve(new Set<string>())
+          }, 15000) // Increased timeout to 15 seconds for slow mobile IndexedDB
+        })
+        
+        receiverHashes = await Promise.race([hashesPromise, timeoutPromise])
+        hashesReceivedResolveRef.current = null // Clean up
       }
       
-      const receiverHashes = receiverHashesRef.current || new Set<string>()
       console.log(`[Transfer:Sender] Receiver has ${receiverHashes.size} books`)
       
       // Get all books and compute their hashes

@@ -165,18 +165,56 @@ export async function createPeerAndWait(
 
 /**
  * Connect to an existing peer (receiver mode)
+ * Includes retry logic for peer-unavailable errors (broker propagation delay)
  */
 export async function connectToPeer(
   targetPeerId: string,
   onStateChange: (state: PeerServiceState) => void,
   onMessage: (message: TransferMessage) => void,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  maxRetries: number = 3
 ): Promise<{ peer: Peer; connection: DataConnection } | null> {
   const fullPeerId = toFullPeerId(targetPeerId)
   
-  log('Receiver', `Attempting to connect to peer: ${fullPeerId}`)
-  onStateChange({ status: 'connecting' })
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    if (signal?.aborted) {
+      log('Receiver', 'Connection aborted by signal')
+      return null
+    }
+    
+    log('Receiver', `Attempting to connect to peer: ${fullPeerId} (attempt ${attempt}/${maxRetries})`)
+    onStateChange({ status: 'connecting' })
+    
+    const result = await attemptConnection(fullPeerId, onStateChange, onMessage, signal)
+    
+    if (result.success) {
+      return result.connection
+    }
+    
+    // If it's a peer-unavailable error and we have retries left, wait and retry
+    if (result.errorType === 'peer-unavailable' && attempt < maxRetries) {
+      const backoffMs = attempt * 1500 // 1.5s, 3s, 4.5s backoff
+      log('Receiver', `Peer not found, retrying in ${backoffMs}ms...`)
+      await new Promise(r => setTimeout(r, backoffMs))
+      continue
+    }
+    
+    // For other errors or final attempt, fail
+    return null
+  }
   
+  return null
+}
+
+/**
+ * Single connection attempt (internal helper)
+ */
+async function attemptConnection(
+  fullPeerId: string,
+  onStateChange: (state: PeerServiceState) => void,
+  onMessage: (message: TransferMessage) => void,
+  signal?: AbortSignal
+): Promise<{ success: true; connection: { peer: Peer; connection: DataConnection } } | { success: false; errorType?: string }> {
   return new Promise((resolve) => {
     // Generate a random ID for the receiver
     const receiverId = generatePeerId() + '-recv'
@@ -188,19 +226,21 @@ export async function connectToPeer(
     
     let resolved = false
     
-    const cleanup = () => {
+    const cleanup = (errorType?: string) => {
       if (!resolved) {
         log('Receiver', 'Cleaning up peer connection')
         resolved = true
         peer.destroy()
-        resolve(null)
+        resolve({ success: false, errorType })
       }
     }
     
-    signal?.addEventListener('abort', () => {
+    const abortHandler = () => {
       log('Receiver', 'Connection aborted by signal')
-      cleanup()
-    })
+      cleanup('aborted')
+    }
+    
+    signal?.addEventListener('abort', abortHandler, { once: true })
     
     peer.on('open', (id) => {
       log('Receiver', `✓ Registered with broker as: ${id}`)
@@ -215,7 +255,8 @@ export async function connectToPeer(
         onStateChange({ status: 'connected' })
         if (!resolved) {
           resolved = true
-          resolve({ peer, connection: conn })
+          signal?.removeEventListener('abort', abortHandler)
+          resolve({ success: true, connection: { peer, connection: conn } })
         }
       })
       
@@ -232,7 +273,7 @@ export async function connectToPeer(
       conn.on('error', (err) => {
         logError('Receiver', 'Connection error:', err)
         onStateChange({ status: 'error', error: err.message })
-        cleanup()
+        cleanup('connection-error')
       })
       
       conn.on('close', () => {
@@ -251,7 +292,7 @@ export async function connectToPeer(
         errorMessage = 'Network error. Check your internet connection.'
       }
       onStateChange({ status: 'error', error: errorMessage })
-      cleanup()
+      cleanup(err.type)
     })
     
     peer.on('disconnected', () => {
@@ -263,7 +304,7 @@ export async function connectToPeer(
       if (!resolved) {
         log('Receiver', 'Connection timeout after 30 seconds')
         onStateChange({ status: 'error', error: 'Connection timeout. Make sure the other device has Share Library open.' })
-        cleanup()
+        cleanup('timeout')
       }
     }, 30 * 1000)
   })
