@@ -1,0 +1,1383 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-01-04 19:19-0700\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/features/legal/TermsPage.tsx:106
+msgid "(for Kokoro). These downloads are used so the model can run locally on your device."
+msgstr "(for Kokoro). These downloads are used so the model can run locally on your device."
+
+#: src/features/legal/TermsPage.tsx:68
+msgid "(local browser storage)."
+msgstr "(local browser storage)."
+
+#: src/features/legal/TermsPage.tsx:102
+msgid "(standard website files, cached by your browser/PWA)."
+msgstr "(standard website files, cached by your browser/PWA)."
+
+#. placeholder {0}: book.sections.length
+#: src/features/library/BookDetailPage.tsx:151
+msgid "{0} chapters · ~{durationText}"
+msgstr "{0} chapters · ~{durationText}"
+
+#. placeholder {0}: stats.totalAudioSizeMB
+#. placeholder {1}: stats.totalChunkCount
+#. placeholder {2}: stats.bookCount
+#: src/features/settings/SettingsPage.tsx:371
+msgid "{0} MB audio • {1} chunks • {2} books"
+msgstr "{0} MB audio • {1} chunks • {2} books"
+
+#. placeholder {0}: book.storageStats.audioSizeMB
+#: src/features/library/BookDetailPage.tsx:157
+msgid "{0} MB cached audio"
+msgstr "{0} MB cached audio"
+
+#. placeholder {0}: settings.bufferAheadMinutes
+#: src/features/settings/SettingsPage.tsx:203
+msgid "{0} min"
+msgstr "{0} min"
+
+#: src/features/library/BookDetailPage.tsx:165
+msgid "{progress}% complete"
+msgstr "{progress}% complete"
+
+#. placeholder {0}: remainingMinutes !== 1 ? 'minutes' : 'minute'
+#: src/ui/components/SleepTimerSheet.tsx:56
+msgid "{remainingMinutes} {0} remaining"
+msgstr "{remainingMinutes} {0} remaining"
+
+#: src/features/settings/SettingsPage.tsx:600
+#: src/features/settings/SettingsPage.tsx:609
+#: src/features/settings/SettingsPage.tsx:618
+msgid "{s} seconds"
+msgstr "{s} seconds"
+
+#: src/features/player/NowPlayingPage.tsx:566
+msgid "⚠️ CPU mode (slow)"
+msgstr "⚠️ CPU mode (slow)"
+
+#: src/features/settings/SettingsPage.tsx:33
+msgid "⚠️ Under development - may not work yet."
+msgstr "⚠️ Under development - may not work yet."
+
+#: src/features/discover/FindEbooksPage.tsx:238
+msgid "💡 Tip:"
+msgstr "💡 Tip:"
+
+#: src/features/player/useSleepTimer.ts:78
+msgid "1 hour"
+msgstr "1 hour"
+
+#: src/features/settings/SettingsPage.tsx:282
+msgid "10 high-quality AI voices"
+msgstr "10 high-quality AI voices"
+
+#: src/features/player/useSleepTimer.ts:74
+#: src/features/settings/SettingsPage.tsx:102
+msgid "10 minutes"
+msgstr "10 minutes"
+
+#: src/features/landing/LandingPage.tsx:27
+msgid "100% Free & Open Source"
+msgstr "100% Free & Open Source"
+
+#: src/features/player/useSleepTimer.ts:75
+msgid "15 minutes"
+msgstr "15 minutes"
+
+#: src/features/settings/SettingsPage.tsx:101
+msgid "3 minutes"
+msgstr "3 minutes"
+
+#: src/features/player/useSleepTimer.ts:76
+#: src/features/settings/SettingsPage.tsx:103
+msgid "30 minutes"
+msgstr "30 minutes"
+
+#: src/features/player/useSleepTimer.ts:77
+msgid "45 minutes"
+msgstr "45 minutes"
+
+#: src/features/player/useSleepTimer.ts:73
+msgid "5 minutes"
+msgstr "5 minutes"
+
+#: src/features/discover/FindEbooksPage.tsx:39
+msgid "70,000+ free books"
+msgstr "70,000+ free books"
+
+#: src/features/landing/LandingPage.tsx:40
+msgid "A beautiful audiobook player that transforms your EPUBs into listenable books with AI voices. Full player controls, bookmarks, sleep timer — everything runs locally on your device."
+msgstr "A beautiful audiobook player that transforms your EPUBs into listenable books with AI voices. Full player controls, bookmarks, sleep timer — everything runs locally on your device."
+
+#: src/features/discover/FindEbooksPage.tsx:56
+msgid "A curated collection of public domain classics, well-organized by genre and popularity."
+msgstr "A curated collection of public domain classics, well-organized by genre and popularity."
+
+#: src/features/landing/LandingPage.tsx:69
+msgid "A full audiobook player built with love for readers who want to listen. No strings attached."
+msgstr "A full audiobook player built with love for readers who want to listen. No strings attached."
+
+#: src/features/settings/SettingsPage.tsx:460
+msgid "About"
+msgstr "About"
+
+#: src/features/accessibility/AccessibilityPage.tsx:45
+#: src/features/settings/SettingsPage.tsx:478
+msgid "Accessibility"
+msgstr "Accessibility"
+
+#: src/ui/components/BookmarkSheet.tsx:107
+msgid "Add a note (optional)"
+msgstr "Add a note (optional)"
+
+#: src/features/library/LibraryPage.tsx:282
+msgid "Add another book to your library."
+msgstr "Add another book to your library."
+
+#: src/features/library/LibraryPage.tsx:117
+msgid "Add book"
+msgstr "Add book"
+
+#: src/features/player/NowPlayingPage.tsx:436
+#: src/features/player/useGlobalShortcuts.tsx:27
+#: src/ui/components/BookmarkSheet.tsx:94
+msgid "Add bookmark"
+msgstr "Add bookmark"
+
+#: src/features/library/LibraryPage.tsx:195
+msgid "Add EPUB"
+msgstr "Add EPUB"
+
+#: src/features/library/LibraryPage.tsx:188
+msgid "Add your first EPUB to start listening. This is an offline-first EPUB reader and audiobook generator — your books, generated audio, and settings are stored locally on this device."
+msgstr "Add your first EPUB to start listening. This is an offline-first EPUB reader and audiobook generator — your books, generated audio, and settings are stored locally on this device."
+
+#: src/features/player/useGlobalShortcuts.tsx:127
+msgid "Adding bookmark"
+msgstr "Adding bookmark"
+
+#: src/features/legal/TermsPage.tsx:105
+msgid "AI TTS engine/model files"
+msgstr "AI TTS engine/model files"
+
+#: src/features/legal/TermsPage.tsx:128
+msgid "AI TTS speed and loading time depend on your device. Modern phones with WebGPU generally perform best."
+msgstr "AI TTS speed and loading time depend on your device. Modern phones with WebGPU generally perform best."
+
+#: src/features/settings/SettingsPage.tsx:31
+msgid "AI voice with great quality and speed. Works on most devices. ~260MB download."
+msgstr "AI voice with great quality and speed. Works on most devices. ~260MB download."
+
+#: src/features/debug/DebugLogsPage.tsx:105
+msgid "All Levels"
+msgstr "All Levels"
+
+#: src/features/debug/DebugLogsPage.tsx:120
+msgid "All Subsystems"
+msgstr "All Subsystems"
+
+#: src/features/legal/TermsPage.tsx:101
+msgid "App updates/assets"
+msgstr "App updates/assets"
+
+#: src/features/library/BookDetailPage.tsx:51
+msgid "Are you sure you want to remove this book and all its audio?"
+msgstr "Are you sure you want to remove this book and all its audio?"
+
+#: src/features/discover/FindEbooksPage.tsx:110
+msgid "Author Websites"
+msgstr "Author Websites"
+
+#: src/features/discover/FindEbooksPage.tsx:113
+msgid "Authors keep ~95% vs ~30%"
+msgstr "Authors keep ~95% vs ~30%"
+
+#: src/features/settings/SettingsPage.tsx:79
+msgid "Auto"
+msgstr "Auto"
+
+#: src/features/settings/SettingsPage.tsx:252
+#: src/features/settings/SettingsPage.tsx:617
+msgid "Auto-rewind on Resume"
+msgstr "Auto-rewind on Resume"
+
+#: src/features/debug/DebugLogsPage.tsx:82
+#: src/features/help/HelpPage.tsx:46
+#: src/features/settings/SettingsPage.tsx:225
+msgid "Back"
+msgstr "Back"
+
+#: src/features/settings/SettingsPage.tsx:70
+msgid "Balanced (q8)"
+msgstr "Balanced (q8)"
+
+#: src/features/discover/FindEbooksPage.tsx:44
+msgid "Beautifully formatted editions of public domain books. Each ebook is carefully typeset with professional covers and modernized punctuation."
+msgstr "Beautifully formatted editions of public domain books. Each ebook is carefully typeset with professional covers and modernized punctuation."
+
+#: src/features/discover/FindEbooksPage.tsx:45
+msgid "Best formatting"
+msgstr "Best formatting"
+
+#: src/features/settings/SettingsPage.tsx:88
+msgid "Best performance — fast and smooth playback"
+msgstr "Best performance — fast and smooth playback"
+
+#: src/features/settings/SettingsPage.tsx:72
+msgid "Best quality, required for WebGPU"
+msgstr "Best quality, required for WebGPU"
+
+#: src/features/library/BookDetailPage.tsx:23
+msgid "Book not found"
+msgstr "Book not found"
+
+#: src/ui/components/BookmarkSheet.tsx:34
+msgid "Bookmark added"
+msgstr "Bookmark added"
+
+#: src/ui/components/BookmarkSheet.tsx:42
+msgid "Bookmark deleted"
+msgstr "Bookmark deleted"
+
+#: src/ui/components/BookmarkSheet.tsx:103
+msgid "Bookmark note"
+msgstr "Bookmark note"
+
+#: src/features/player/NowPlayingPage.tsx:333
+#: src/features/player/NowPlayingPage.tsx:436
+#: src/features/player/NowPlayingPage.tsx:647
+#: src/ui/components/BookmarkSheet.tsx:88
+msgid "Bookmarks"
+msgstr "Bookmarks"
+
+#: src/features/discover/FindEbooksPage.tsx:51
+msgid "Borrow modern books free"
+msgstr "Borrow modern books free"
+
+#: src/features/landing/LandingPage.tsx:34
+msgid "Brought to Life"
+msgstr "Brought to Life"
+
+#: src/features/settings/SettingsPage.tsx:30
+msgid "Browser (Instant)"
+msgstr "Browser (Instant)"
+
+#: src/features/legal/TermsPage.tsx:132
+msgid "browser storage can be cleared by you, by your browser, or by the OS (e.g., low storage cleanup). Keep backups of any important files."
+msgstr "browser storage can be cleared by you, by your browser, or by the OS (e.g., low storage cleanup). Keep backups of any important files."
+
+#: src/features/settings/SettingsPage.tsx:292
+#: src/features/settings/SettingsPage.tsx:309
+#: src/features/settings/SettingsPage.tsx:337
+#: src/features/settings/SettingsPage.tsx:626
+msgid "Buffer Ahead"
+msgstr "Buffer Ahead"
+
+#: src/features/player/usePlaybackAnnouncements.ts:108
+msgid "Buffering audio..."
+msgstr "Buffering audio..."
+
+#. placeholder {0}: Math.round(bufferProgress * 100)
+#: src/features/player/usePlaybackAnnouncements.ts:106
+msgid "Buffering: {0}% complete"
+msgstr "Buffering: {0}% complete"
+
+#: src/features/discover/FindEbooksPage.tsx:69
+msgid "Buy books you actually own — no DRM means you can read them in any app, on any device, forever."
+msgstr "Buy books you actually own — no DRM means you can read them in any app, on any device, forever."
+
+#: src/features/discover/FindEbooksPage.tsx:105
+msgid "Buy Direct from Authors"
+msgstr "Buy Direct from Authors"
+
+#: src/ui/components/BookmarkSheet.tsx:119
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/ui/components/SleepTimerSheet.tsx:75
+msgid "Cancel Timer"
+msgstr "Cancel Timer"
+
+#: src/features/player/NowPlayingPage.tsx:327
+#: src/features/player/NowPlayingPage.tsx:430
+#: src/features/player/NowPlayingPage.tsx:627
+msgid "Change playback speed"
+msgstr "Change playback speed"
+
+#. placeholder {0}: bookmark.sectionIndex + 1
+#: src/ui/components/BookmarkSheet.tsx:53
+msgid "Chapter {0}"
+msgstr "Chapter {0}"
+
+#. placeholder {0}: position.sectionIndex + 1
+#. placeholder {1}: currentBook.author
+#: src/features/player/MiniPlayer.tsx:53
+msgid "Chapter {0} · {1}"
+msgstr "Chapter {0} · {1}"
+
+#: src/features/player/usePlaybackAnnouncements.ts:82
+msgid "Chapter: {currentSectionTitle}"
+msgstr "Chapter: {currentSectionTitle}"
+
+#: src/features/library/BookDetailPage.tsx:191
+#: src/features/player/NowPlayingPage.tsx:226
+#: src/features/player/NowPlayingPage.tsx:710
+msgid "Chapters"
+msgstr "Chapters"
+
+#: src/features/discover/FindEbooksPage.tsx:100
+msgid "Check for DRM-free badge"
+msgstr "Check for DRM-free badge"
+
+#: src/features/settings/SettingsPage.tsx:264
+msgid "Choose speed vs quality"
+msgstr "Choose speed vs quality"
+
+#: src/features/settings/SettingsPage.tsx:399
+msgid "chunks"
+msgstr "chunks"
+
+#: src/features/discover/FindEbooksPage.tsx:32
+msgid "Classic literature, out-of-copyright works, and openly licensed content — all completely free."
+msgstr "Classic literature, out-of-copyright works, and openly licensed content — all completely free."
+
+#: src/features/debug/DebugLogsPage.tsx:134
+msgid "Clear"
+msgstr "Clear"
+
+#: src/features/settings/SettingsPage.tsx:425
+msgid "Clear All Audio"
+msgstr "Clear All Audio"
+
+#: src/features/settings/SettingsPage.tsx:432
+msgid "Clear All Data"
+msgstr "Clear All Data"
+
+#: src/features/library/BookDetailPage.tsx:117
+#: src/features/library/BookDetailPage.tsx:118
+msgid "Clear audio cache"
+msgstr "Clear audio cache"
+
+#. placeholder {0}: book.title
+#: src/features/settings/SettingsPage.tsx:406
+msgid "Clear audio for {0}"
+msgstr "Clear audio for {0}"
+
+#: src/features/player/useGlobalShortcuts.tsx:207
+msgid "Close"
+msgstr "Close"
+
+#: src/features/player/useGlobalShortcuts.tsx:29
+msgid "Close dialog / Go back"
+msgstr "Close dialog / Go back"
+
+#: src/features/library/BookDetailPage.tsx:182
+msgid "Continue Listening"
+msgstr "Continue Listening"
+
+#: src/features/debug/DebugLogsPage.tsx:148
+msgid "Copy"
+msgstr "Copy"
+
+#: src/features/settings/SettingsPage.tsx:81
+#: src/features/settings/SettingsPage.tsx:89
+msgid "CPU (WASM)"
+msgstr "CPU (WASM)"
+
+#: src/features/discover/FindEbooksPage.tsx:119
+msgid "Creator-friendly platform"
+msgstr "Creator-friendly platform"
+
+#: src/features/discover/FindEbooksPage.tsx:87
+msgid "Curated DRM-free speculative fiction. Focuses on science fiction, fantasy, and horror from quality indie publishers."
+msgstr "Curated DRM-free speculative fiction. Focuses on science fiction, fantasy, and horror from quality indie publishers."
+
+#: src/features/discover/FindEbooksPage.tsx:88
+msgid "Curated sci-fi/fantasy"
+msgstr "Curated sci-fi/fantasy"
+
+#: src/ui/components/SpeedSheet.tsx:71
+msgid "Currently {currentSpeed}×"
+msgstr "Currently {currentSpeed}×"
+
+#: src/features/legal/TermsPage.tsx:131
+msgid "Data durability:"
+msgstr "Data durability:"
+
+#: src/features/debug/DebugLogsPage.tsx:110
+msgid "Debug"
+msgstr "Debug"
+
+#: src/features/debug/DebugLogsPage.tsx:84
+#: src/features/settings/SettingsPage.tsx:477
+msgid "Debug Logs"
+msgstr "Debug Logs"
+
+#: src/features/settings/SettingsPage.tsx:237
+#: src/features/settings/SettingsPage.tsx:590
+msgid "Default Speed"
+msgstr "Default Speed"
+
+#: src/features/library/BookDetailPage.tsx:59
+msgid "Delete all generated audio for this book? The book will remain in your library."
+msgstr "Delete all generated audio for this book? The book will remain in your library."
+
+#: src/features/library/BookDetailPage.tsx:125
+msgid "Delete book"
+msgstr "Delete book"
+
+#. placeholder {0}: bookmark.note || formatPosition(bookmark)
+#: src/ui/components/BookmarkSheet.tsx:160
+msgid "Delete bookmark: {0}"
+msgstr "Delete bookmark: {0}"
+
+#: src/features/settings/SettingsPage.tsx:444
+msgid "Device Sync"
+msgstr "Device Sync"
+
+#: src/features/settings/SettingsPage.tsx:618
+msgid "Disabled"
+msgstr "Disabled"
+
+#: src/features/legal/TermsPage.tsx:120
+msgid "Disclaimers"
+msgstr "Disclaimers"
+
+#: src/features/discover/FindEbooksPage.tsx:213
+msgid "Discover where to get EPUBs — free classics, DRM-free stores, and more."
+msgstr "Discover where to get EPUBs — free classics, DRM-free stores, and more."
+
+#: src/features/library/LibraryPage.tsx:147
+msgid "Dismiss"
+msgstr "Dismiss"
+
+#: src/features/library/LibraryPage.tsx:209
+msgid "Don't have any EPUBs?"
+msgstr "Don't have any EPUBs?"
+
+#: src/features/pwa/InstallPromptSheet.tsx:112
+msgid "Don't show again"
+msgstr "Don't show again"
+
+#: src/ui/components/SpeedSheet.tsx:20
+msgid "Double speed"
+msgstr "Double speed"
+
+#: src/features/library/BookDetailPage.tsx:108
+msgid "Download EPUB"
+msgstr "Download EPUB"
+
+#: src/features/library/BookDetailPage.tsx:109
+msgid "Download original EPUB"
+msgstr "Download original EPUB"
+
+#: src/features/discover/FindEbooksPage.tsx:68
+msgid "DRM-Free Bookstores"
+msgstr "DRM-Free Bookstores"
+
+#: src/features/settings/SettingsPage.tsx:305
+msgid "Each voice is a different neural model"
+msgstr "Each voice is a different neural model"
+
+#: src/features/settings/SettingsPage.tsx:105
+#: src/features/settings/SettingsPage.tsx:202
+msgid "Entire book (∞)"
+msgstr "Entire book (∞)"
+
+#: src/features/settings/SettingsPage.tsx:104
+#: src/features/settings/SettingsPage.tsx:201
+msgid "Entire chapter"
+msgstr "Entire chapter"
+
+#: src/features/debug/DebugLogsPage.tsx:106
+msgid "Error"
+msgstr "Error"
+
+#: src/features/player/usePlaybackAnnouncements.ts:91
+msgid "Error: {error}"
+msgstr "Error: {error}"
+
+#: src/features/debug/DebugLogsPage.tsx:154
+msgid "Export Logs"
+msgstr "Export Logs"
+
+#: src/features/legal/TermsPage.tsx:81
+msgid "Extracted book structure/text (for playback)"
+msgstr "Extracted book structure/text (for playback)"
+
+#: src/features/settings/SettingsPage.tsx:439
+msgid "Failed to load storage info"
+msgstr "Failed to load storage info"
+
+#: src/features/settings/SettingsPage.tsx:89
+msgid "Fallback if WebGPU is unavailable"
+msgstr "Fallback if WebGPU is unavailable"
+
+#: src/features/settings/SettingsPage.tsx:69
+msgid "Fast (q4)"
+msgstr "Fast (q4)"
+
+#: src/features/settings/SettingsPage.tsx:80
+msgid "Fast but uses fp32 model (~80MB)"
+msgstr "Fast but uses fp32 model (~80MB)"
+
+#: src/ui/components/SpeedSheet.tsx:18
+msgid "Faster"
+msgstr "Faster"
+
+#: src/features/pwa/InstallPromptSheet.tsx:70
+msgid "Faster load times"
+msgstr "Faster load times"
+
+#: src/features/settings/SettingsPage.tsx:69
+msgid "Fastest, smallest (WASM only)"
+msgstr "Fastest, smallest (WASM only)"
+
+#: src/features/debug/DebugLogsPage.tsx:103
+msgid "Filter by level"
+msgstr "Filter by level"
+
+#: src/features/debug/DebugLogsPage.tsx:97
+msgid "Filter by log level"
+msgstr "Filter by log level"
+
+#: src/features/debug/DebugLogsPage.tsx:112
+#: src/features/debug/DebugLogsPage.tsx:118
+msgid "Filter by subsystem"
+msgstr "Filter by subsystem"
+
+#: src/features/debug/DebugLogsPage.tsx:89
+msgid "Filter logs"
+msgstr "Filter logs"
+
+#: src/features/debug/DebugLogsPage.tsx:94
+msgid "Filter logs…"
+msgstr "Filter logs…"
+
+#: src/features/discover/FindEbooksPage.tsx:210
+msgid "Find Ebooks"
+msgstr "Find Ebooks"
+
+#: src/features/discover/FindEbooksPage.tsx:191
+msgid "Find Ebooks — EPUB Player"
+msgstr "Find Ebooks — EPUB Player"
+
+#: src/features/library/LibraryPage.tsx:209
+msgid "Find free ebooks →"
+msgstr "Find free ebooks →"
+
+#: src/features/player/NowPlayingPage.tsx:322
+#: src/features/player/NowPlayingPage.tsx:391
+#: src/features/player/NowPlayingPage.tsx:616
+msgid "Forward"
+msgstr "Forward"
+
+#: src/features/discover/FindEbooksPage.tsx:31
+msgid "Free Public Domain Books"
+msgstr "Free Public Domain Books"
+
+#: src/features/settings/SettingsPage.tsx:72
+msgid "Full (fp32)"
+msgstr "Full (fp32)"
+
+#: src/features/pwa/InstallPromptSheet.tsx:69
+msgid "Full-screen experience, no browser UI"
+msgstr "Full-screen experience, no browser UI"
+
+#: src/features/legal/TermsPage.tsx:82
+msgid "Generated audio chunks (when using AI TTS that pre-generates audio)"
+msgstr "Generated audio chunks (when using AI TTS that pre-generates audio)"
+
+#: src/features/player/MiniPlayer.tsx:52
+msgid "Generating audio..."
+msgstr "Generating audio..."
+
+#: src/features/player/NowPlayingPage.tsx:303
+#: src/features/player/NowPlayingPage.tsx:558
+msgid "Generating..."
+msgstr "Generating..."
+
+#: src/features/pwa/InstallPromptSheet.tsx:57
+msgid "Get the full app experience"
+msgstr "Get the full app experience"
+
+#: src/features/accessibility/AccessibilityPage.tsx:41
+#: src/features/discover/FindEbooksPage.tsx:204
+#: src/features/legal/TermsPage.tsx:43
+#: src/features/library/BookDetailPage.tsx:99
+#: src/features/player/NowPlayingPage.tsx:216
+msgid "Go back"
+msgstr "Go back"
+
+#: src/features/library/BookDetailPage.tsx:28
+#: src/features/player/NowPlayingPage.tsx:202
+msgid "Go to Library"
+msgstr "Go to Library"
+
+#: src/features/settings/SettingsPage.tsx:101
+msgid "Good balance (less storage)"
+msgstr "Good balance (less storage)"
+
+#: src/features/settings/SettingsPage.tsx:70
+msgid "Good balance (WASM only)"
+msgstr "Good balance (WASM only)"
+
+#: src/features/discover/FindEbooksPage.tsx:57
+msgid "Great discovery"
+msgstr "Great discovery"
+
+#: src/ui/components/SpeedSheet.tsx:14
+msgid "Half speed"
+msgstr "Half speed"
+
+#: src/features/help/HelpPage.tsx:51
+#: src/features/library/LibraryPage.tsx:212
+#: src/features/settings/SettingsPage.tsx:479
+msgid "Help & How it works"
+msgstr "Help & How it works"
+
+#: src/features/player/NowPlayingPage.tsx:439
+#: src/features/player/NowPlayingPage.tsx:439
+msgid "Hide lyrics"
+msgstr "Hide lyrics"
+
+#: src/features/settings/SettingsPage.tsx:71
+msgid "High (fp16)"
+msgstr "High (fp16)"
+
+#: src/features/settings/SettingsPage.tsx:71
+msgid "Higher quality (WASM only)"
+msgstr "Higher quality (WASM only)"
+
+#: src/features/settings/SettingsPage.tsx:32
+msgid "Highest quality AI voice. Requires powerful GPU for smooth playback."
+msgstr "Highest quality AI voice. Requires powerful GPU for smooth playback."
+
+#: src/features/pwa/InstallPromptSheet.tsx:91
+msgid "How to install"
+msgstr "How to install"
+
+#: src/features/library/LibraryPage.tsx:142
+msgid "Import Failed"
+msgstr "Import Failed"
+
+#: src/features/library/LibraryPage.tsx:204
+msgid "Import from another device"
+msgstr "Import from another device"
+
+#: src/features/settings/SettingsPage.tsx:453
+msgid "Import Library"
+msgstr "Import Library"
+
+#: src/features/legal/TermsPage.tsx:110
+msgid "Important: downloading engine/model files is not the same as uploading your ebooks. Your book contents are not sent to a server for storage."
+msgstr "Important: downloading engine/model files is not the same as uploading your ebooks. Your book contents are not sent to a server for storage."
+
+#: src/features/legal/TermsPage.tsx:80
+msgid "Imported EPUB files"
+msgstr "Imported EPUB files"
+
+#: src/features/library/LibraryPage.tsx:142
+msgid "Importing..."
+msgstr "Importing..."
+
+#: src/features/discover/FindEbooksPage.tsx:63
+msgid "Indie + classics mix"
+msgstr "Indie + classics mix"
+
+#: src/features/discover/FindEbooksPage.tsx:125
+msgid "Indie + experimental"
+msgstr "Indie + experimental"
+
+#: src/features/debug/DebugLogsPage.tsx:108
+msgid "Info"
+msgstr "Info"
+
+#: src/features/library/LibraryPage.tsx:78
+msgid "Install app"
+msgstr "Install app"
+
+#: src/features/pwa/InstallPromptSheet.tsx:82
+msgid "Install Now"
+msgstr "Install Now"
+
+#. placeholder {0}: formatPosition(bookmark)
+#: src/ui/components/BookmarkSheet.tsx:48
+msgid "Jumped to {0}"
+msgstr "Jumped to {0}"
+
+#: src/features/settings/SettingsPage.tsx:104
+msgid "Keep generating until the chapter is fully cached"
+msgstr "Keep generating until the chapter is fully cached"
+
+#: src/features/settings/SettingsPage.tsx:294
+#: src/features/settings/SettingsPage.tsx:311
+#: src/features/settings/SettingsPage.tsx:339
+msgid "Keeps generating ahead even while paused"
+msgstr "Keeps generating ahead even while paused"
+
+#: src/features/player/useGlobalShortcuts.tsx:189
+msgid "Keyboard Shortcuts"
+msgstr "Keyboard Shortcuts"
+
+#: src/features/settings/SettingsPage.tsx:478
+msgid "Keyboard shortcuts, screen reader support"
+msgstr "Keyboard shortcuts, screen reader support"
+
+#: src/features/discover/FindEbooksPage.tsx:244
+msgid "Know another great source? This app is open source — feel free to suggest additions!"
+msgstr "Know another great source? This app is open source — feel free to suggest additions!"
+
+#: src/features/settings/SettingsPage.tsx:32
+msgid "Kokoro (Premium)"
+msgstr "Kokoro (Premium)"
+
+#: src/features/settings/SettingsPage.tsx:463
+#: src/features/settings/SettingsPage.tsx:489
+msgid "Language"
+msgstr "Language"
+
+#: src/features/discover/FindEbooksPage.tsx:93
+msgid "Large selection with many titles available for EPUB download. Check each book — if it has an \"Export\" option, you can download the EPUB."
+msgstr "Large selection with many titles available for EPUB download. Check each book — if it has an \"Export\" option, you can download the EPUB."
+
+#: src/features/legal/TermsPage.tsx:52
+msgid "Last updated: {updatedAt}"
+msgstr "Last updated: {updatedAt}"
+
+#: src/features/pwa/InstallPromptSheet.tsx:68
+msgid "Launches from your home screen"
+msgstr "Launches from your home screen"
+
+#: src/features/landing/LandingPage.tsx:56
+msgid "Learn More"
+msgstr "Learn More"
+
+#: src/features/library/LibraryPage.tsx:70
+msgid "Library"
+msgstr "Library"
+
+#: src/features/settings/SettingsPage.tsx:481
+msgid "License"
+msgstr "License"
+
+#: src/app/AppShell.tsx:161
+msgid "Loading TTS engine..."
+msgstr "Loading TTS engine..."
+
+#: src/features/player/NowPlayingPage.tsx:302
+#: src/features/player/NowPlayingPage.tsx:554
+msgid "Loading..."
+msgstr "Loading..."
+
+#: src/features/legal/TermsPage.tsx:77
+msgid "Local storage (what's saved)"
+msgstr "Local storage (what's saved)"
+
+#: src/features/debug/DebugLogsPage.tsx:109
+msgid "Log"
+msgstr "Log"
+
+#: src/features/player/NowPlayingPage.tsx:669
+msgid "Lyrics"
+msgstr "Lyrics"
+
+#: src/features/discover/FindEbooksPage.tsx:99
+msgid "Major ebook retailer with DRM-free options when publishers allow. Look for the \"DRM-Free\" badge or download via Adobe Digital Editions."
+msgstr "Major ebook retailer with DRM-free options when publishers allow. Look for the \"DRM-Free\" badge or download via Adobe Digital Editions."
+
+#: src/features/discover/FindEbooksPage.tsx:82
+msgid "Major publisher, DRM-free"
+msgstr "Major publisher, DRM-free"
+
+#: src/features/discover/FindEbooksPage.tsx:81
+msgid "Major sci-fi/fantasy publisher that sells all ebooks DRM-free. A rare example of a big publisher doing the right thing."
+msgstr "Major sci-fi/fantasy publisher that sells all ebooks DRM-free. A rare example of a big publisher doing the right thing."
+
+#: src/features/discover/FindEbooksPage.tsx:112
+msgid "Many authors sell directly from their websites or Patreon. Search for \"[author name] buy ebook direct\" — you'd be surprised how many offer this."
+msgstr "Many authors sell directly from their websites or Patreon. Search for \"[author name] buy ebook direct\" — you'd be surprised how many offer this."
+
+#: src/features/player/NowPlayingPage.tsx:334
+msgid "Mark"
+msgstr "Mark"
+
+#: src/features/settings/SettingsPage.tsx:105
+msgid "Maximum caching; may use lots of storage"
+msgstr "Maximum caching; may use lots of storage"
+
+#: src/features/pwa/InstallPromptSheet.tsx:118
+msgid "Maybe later"
+msgstr "Maybe later"
+
+#: src/features/settings/SettingsPage.tsx:325
+#: src/features/settings/SettingsPage.tsx:572
+msgid "Model Quality"
+msgstr "Model Quality"
+
+#: src/ui/components/SpeedSheet.tsx:19
+msgid "Much faster"
+msgstr "Much faster"
+
+#: src/features/library/LibraryPage.tsx:290
+msgid "Need EPUBs? Find free ebooks →"
+msgstr "Need EPUBs? Find free ebooks →"
+
+#: src/features/legal/TermsPage.tsx:95
+msgid "Network use (what may be downloaded)"
+msgstr "Network use (what may be downloaded)"
+
+#: src/features/library/LibraryPage.tsx:212
+msgid "New here? Visit"
+msgstr "New here? Visit"
+
+#: src/features/player/NowPlayingPage.tsx:319
+#: src/features/player/NowPlayingPage.tsx:388
+#: src/features/player/NowPlayingPage.tsx:608
+#: src/features/player/useGlobalShortcuts.tsx:26
+#: src/features/player/useGlobalShortcuts.tsx:118
+msgid "Next chapter"
+msgstr "Next chapter"
+
+#: src/features/legal/TermsPage.tsx:61
+msgid "No accounts, no tracking, no analytics."
+msgstr "No accounts, no tracking, no analytics."
+
+#: src/features/player/NowPlayingPage.tsx:197
+msgid "No book is currently playing"
+msgstr "No book is currently playing"
+
+#: src/ui/components/BookmarkSheet.tsx:136
+msgid "No bookmarks yet"
+msgstr "No bookmarks yet"
+
+#: src/features/settings/SettingsPage.tsx:418
+msgid "No books in library"
+msgstr "No books in library"
+
+#: src/features/library/LibraryPage.tsx:186
+msgid "No books yet"
+msgstr "No books yet"
+
+#: src/features/debug/DebugLogsPage.tsx:170
+msgid "No logs."
+msgstr "No logs."
+
+#: src/features/legal/TermsPage.tsx:123
+msgid "No warranty:"
+msgstr "No warranty:"
+
+#: src/ui/components/SpeedSheet.tsx:16
+msgid "Normal"
+msgstr "Normal"
+
+#: src/features/library/LibraryPage.tsx:77
+msgid "Notifications"
+msgstr "Notifications"
+
+#. placeholder {0}: currentBook.title
+#. placeholder {1}: currentBook.author
+#: src/features/player/usePlaybackAnnouncements.ts:67
+msgid "Now playing: {0} by {1}"
+msgstr "Now playing: {0} by {1}"
+
+#: src/features/player/useSleepTimer.ts:72
+msgid "Off"
+msgstr "Off"
+
+#: src/features/legal/TermsPage.tsx:72
+msgid "on your device."
+msgstr "on your device."
+
+#: src/features/landing/LandingPage.tsx:50
+msgid "Open App"
+msgstr "Open App"
+
+#: src/features/legal/TermsPage.tsx:137
+msgid "Open-source license"
+msgstr "Open-source license"
+
+#: src/features/discover/FindEbooksPage.tsx:124
+msgid "Originally for indie games, now hosts books too. Great for finding unique, experimental, and indie publications."
+msgstr "Originally for indie games, now hosts books too. Great for finding unique, experimental, and indie publications."
+
+#: src/features/discover/FindEbooksPage.tsx:62
+msgid "Over 50,000 free ebooks. Includes both public domain classics and free contemporary titles from indie authors."
+msgstr "Over 50,000 free ebooks. Includes both public domain classics and free contemporary titles from indie authors."
+
+#. placeholder {0}: chunkInfo.current
+#. placeholder {1}: chunkInfo.total
+#: src/features/player/NowPlayingPage.tsx:302
+#: src/features/player/NowPlayingPage.tsx:553
+msgid "Part {0} of {1}"
+msgstr "Part {0} of {1}"
+
+#. placeholder {0}: chunkInfo.current
+#. placeholder {1}: chunkInfo.total
+#. placeholder {2}: Math.round(chunkInfo.progress)
+#: src/features/player/NowPlayingPage.tsx:278
+#: src/features/player/NowPlayingPage.tsx:409
+#: src/features/player/NowPlayingPage.tsx:507
+msgid "Part {0} of {1}, {2}% complete"
+msgstr "Part {0} of {1}, {2}% complete"
+
+#: src/features/discover/FindEbooksPage.tsx:50
+msgid "Part of the Internet Archive. Offers free borrowing of millions of books, plus unlimited access to public domain titles."
+msgstr "Part of the Internet Archive. Offers free borrowing of millions of books, plus unlimited access to public domain titles."
+
+#: src/features/player/MiniPlayer.tsx:66
+msgid "Pause"
+msgstr "Pause"
+
+#: src/features/player/useGlobalShortcuts.tsx:86
+msgid "Paused"
+msgstr "Paused"
+
+#: src/features/settings/SettingsPage.tsx:380
+msgid "Per-Book Storage"
+msgstr "Per-Book Storage"
+
+#: src/features/legal/TermsPage.tsx:127
+msgid "Performance varies:"
+msgstr "Performance varies:"
+
+#: src/features/settings/SettingsPage.tsx:33
+msgid "Piper (Experimental)"
+msgstr "Piper (Experimental)"
+
+#: src/features/legal/TermsPage.tsx:58
+msgid "Plain-English summary"
+msgstr "Plain-English summary"
+
+#: src/features/player/MiniPlayer.tsx:66
+msgid "Play"
+msgstr "Play"
+
+#: src/features/player/useGlobalShortcuts.tsx:22
+msgid "Play / Pause"
+msgstr "Play / Pause"
+
+#: src/features/settings/SettingsPage.tsx:235
+msgid "Playback"
+msgstr "Playback"
+
+#: src/features/player/usePlaybackAnnouncements.ts:47
+msgid "Playback paused"
+msgstr "Playback paused"
+
+#: src/features/player/NowPlayingPage.tsx:274
+#: src/features/player/NowPlayingPage.tsx:405
+#: src/features/player/NowPlayingPage.tsx:503
+msgid "Playback progress"
+msgstr "Playback progress"
+
+#: src/features/legal/TermsPage.tsx:83
+msgid "Playback progress, bookmarks, and app settings"
+msgstr "Playback progress, bookmarks, and app settings"
+
+#: src/ui/components/SpeedSheet.tsx:68
+msgid "Playback Speed"
+msgstr "Playback Speed"
+
+#: src/features/player/usePlaybackAnnouncements.ts:44
+msgid "Playback started"
+msgstr "Playback started"
+
+#: src/features/player/useGlobalShortcuts.tsx:86
+msgid "Playing"
+msgstr "Playing"
+
+#: src/features/discover/FindEbooksPage.tsx:118
+msgid "Popular platform for creators selling directly. Many authors and publishers use it for DRM-free ebook sales."
+msgstr "Popular platform for creators selling directly. Many authors and publishers use it for DRM-free ebook sales."
+
+#: src/features/player/NowPlayingPage.tsx:313
+#: src/features/player/NowPlayingPage.tsx:382
+#: src/features/player/NowPlayingPage.tsx:586
+#: src/features/player/useGlobalShortcuts.tsx:25
+#: src/features/player/useGlobalShortcuts.tsx:110
+msgid "Previous chapter"
+msgstr "Previous chapter"
+
+#: src/features/settings/SettingsPage.tsx:286
+#: src/features/settings/SettingsPage.tsx:331
+#: src/features/settings/SettingsPage.tsx:581
+msgid "Processing Device"
+msgstr "Processing Device"
+
+#: src/features/player/usePlaybackAnnouncements.ts:54
+msgid "Ready to play"
+msgstr "Ready to play"
+
+#: src/features/settings/SettingsPage.tsx:454
+msgid "Receive books from another device"
+msgstr "Receive books from another device"
+
+#: src/features/settings/SettingsPage.tsx:433
+msgid "Remove all books, audio, and settings"
+msgstr "Remove all books, audio, and settings"
+
+#: src/features/settings/SettingsPage.tsx:426
+msgid "Remove all generated audio to free up space"
+msgstr "Remove all generated audio to free up space"
+
+#: src/features/player/NowPlayingPage.tsx:310
+#: src/features/player/NowPlayingPage.tsx:379
+#: src/features/player/NowPlayingPage.tsx:578
+msgid "Rewind"
+msgstr "Rewind"
+
+#: src/ui/components/BookmarkSheet.tsx:125
+msgid "Save"
+msgstr "Save"
+
+#: src/features/library/LibraryPage.tsx:128
+msgid "Select EPUB file to import"
+msgstr "Select EPUB file to import"
+
+#: src/features/settings/SettingsPage.tsx:545
+msgid "Select Piper Voice"
+msgstr "Select Piper Voice"
+
+#: src/features/settings/SettingsPage.tsx:554
+msgid "Select Supertonic Voice"
+msgstr "Select Supertonic Voice"
+
+#: src/features/settings/SettingsPage.tsx:533
+msgid "Select Voice"
+msgstr "Select Voice"
+
+#: src/features/library/LibraryPage.tsx:101
+msgid "Send to another device"
+msgstr "Send to another device"
+
+#: src/features/library/LibraryPage.tsx:100
+msgid "Send to device"
+msgstr "Send to device"
+
+#: src/features/settings/SettingsPage.tsx:448
+msgid "Send your books to another device"
+msgstr "Send your books to another device"
+
+#: src/features/library/LibraryPage.tsx:108
+#: src/features/library/LibraryPage.tsx:109
+#: src/features/player/NowPlayingPage.tsx:233
+#: src/features/player/NowPlayingPage.tsx:234
+#: src/features/player/NowPlayingPage.tsx:659
+#: src/features/settings/SettingsPage.tsx:229
+msgid "Settings"
+msgstr "Settings"
+
+#: src/features/settings/SettingsPage.tsx:447
+msgid "Share Library"
+msgstr "Share Library"
+
+#: src/features/player/NowPlayingPage.tsx:260
+msgid "Show cover art"
+msgstr "Show cover art"
+
+#: src/features/player/useGlobalShortcuts.tsx:28
+msgid "Show keyboard shortcuts"
+msgstr "Show keyboard shortcuts"
+
+#: src/features/player/NowPlayingPage.tsx:475
+#: src/features/player/NowPlayingPage.tsx:666
+msgid "Show lyrics"
+msgstr "Show lyrics"
+
+#. placeholder {0}: filtered.length
+#. placeholder {1}: entries.length
+#: src/features/debug/DebugLogsPage.tsx:166
+msgid "Showing {0} / {1}"
+msgstr "Showing {0} / {1}"
+
+#: src/features/player/useGlobalShortcuts.tsx:23
+msgid "Skip back"
+msgstr "Skip back"
+
+#: src/features/settings/SettingsPage.tsx:247
+msgid "Skip Back"
+msgstr "Skip Back"
+
+#: src/features/settings/SettingsPage.tsx:608
+msgid "Skip Back Interval"
+msgstr "Skip Back Interval"
+
+#: src/features/player/useGlobalShortcuts.tsx:24
+msgid "Skip forward"
+msgstr "Skip forward"
+
+#: src/features/settings/SettingsPage.tsx:242
+msgid "Skip Forward"
+msgstr "Skip Forward"
+
+#: src/features/settings/SettingsPage.tsx:599
+msgid "Skip Forward Interval"
+msgstr "Skip Forward Interval"
+
+#: src/App.tsx:71
+msgid "Skip to main content"
+msgstr "Skip to main content"
+
+#: src/features/player/useGlobalShortcuts.tsx:94
+msgid "Skipped back"
+msgstr "Skipped back"
+
+#: src/features/player/useGlobalShortcuts.tsx:102
+msgid "Skipped forward"
+msgstr "Skipped forward"
+
+#: src/features/player/NowPlayingPage.tsx:331
+#: src/features/player/NowPlayingPage.tsx:641
+msgid "Sleep"
+msgstr "Sleep"
+
+#: src/features/player/NowPlayingPage.tsx:330
+#: src/features/player/NowPlayingPage.tsx:433
+#: src/features/player/NowPlayingPage.tsx:638
+msgid "Sleep timer"
+msgstr "Sleep timer"
+
+#: src/ui/components/SleepTimerSheet.tsx:52
+msgid "Sleep Timer"
+msgstr "Sleep Timer"
+
+#: src/ui/components/SpeedSheet.tsx:17
+msgid "Slightly faster"
+msgstr "Slightly faster"
+
+#: src/features/settings/SettingsPage.tsx:81
+msgid "Slow but supports smaller quantized models"
+msgstr "Slow but supports smaller quantized models"
+
+#: src/ui/components/SpeedSheet.tsx:15
+msgid "Slower"
+msgstr "Slower"
+
+#: src/features/settings/SettingsPage.tsx:102
+msgid "Smoother playback"
+msgstr "Smoother playback"
+
+#: src/features/library/BookDetailPage.tsx:182
+msgid "Start Listening"
+msgstr "Start Listening"
+
+#: src/features/settings/SettingsPage.tsx:347
+msgid "Storage"
+msgstr "Storage"
+
+#: src/features/settings/SettingsPage.tsx:357
+msgid "Storage Used"
+msgstr "Storage Used"
+
+#: src/features/settings/SettingsPage.tsx:31
+msgid "Supertonic (Recommended)"
+msgstr "Supertonic (Recommended)"
+
+#: src/features/settings/SettingsPage.tsx:563
+msgid "Supertonic Processing Device"
+msgstr "Supertonic Processing Device"
+
+#: src/features/discover/FindEbooksPage.tsx:76
+msgid "Supports indie authors"
+msgstr "Supports indie authors"
+
+#: src/features/settings/SettingsPage.tsx:184
+msgid "System Default"
+msgstr "System Default"
+
+#: src/features/player/NowPlayingPage.tsx:225
+msgid "Table of contents"
+msgstr "Table of contents"
+
+#: src/ui/components/BookmarkSheet.tsx:137
+msgid "Tap + to bookmark your current position"
+msgstr "Tap + to bookmark your current position"
+
+#: src/features/legal/TermsPage.tsx:91
+msgid "Technical detail: storage uses your browser's on-device database (IndexedDB). Storage quotas vary by device and browser."
+msgstr "Technical detail: storage uses your browser's on-device database (IndexedDB). Storage quotas vary by device and browser."
+
+#: src/features/legal/TermsPage.tsx:49
+#: src/features/settings/SettingsPage.tsx:480
+msgid "Terms & Privacy"
+msgstr "Terms & Privacy"
+
+#: src/features/legal/TermsPage.tsx:31
+msgid "Terms & Privacy — EPUB Player"
+msgstr "Terms & Privacy — EPUB Player"
+
+#: src/features/settings/SettingsPage.tsx:259
+msgid "Text-to-Speech"
+msgstr "Text-to-Speech"
+
+#: src/features/legal/TermsPage.tsx:71
+msgid "Text-to-speech generation happens locally"
+msgstr "Text-to-speech generation happens locally"
+
+#: src/features/legal/TermsPage.tsx:124
+msgid "the app is provided \"as is,\" without warranties of any kind."
+msgstr "the app is provided \"as is,\" without warranties of any kind."
+
+#: src/features/legal/TermsPage.tsx:97
+msgid "The core app is designed to work offline once loaded. However, some features require downloading files to your device:"
+msgstr "The core app is designed to work offline once loaded. However, some features require downloading files to your device:"
+
+#: src/features/discover/FindEbooksPage.tsx:75
+msgid "The largest indie ebook distributor. All books are DRM-free. Great for discovering new authors and supporting independent writers directly."
+msgstr "The largest indie ebook distributor. All books are DRM-free. Great for discovering new authors and supporting independent writers directly."
+
+#: src/features/discover/FindEbooksPage.tsx:106
+msgid "The most ethical option — authors keep more of the sale price when you buy directly from them."
+msgstr "The most ethical option — authors keep more of the sale price when you buy directly from them."
+
+#: src/features/discover/FindEbooksPage.tsx:38
+msgid "The original free ebook library. Over 70,000 free ebooks, including classics like Pride and Prejudice, Moby Dick, and The Adventures of Sherlock Holmes."
+msgstr "The original free ebook library. Over 70,000 free ebooks, including classics like Pride and Prejudice, Moby Dick, and The Adventures of Sherlock Holmes."
+
+#: src/features/legal/TermsPage.tsx:139
+msgid "This project is open-source under the <0>MIT License</0>. See the <1>LICENSE</1> file in the project for full terms."
+msgstr "This project is open-source under the <0>MIT License</0>. See the <1>LICENSE</1> file in the project for full terms."
+
+#: src/ui/components/SpeedSheet.tsx:108
+msgid "Tip: Higher speeds work best with AI voices"
+msgstr "Tip: Higher speeds work best with AI voices"
+
+#: src/features/debug/DebugLogsPage.tsx:159
+msgid "Tip: Use <0>window.logConfig</0> in browser console to control logging at runtime."
+msgstr "Tip: Use <0>window.logConfig</0> in browser console to control logging at runtime."
+
+#: src/features/legal/TermsPage.tsx:78
+msgid "To make the app work offline and resume reliably, it stores data locally on your device, including:"
+msgstr "To make the app work offline and resume reliably, it stores data locally on your device, including:"
+
+#: src/features/settings/SettingsPage.tsx:262
+#: src/features/settings/SettingsPage.tsx:469
+#: src/features/settings/SettingsPage.tsx:502
+msgid "TTS Engine"
+msgstr "TTS Engine"
+
+#: src/features/library/LibraryPage.tsx:274
+#: src/features/library/LibraryPage.tsx:280
+msgid "Upload EPUB"
+msgstr "Upload EPUB"
+
+#: src/features/settings/SettingsPage.tsx:79
+msgid "Use WebGPU if available, otherwise CPU (WASM)"
+msgstr "Use WebGPU if available, otherwise CPU (WASM)"
+
+#: src/features/settings/SettingsPage.tsx:30
+msgid "Uses your device's built-in voices. Fast and reliable."
+msgstr "Uses your device's built-in voices. Fast and reliable."
+
+#: src/features/settings/SettingsPage.tsx:467
+msgid "Version"
+msgstr "Version"
+
+#: src/features/settings/SettingsPage.tsx:103
+msgid "Very smooth, uses more storage"
+msgstr "Very smooth, uses more storage"
+
+#: src/features/library/LibraryPage.tsx:91
+#: src/features/library/LibraryPage.tsx:92
+msgid "View on GitHub"
+msgstr "View on GitHub"
+
+#: src/features/settings/SettingsPage.tsx:477
+msgid "View/copy logs on mobile (including TTS worker)"
+msgstr "View/copy logs on mobile (including TTS worker)"
+
+#: src/features/settings/SettingsPage.tsx:271
+#: src/features/settings/SettingsPage.tsx:280
+#: src/features/settings/SettingsPage.tsx:303
+#: src/features/settings/SettingsPage.tsx:320
+msgid "Voice"
+msgstr "Voice"
+
+#: src/features/legal/TermsPage.tsx:147
+msgid "Want a friendly walkthrough? See <0>Help & How it works</0>."
+msgstr "Want a friendly walkthrough? See <0>Help & How it works</0>."
+
+#: src/features/debug/DebugLogsPage.tsx:107
+msgid "Warn"
+msgstr "Warn"
+
+#: src/features/legal/TermsPage.tsx:64
+msgid "We don't collect or sell your data."
+msgstr "We don't collect or sell your data."
+
+#: src/features/discover/FindEbooksPage.tsx:224
+msgid "We've curated options that respect readers: public domain works are free, DRM-free stores let you actually own your books, and buying direct from authors supports creators fairly. All of these provide standard EPUB files that work great with this app."
+msgstr "We've curated options that respect readers: public domain works are free, DRM-free stores let you actually own your books, and buying direct from authors supports creators fairly. All of these provide standard EPUB files that work great with this app."
+
+#: src/features/settings/SettingsPage.tsx:80
+#: src/features/settings/SettingsPage.tsx:88
+msgid "WebGPU (GPU)"
+msgstr "WebGPU (GPU)"
+
+#: src/features/settings/SettingsPage.tsx:327
+msgid "WebGPU always uses fp32; quantized models are WASM-only"
+msgstr "WebGPU always uses fp32; quantized models are WASM-only"
+
+#: src/features/settings/SettingsPage.tsx:333
+msgid "WebGPU is fastest when supported"
+msgstr "WebGPU is fastest when supported"
+
+#: src/features/settings/SettingsPage.tsx:288
+msgid "WebGPU is fastest; WASM is fallback for older devices"
+msgstr "WebGPU is fastest; WASM is fallback for older devices"
+
+#: src/features/discover/FindEbooksPage.tsx:239
+msgid "When downloading, look for the <0>EPUB</0> format (not Kindle/MOBI or PDF). EPUBs work best for text-to-speech since they're reflowable text."
+msgstr "When downloading, look for the <0>EPUB</0> format (not Kindle/MOBI or PDF). EPUBs work best for text-to-speech since they're reflowable text."
+
+#: src/features/pwa/InstallPromptSheet.tsx:64
+msgid "Why install?"
+msgstr "Why install?"
+
+#: src/features/discover/FindEbooksPage.tsx:223
+msgid "Why these sources?"
+msgstr "Why these sources?"
+
+#: src/features/discover/FindEbooksPage.tsx:94
+msgid "Wide selection"
+msgstr "Wide selection"
+
+#: src/features/pwa/InstallPromptSheet.tsx:67
+msgid "Works offline — listen anywhere"
+msgstr "Works offline — listen anywhere"
+
+#: src/features/legal/TermsPage.tsx:116
+msgid "You are responsible for the ebooks you import. Only use content you own or have the right to use. Don't use this app to infringe copyright or violate terms from content providers."
+msgstr "You are responsible for the ebooks you import. Only use content you own or have the right to use. Don't use this app to infringe copyright or violate terms from content providers."
+
+#: src/features/legal/TermsPage.tsx:86
+msgid "You can delete this at any time in <0>Settings</0> → Storage."
+msgstr "You can delete this at any time in <0>Settings</0> → Storage."
+
+#: src/features/landing/LandingPage.tsx:66
+msgid "Your Books, Your Player"
+msgstr "Your Books, Your Player"
+
+#: src/features/legal/TermsPage.tsx:114
+msgid "Your content and copyright"
+msgstr "Your content and copyright"
+
+#: src/features/legal/TermsPage.tsx:67
+msgid "Your ebooks, audio, and settings stay on your device"
+msgstr "Your ebooks, audio, and settings stay on your device"
+
+#: src/features/landing/LandingPage.tsx:32
+msgid "Your EPUBs,"
+msgstr "Your EPUBs,"

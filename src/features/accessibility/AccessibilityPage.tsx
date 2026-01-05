@@ -6,6 +6,7 @@
  */
 
 import { useNavigate } from 'react-router-dom'
+import { Trans, t } from '@lingui/macro'
 import { ChevronLeftIcon, KeyboardIcon } from '@/ui/icons'
 
 const KEYBOARD_SHORTCUTS = [
@@ -37,11 +38,11 @@ export function AccessibilityPage() {
         <button
           onClick={() => navigate(-1)}
           className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-surface-1 text-text-primary"
-          aria-label="Go back"
+          aria-label={t`Go back`}
         >
           <ChevronLeftIcon className="h-5 w-5" />
         </button>
-        <h1 className="text-2xl font-bold text-text-primary">Accessibility</h1>
+        <h1 className="text-2xl font-bold text-text-primary"><Trans>Accessibility</Trans></h1>
       </header>
 
       {/* Content */}

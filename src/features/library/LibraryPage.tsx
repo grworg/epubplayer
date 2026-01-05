@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { Trans, t } from '@lingui/macro'
 import { useLibrary } from './useLibrary'
 import { useImportEPUB } from '@/features/import/useImportEPUB'
 import { PlusIcon, UploadIcon, HeadphonesIcon, LoaderIcon, SettingsIcon, BellIcon, SmartphoneIcon, GitHubIcon } from '@/ui/icons'
@@ -66,15 +67,15 @@ export function LibraryPage() {
     <div className="flex h-full flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-5 py-4">
-        <h1 className="text-2xl font-bold text-text-primary">Library</h1>
+        <h1 className="text-2xl font-bold text-text-primary"><Trans>Library</Trans></h1>
         <div className="flex items-center gap-2">
           {/* Notification bell - shows when there's an install prompt */}
           {hasInstallNotification && (
             <button
               onClick={() => setShowInstallPrompt(true)}
               className="pressable relative flex h-10 w-10 items-center justify-center rounded-full bg-surface-1 text-text-primary hover:bg-surface-2"
-              aria-label="Notifications"
-              title="Install app"
+              aria-label={t`Notifications`}
+              title={t`Install app`}
             >
               <BellIcon className="h-5 w-5" />
               {/* Notification dot */}
@@ -87,8 +88,8 @@ export function LibraryPage() {
             target="_blank"
             rel="noopener noreferrer"
             className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-surface-1 text-text-primary hover:bg-surface-2"
-            aria-label="View on GitHub"
-            title="View on GitHub"
+            aria-label={t`View on GitHub`}
+            title={t`View on GitHub`}
           >
             <GitHubIcon className="h-5 w-5" />
           </a>
@@ -96,16 +97,16 @@ export function LibraryPage() {
           <button
             onClick={() => navigate('/app/share-library')}
             className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-surface-1 text-text-primary hover:bg-surface-2"
-            aria-label="Send to device"
-            title="Send to another device"
+            aria-label={t`Send to device`}
+            title={t`Send to another device`}
           >
             <SmartphoneIcon className="h-5 w-5" />
           </button>
           <button
             onClick={() => navigate('/app/settings')}
             className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-surface-1 text-text-primary hover:bg-surface-2"
-            aria-label="Settings"
-            title="Settings"
+            aria-label={t`Settings`}
+            title={t`Settings`}
           >
             <SettingsIcon className="h-5 w-5" />
           </button>
@@ -113,7 +114,7 @@ export function LibraryPage() {
             onClick={() => fileInputRef.current?.click()}
             disabled={isImporting}
             className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white disabled:opacity-50"
-            aria-label="Add book"
+            aria-label={t`Add book`}
           >
             {isImporting ? <LoaderIcon className="h-5 w-5" /> : <PlusIcon className="h-5 w-5" />}
           </button>
@@ -124,7 +125,7 @@ export function LibraryPage() {
           accept=".epub,application/epub+zip"
           onChange={handleFileSelect}
           className="hidden"
-          aria-label="Select EPUB file to import"
+          aria-label={t`Select EPUB file to import`}
         />
       </header>
 
@@ -138,12 +139,12 @@ export function LibraryPage() {
           <div className="flex items-center gap-3">
             {status !== 'error' && <LoaderIcon className="h-5 w-5 text-accent" />}
             <div className="flex-1">
-              <p className="font-medium">{status === 'error' ? 'Import Failed' : 'Importing...'}</p>
+              <p className="font-medium">{status === 'error' ? t`Import Failed` : t`Importing...`}</p>
               <p className="text-sm text-text-secondary">{error || progress}</p>
             </div>
             {status === 'error' && (
               <button onClick={dismissStatus} className="text-sm text-text-secondary underline">
-                Dismiss
+                <Trans>Dismiss</Trans>
               </button>
             )}
           </div>
@@ -182,17 +183,16 @@ function EmptyLibrary({ onAddBook }: { onAddBook: () => void }) {
       <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-surface-2">
         <HeadphonesIcon className="h-12 w-12 text-accent" />
       </div>
-      <h2 className="mb-2 text-xl font-semibold text-text-primary">No books yet</h2>
+      <h2 className="mb-2 text-xl font-semibold text-text-primary"><Trans>No books yet</Trans></h2>
       <p className="mb-6 text-text-secondary">
-        Add your first EPUB to start listening. This is an offline-first EPUB reader and audiobook generator — your
-        books, generated audio, and settings are stored locally on this device.
+        <Trans>Add your first EPUB to start listening. This is an offline-first EPUB reader and audiobook generator — your books, generated audio, and settings are stored locally on this device.</Trans>
       </p>
       <button
         onClick={onAddBook}
         className="pressable flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-white"
       >
         <UploadIcon className="h-5 w-5" />
-        Add EPUB
+        <Trans>Add EPUB</Trans>
       </button>
       
       {/* Import from another device - prominent option for returning users */}
@@ -201,15 +201,15 @@ function EmptyLibrary({ onAddBook }: { onAddBook: () => void }) {
         className="pressable mt-4 flex items-center gap-2 rounded-full bg-surface-1 px-6 py-3 font-medium text-text-primary hover:bg-surface-2"
       >
         <SmartphoneIcon className="h-5 w-5 text-accent" />
-        Import from another device
+        <Trans>Import from another device</Trans>
       </Link>
       
       <div className="mt-6 space-y-2 text-sm text-text-muted">
         <p>
-          Don't have any EPUBs? <Link className="text-accent underline" to="/app/find-ebooks">Find free ebooks →</Link>
+          <Trans>Don't have any EPUBs?</Trans> <Link className="text-accent underline" to="/app/find-ebooks"><Trans>Find free ebooks →</Trans></Link>
         </p>
         <p>
-          New here? Visit <Link className="text-accent underline" to="/app/help">Help &amp; How it works</Link>.
+          <Trans>New here? Visit</Trans> <Link className="text-accent underline" to="/app/help"><Trans>Help &amp; How it works</Trans></Link>.
         </p>
       </div>
     </div>
@@ -271,15 +271,15 @@ function AddBookCard({ onAddBook, disabled }: { onAddBook: () => void; disabled?
         onClick={onAddBook}
         disabled={disabled}
         className="pressable group flex w-full items-center gap-4 rounded-2xl border border-dashed border-border-muted bg-surface-0 p-4 text-left text-text-secondary transition-colors hover:bg-surface-1 disabled:opacity-50 md:flex-col md:items-center md:justify-center md:py-12"
-        aria-label="Upload EPUB"
+        aria-label={t`Upload EPUB`}
       >
         <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-surface-1 text-accent md:h-16 md:w-16">
           <UploadIcon className="h-6 w-6 md:h-8 md:w-8" />
         </div>
         <div className="min-w-0 flex-1 md:mt-4 md:flex-initial md:text-center">
-          <p className="text-base font-semibold text-text-primary">Upload EPUB</p>
+          <p className="text-base font-semibold text-text-primary"><Trans>Upload EPUB</Trans></p>
           <p className="mt-0.5 text-sm text-text-secondary md:hidden">
-            Add another book to your library.
+            <Trans>Add another book to your library.</Trans>
           </p>
         </div>
       </button>
@@ -287,7 +287,7 @@ function AddBookCard({ onAddBook, disabled }: { onAddBook: () => void; disabled?
         to="/app/find-ebooks" 
         className="text-center text-sm text-text-muted hover:text-accent"
       >
-        Need EPUBs? Find free ebooks →
+        <Trans>Need EPUBs? Find free ebooks →</Trans>
       </Link>
     </div>
   )

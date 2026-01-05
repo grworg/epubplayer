@@ -1,3 +1,4 @@
+import { Trans, t } from '@lingui/macro'
 import { InstallIcon, CheckIcon } from '@/ui/icons'
 import { usePWAInstall, getInstallInstructions } from './usePWAInstall'
 import { useFocusTrap } from '@/ui/accessibility'
@@ -53,20 +54,20 @@ export function InstallPromptSheet({ isOpen, onClose }: InstallPromptSheetProps)
           </div>
           <div>
             <h2 id="install-prompt-title" className="text-xl font-bold text-text-primary">{instructions.title}</h2>
-            <p className="text-sm text-text-secondary">Get the full app experience</p>
+            <p className="text-sm text-text-secondary"><Trans>Get the full app experience</Trans></p>
           </div>
         </div>
 
         {/* Benefits */}
         <div className="mx-6 mb-4 rounded-xl bg-surface-2 p-4">
           <p className="mb-3 text-xs font-medium uppercase tracking-wide text-text-muted">
-            Why install?
+            <Trans>Why install?</Trans>
           </p>
           <div className="space-y-2">
-            <Benefit text="Works offline — listen anywhere" />
-            <Benefit text="Launches from your home screen" />
-            <Benefit text="Full-screen experience, no browser UI" />
-            <Benefit text="Faster load times" />
+            <Benefit text={t`Works offline — listen anywhere`} />
+            <Benefit text={t`Launches from your home screen`} />
+            <Benefit text={t`Full-screen experience, no browser UI`} />
+            <Benefit text={t`Faster load times`} />
           </div>
         </div>
 
@@ -78,7 +79,7 @@ export function InstallPromptSheet({ isOpen, onClose }: InstallPromptSheetProps)
               className="pressable flex w-full items-center justify-center gap-2 rounded-xl bg-accent py-4 font-semibold text-white shadow-lg shadow-accent/30"
             >
               <InstallIcon className="h-5 w-5" />
-              Install Now
+              <Trans>Install Now</Trans>
             </button>
           </div>
         )}
@@ -87,7 +88,7 @@ export function InstallPromptSheet({ isOpen, onClose }: InstallPromptSheetProps)
         {!canPromptNatively && (
           <div className="px-6 pb-4">
             <p className="mb-3 text-xs font-medium uppercase tracking-wide text-text-muted">
-              How to install
+              <Trans>How to install</Trans>
             </p>
             <ol className="space-y-3">
               {instructions.steps.map((step, index) => (
@@ -108,13 +109,13 @@ export function InstallPromptSheet({ isOpen, onClose }: InstallPromptSheetProps)
             onClick={handleDismiss}
             className="pressable flex-1 rounded-xl bg-surface-2 py-3 text-sm font-medium text-text-secondary hover:bg-surface-3"
           >
-            Don't show again
+            <Trans>Don't show again</Trans>
           </button>
           <button
             onClick={onClose}
             className="pressable flex-1 rounded-xl bg-surface-3 py-3 text-sm font-medium text-text-primary hover:bg-surface-4"
           >
-            Maybe later
+            <Trans>Maybe later</Trans>
           </button>
         </div>
       </div>
@@ -130,4 +131,3 @@ function Benefit({ text }: { text: string }) {
     </div>
   )
 }
-

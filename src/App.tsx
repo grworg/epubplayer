@@ -1,6 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
+import { Trans } from '@lingui/macro'
+import { I18nProvider } from '@lingui/react'
+import { i18n, initI18n } from '@/i18n'
 import { AppShell } from '@/app/AppShell'
 import { LandingPage } from '@/features/landing/LandingPage'
 import { LibraryPage } from '@/features/library/LibraryPage'
@@ -16,6 +19,25 @@ import { AccessibilityPage } from '@/features/accessibility/AccessibilityPage'
 import { LiveRegionProvider } from '@/ui/accessibility'
 import { usePlaybackAnnouncements } from '@/features/player/usePlaybackAnnouncements'
 import { useGlobalShortcuts, KeyboardShortcutsHelp } from '@/features/player/useGlobalShortcuts'
+
+/**
+ * I18n loader that initializes locale before rendering
+ */
+function I18nLoader({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    initI18n().then(() => setReady(true))
+  }, [])
+
+  // Don't render anything until i18n is ready
+  // This prevents flash of untranslated content
+  if (!ready) {
+    return null
+  }
+
+  return <I18nProvider i18n={i18n}>{children}</I18nProvider>
+}
 
 /**
  * Accessibility wrapper that provides announcements and keyboard shortcuts
@@ -41,35 +63,37 @@ function AccessibilityProvider({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <LiveRegionProvider>
-      <Analytics />
-      {/* Skip link for keyboard users */}
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
-      <BrowserRouter>
-        <AccessibilityProvider>
-          <Routes>
-            {/* Landing page */}
-            <Route path="/" element={<LandingPage />} />
-            
-            {/* App routes */}
-            <Route path="/app" element={<AppShell />}>
-              <Route index element={<LibraryPage />} />
-              <Route path="book/:bookId" element={<BookDetailPage />} />
-              <Route path="playing" element={<NowPlayingPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-              <Route path="help" element={<HelpPage />} />
-              <Route path="terms" element={<TermsPage />} />
-              <Route path="find-ebooks" element={<FindEbooksPage />} />
-              <Route path="debug-logs" element={<DebugLogsPage />} />
-              <Route path="share-library" element={<ShareLibraryPage />} />
-              <Route path="receive-library" element={<ReceiveLibraryPage />} />
-              <Route path="accessibility" element={<AccessibilityPage />} />
-            </Route>
-          </Routes>
-        </AccessibilityProvider>
-      </BrowserRouter>
-    </LiveRegionProvider>
+    <I18nLoader>
+      <LiveRegionProvider>
+        <Analytics />
+        {/* Skip link for keyboard users */}
+        <a href="#main-content" className="skip-link">
+          <Trans>Skip to main content</Trans>
+        </a>
+        <BrowserRouter>
+          <AccessibilityProvider>
+            <Routes>
+              {/* Landing page */}
+              <Route path="/" element={<LandingPage />} />
+              
+              {/* App routes */}
+              <Route path="/app" element={<AppShell />}>
+                <Route index element={<LibraryPage />} />
+                <Route path="book/:bookId" element={<BookDetailPage />} />
+                <Route path="playing" element={<NowPlayingPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+                <Route path="help" element={<HelpPage />} />
+                <Route path="terms" element={<TermsPage />} />
+                <Route path="find-ebooks" element={<FindEbooksPage />} />
+                <Route path="debug-logs" element={<DebugLogsPage />} />
+                <Route path="share-library" element={<ShareLibraryPage />} />
+                <Route path="receive-library" element={<ReceiveLibraryPage />} />
+                <Route path="accessibility" element={<AccessibilityPage />} />
+              </Route>
+            </Routes>
+          </AccessibilityProvider>
+        </BrowserRouter>
+      </LiveRegionProvider>
+    </I18nLoader>
   )
 }

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { t } from '@lingui/macro'
 import { usePlayerStore } from './playerStore'
 import { playbackController } from './PlaybackController'
 import { PlayIcon, PauseIcon } from '@/ui/icons'
@@ -48,8 +49,8 @@ export function MiniPlayer() {
             <p className="truncate text-sm font-medium text-text-primary md:text-base">{currentBook.title}</p>
             <p className="truncate text-xs text-text-secondary md:text-sm">
               {isBuffering
-                ? 'Generating audio...'
-                : `Chapter ${position.sectionIndex + 1} · ${currentBook.author}`}
+                ? t`Generating audio...`
+                : t`Chapter ${position.sectionIndex + 1} · ${currentBook.author}`}
             </p>
           </div>
 
@@ -62,7 +63,7 @@ export function MiniPlayer() {
           <button
             onClick={handleTogglePlayback}
             className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white md:h-12 md:w-12"
-            aria-label={isPlaying ? 'Pause' : 'Play'}
+            aria-label={isPlaying ? t`Pause` : t`Play`}
           >
             {isBuffering ? (
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent md:h-6 md:w-6" />

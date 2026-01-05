@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react'
+import { Trans } from '@lingui/macro'
 import { HeadphonesIcon, UploadIcon, VolumeIcon, PlayIcon } from '@/ui/icons'
 
 export function LandingPage() {
@@ -23,21 +24,20 @@ export function LandingPage() {
           {/* Badge */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-surface-1/80 px-4 py-2 text-sm text-text-secondary backdrop-blur-sm">
             <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
-            100% Free &amp; Open Source
+            <Trans>100% Free &amp; Open Source</Trans>
           </div>
 
           {/* Headline */}
           <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight md:text-6xl lg:text-7xl">
-            Your EPUBs,{' '}
+            <Trans>Your EPUBs,</Trans>{' '}
             <span className="bg-gradient-to-r from-accent via-purple-400 to-accent bg-clip-text text-transparent">
-              Brought to Life
+              <Trans>Brought to Life</Trans>
             </span>
           </h1>
 
           {/* Subheadline */}
           <p className="mx-auto mb-10 max-w-2xl text-lg text-text-secondary md:text-xl">
-            A beautiful audiobook player that transforms your EPUBs into listenable books with AI voices. 
-            Full player controls, bookmarks, sleep timer — everything runs locally on your device.
+            <Trans>A beautiful audiobook player that transforms your EPUBs into listenable books with AI voices. Full player controls, bookmarks, sleep timer — everything runs locally on your device.</Trans>
           </p>
 
           {/* CTA Buttons */}
@@ -47,13 +47,13 @@ export function LandingPage() {
               className="pressable flex items-center gap-3 rounded-full bg-accent px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-accent/30 transition-all hover:shadow-xl hover:shadow-accent/40"
             >
               <PlayIcon className="h-5 w-5" />
-              Open App
+              <Trans>Open App</Trans>
             </Link>
             <a
               href="#how-it-works"
               className="pressable flex items-center gap-2 rounded-full bg-surface-1 px-8 py-4 text-lg font-medium text-text-primary transition-colors hover:bg-surface-2"
             >
-              Learn More
+              <Trans>Learn More</Trans>
             </a>
           </div>
         </div>
@@ -63,10 +63,10 @@ export function LandingPage() {
       <section className="border-t border-border-muted bg-surface-1/50 py-20 md:py-28">
         <div className="mx-auto max-w-5xl px-6">
           <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
-            Your Books, Your Player
+            <Trans>Your Books, Your Player</Trans>
           </h2>
           <p className="mx-auto mb-12 max-w-2xl text-center text-text-secondary">
-            A full audiobook player built with love for readers who want to listen. No strings attached.
+            <Trans>A full audiobook player built with love for readers who want to listen. No strings attached.</Trans>
           </p>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">

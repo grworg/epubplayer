@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { Trans } from '@lingui/macro'
 import { MiniPlayer } from '@/features/player/MiniPlayer'
 import { usePlayerStore } from '@/features/player/playerStore'
 import { playbackController } from '@/features/player/PlaybackController'
@@ -157,7 +158,7 @@ export function AppShell() {
       {ttsPreloadStatus === 'loading' && (
         <div className="flex items-center justify-center gap-2 bg-surface-1 px-3 py-1.5 text-xs text-text-muted">
           <div className="h-3 w-3 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-          <span>Loading TTS engine...</span>
+          <span><Trans>Loading TTS engine...</Trans></span>
         </div>
       )}
 

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Trans, t } from '@lingui/macro'
 import { useBookmarks } from '@/features/player/useBookmarks'
 import { usePlayerStore } from '@/features/player/playerStore'
 import { playbackController } from '@/features/player/PlaybackController'
@@ -30,7 +31,7 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
       await addBookmark(newNote.trim() || undefined)
       setNewNote('')
       setIsAdding(false)
-      announce('Bookmark added')
+      announce(t`Bookmark added`)
     } else {
       setIsAdding(true)
     }
@@ -38,18 +39,18 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
 
   const handleDeleteBookmark = async (id: string) => {
     await deleteBookmark(id)
-    announce('Bookmark deleted')
+    announce(t`Bookmark deleted`)
   }
 
   const handleGoToBookmark = async (bookmark: Bookmark) => {
     await playbackController.goToSection(bookmark.sectionIndex)
     // TODO: Seek to exact chunk/time position
-    announce(`Jumped to ${formatPosition(bookmark)}`)
+    announce(t`Jumped to ${formatPosition(bookmark)}`)
     onClose()
   }
 
   const formatPosition = (bookmark: Bookmark) => {
-    return `Chapter ${bookmark.sectionIndex + 1}`
+    return t`Chapter ${bookmark.sectionIndex + 1}`
   }
 
   const formatTime = (date: Date) => {
@@ -83,12 +84,14 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
         <div className="flex items-center justify-between px-6 pb-4 md:pt-4">
           <div className="flex items-center gap-3">
             <BookmarkIcon className="h-6 w-6 text-accent" />
-            <h2 id="bookmarks-sheet-title" className="text-lg font-semibold text-text-primary">Bookmarks</h2>
+            <h2 id="bookmarks-sheet-title" className="text-lg font-semibold text-text-primary">
+              <Trans>Bookmarks</Trans>
+            </h2>
           </div>
           <button
             onClick={handleAddBookmark}
             className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white"
-            aria-label="Add bookmark"
+            aria-label={t`Add bookmark`}
           >
             <PlusIcon className="h-5 w-5" />
           </button>
@@ -97,11 +100,11 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
         {/* Add bookmark input */}
         {isAdding && (
           <div className="border-b border-border-muted px-4 pb-4">
-            <label htmlFor="bookmark-note" className="sr-only">Bookmark note</label>
+            <label htmlFor="bookmark-note" className="sr-only"><Trans>Bookmark note</Trans></label>
             <input
               id="bookmark-note"
               type="text"
-              placeholder="Add a note (optional)"
+              placeholder={t`Add a note (optional)`}
               value={newNote}
               onChange={(e) => setNewNote(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddBookmark()}
@@ -113,13 +116,13 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
                 onClick={() => setIsAdding(false)}
                 className="flex-1 rounded-lg bg-surface-3 py-2 text-text-secondary"
               >
-                Cancel
+                <Trans>Cancel</Trans>
               </button>
               <button
                 onClick={handleAddBookmark}
                 className="flex-1 rounded-lg bg-accent py-2 text-white"
               >
-                Save
+                <Trans>Save</Trans>
               </button>
             </div>
           </div>
@@ -130,8 +133,8 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
           {bookmarks.length === 0 ? (
             <div className="py-12 text-center text-text-muted">
               <BookmarkIcon className="mx-auto mb-3 h-12 w-12 opacity-30" />
-              <p>No bookmarks yet</p>
-              <p className="mt-1 text-sm">Tap + to bookmark your current position</p>
+              <p><Trans>No bookmarks yet</Trans></p>
+              <p className="mt-1 text-sm"><Trans>Tap + to bookmark your current position</Trans></p>
             </div>
           ) : (
             <div className="space-y-2 py-2">
@@ -154,7 +157,7 @@ export function BookmarkSheet({ isOpen, onClose }: BookmarkSheetProps) {
                   <button
                     onClick={() => handleDeleteBookmark(bookmark.id)}
                     className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-muted hover:bg-surface-3 hover:text-error"
-                    aria-label={`Delete bookmark: ${bookmark.note || formatPosition(bookmark)}`}
+                    aria-label={t`Delete bookmark: ${bookmark.note || formatPosition(bookmark)}`}
                   >
                     <TrashIcon className="h-4 w-4" />
                   </button>

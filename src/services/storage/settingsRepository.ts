@@ -7,6 +7,9 @@ import type { TTSEngine } from '@/services/tts/types'
 
 // Settings types - string literals for enums, numbers for numeric settings
 interface Settings {
+  // Locale
+  locale: string // e.g., 'en', 'es', 'fr', 'de', 'pt', 'zh'
+  
   // Onboarding
   hasCompletedOnboarding: boolean
   hasDismissedPWAPrompt: boolean
@@ -42,6 +45,7 @@ interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
+  locale: '', // Empty = auto-detect from navigator
   hasCompletedOnboarding: false,
   hasDismissedPWAPrompt: false,
   ttsEngine: 'browser',

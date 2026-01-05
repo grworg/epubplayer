@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { t } from '@lingui/macro'
 import { playbackController } from './PlaybackController'
 
 export type SleepTimerDuration = 5 | 10 | 15 | 30 | 45 | 60 | 0 // 0 = off
@@ -66,12 +67,17 @@ export function useSleepTimer() {
   }
 }
 
-export const SLEEP_TIMER_OPTIONS: { value: SleepTimerDuration; label: string }[] = [
-  { value: 0, label: 'Off' },
-  { value: 5, label: '5 minutes' },
-  { value: 10, label: '10 minutes' },
-  { value: 15, label: '15 minutes' },
-  { value: 30, label: '30 minutes' },
-  { value: 45, label: '45 minutes' },
-  { value: 60, label: '1 hour' },
-]
+export function getSleepTimerOptions(): { value: SleepTimerDuration; label: string }[] {
+  return [
+    { value: 0, label: t`Off` },
+    { value: 5, label: t`5 minutes` },
+    { value: 10, label: t`10 minutes` },
+    { value: 15, label: t`15 minutes` },
+    { value: 30, label: t`30 minutes` },
+    { value: 45, label: t`45 minutes` },
+    { value: 60, label: t`1 hour` },
+  ]
+}
+
+// For backwards compatibility
+export const SLEEP_TIMER_OPTIONS = getSleepTimerOptions()

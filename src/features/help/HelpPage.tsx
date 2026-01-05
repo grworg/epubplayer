@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { Trans, t } from '@lingui/macro'
 import { ChevronLeftIcon } from '@/ui/icons'
 
 function Section({
@@ -42,12 +43,12 @@ export function HelpPage() {
         <button
           onClick={() => navigate(-1)}
           className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-surface-1 text-text-primary"
-          aria-label="Back"
+          aria-label={t`Back`}
         >
           <ChevronLeftIcon className="h-5 w-5" />
         </button>
         <div className="min-w-0">
-          <h1 className="truncate text-2xl font-bold text-text-primary">Help & How it works</h1>
+          <h1 className="truncate text-2xl font-bold text-text-primary"><Trans>Help & How it works</Trans></h1>
           <p className="mt-0.5 text-sm text-text-secondary">
             An offline-first, open-source EPUB reader that can generate audiobook-style playback on your device.
           </p>

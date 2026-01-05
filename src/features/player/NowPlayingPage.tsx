@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Trans, t } from '@lingui/macro'
 import { usePlayerStore } from './playerStore'
 import { playbackController } from './PlaybackController'
 import { useSleepTimer } from './useSleepTimer'
@@ -193,12 +194,12 @@ export function NowPlayingPage() {
   if (!currentBook) {
     return (
       <div className="flex h-full flex-col items-center justify-center px-8 text-center">
-        <p className="text-text-secondary">No book is currently playing</p>
+        <p className="text-text-secondary"><Trans>No book is currently playing</Trans></p>
         <button
           onClick={() => navigate('/app')}
           className="pressable mt-4 rounded-full bg-surface-2 px-6 py-2 text-text-primary"
         >
-          Go to Library
+          <Trans>Go to Library</Trans>
         </button>
       </div>
     )
@@ -212,7 +213,7 @@ export function NowPlayingPage() {
           <button
             onClick={() => navigate(-1)}
             className="pressable flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2"
-            aria-label="Go back"
+            aria-label={t`Go back`}
           >
             <ChevronLeftIcon className="h-6 w-6" />
           </button>
@@ -221,16 +222,16 @@ export function NowPlayingPage() {
             <button
               onClick={() => setShowChapters(true)}
               className="pressable flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2"
-              aria-label="Table of contents"
-              title="Chapters"
+              aria-label={t`Table of contents`}
+              title={t`Chapters`}
             >
               <ListIcon className="h-5 w-5" />
             </button>
             <button
               onClick={() => navigate('/app/settings')}
               className="pressable flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2"
-              aria-label="Settings"
-              title="Settings"
+              aria-label={t`Settings`}
+              title={t`Settings`}
             >
               <SettingsIcon className="h-5 w-5" />
             </button>
@@ -256,7 +257,7 @@ export function NowPlayingPage() {
                 <button
                   onClick={() => setShowLyrics(!showLyrics)}
                   className="absolute right-4 top-4 pressable flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white transition-colors"
-                  aria-label="Show cover art"
+                  aria-label={t`Show cover art`}
                 >
                   <TextIcon className="h-5 w-5" />
                 </button>
@@ -270,11 +271,11 @@ export function NowPlayingPage() {
                     ref={progressBarRef}
                     role="slider"
                     tabIndex={0}
-                    aria-label="Playback progress"
+                    aria-label={t`Playback progress`}
                     aria-valuemin={0}
                     aria-valuemax={chunkInfo.total}
                     aria-valuenow={chunkInfo.current}
-                    aria-valuetext={`Part ${chunkInfo.current} of ${chunkInfo.total}, ${Math.round(chunkInfo.progress)}% complete`}
+                    aria-valuetext={t`Part ${chunkInfo.current} of ${chunkInfo.total}, ${Math.round(chunkInfo.progress)}% complete`}
                     className="relative h-8 w-full cursor-pointer touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0"
                     onClick={handleProgressBarClick}
                     onMouseDown={handleDragStart}
@@ -298,39 +299,39 @@ export function NowPlayingPage() {
                     />
                   </div>
                   <div className="flex justify-between text-xs text-text-muted" aria-hidden="true">
-                    <span>{chunkInfo.total > 0 ? `Part ${chunkInfo.current} of ${chunkInfo.total}` : 'Loading...'}</span>
-                    <span>{isBuffering ? 'Generating...' : `${Math.round(chunkInfo.progress)}%`}</span>
+                    <span>{chunkInfo.total > 0 ? t`Part ${chunkInfo.current} of ${chunkInfo.total}` : t`Loading...`}</span>
+                    <span>{isBuffering ? t`Generating...` : `${Math.round(chunkInfo.progress)}%`}</span>
                   </div>
                 </div>
 
                 {/* Main playback controls */}
                 <div className="mt-6 w-full">
                   <div className="mb-4 flex items-center justify-center gap-4">
-                    <button onClick={handleSkipBack} className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label="Rewind">
+                    <button onClick={handleSkipBack} className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label={t`Rewind`}>
                       <RewindIcon className="h-7 w-7" />
                     </button>
-                    <button onClick={handlePrevSection} className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label="Previous chapter">
+                    <button onClick={handlePrevSection} className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label={t`Previous chapter`}>
                       <SkipBackIcon className="h-5 w-5" />
                     </button>
                     <button onClick={handleTogglePlayback} className="pressable flex h-16 w-16 items-center justify-center rounded-full bg-accent text-white shadow-lg shadow-accent/30" aria-label={isPlaying ? 'Pause' : 'Play'}>
                       {isBuffering ? <div className="h-7 w-7 animate-spin rounded-full border-3 border-white border-t-transparent" /> : isPlaying ? <PauseIcon className="h-8 w-8" /> : <PlayIcon className="h-8 w-8 pl-0.5" />}
                     </button>
-                    <button onClick={handleNextSection} className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label="Next chapter">
+                    <button onClick={handleNextSection} className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label={t`Next chapter`}>
                       <SkipForwardIcon className="h-5 w-5" />
                     </button>
-                    <button onClick={handleSkipForward} className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label="Forward">
+                    <button onClick={handleSkipForward} className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label={t`Forward`}>
                       <FastForwardIcon className="h-7 w-7" />
                     </button>
                   </div>
                   <div className="flex items-center justify-center gap-8">
-                    <button onClick={() => setShowSpeed(true)} className="pressable flex flex-col items-center gap-0.5 text-text-secondary hover:text-text-primary" aria-label="Change playback speed">
+                    <button onClick={() => setShowSpeed(true)} className="pressable flex flex-col items-center gap-0.5 text-text-secondary hover:text-text-primary" aria-label={t`Change playback speed`}>
                       <SpeedIcon className="h-5 w-5" /><span className="text-xs font-medium">{speed}×</span>
                     </button>
-                    <button onClick={() => setShowSleepTimer(true)} className={`pressable flex flex-col items-center gap-0.5 ${sleepTimerActive ? 'text-accent' : 'text-text-secondary hover:text-text-primary'}`} aria-label="Sleep timer">
-                      <MoonIcon className="h-5 w-5" /><span className="text-xs">{sleepTimerActive ? `${remainingMinutes}m` : 'Sleep'}</span>
+                    <button onClick={() => setShowSleepTimer(true)} className={`pressable flex flex-col items-center gap-0.5 ${sleepTimerActive ? 'text-accent' : 'text-text-secondary hover:text-text-primary'}`} aria-label={t`Sleep timer`}>
+                      <MoonIcon className="h-5 w-5" /><span className="text-xs">{sleepTimerActive ? `${remainingMinutes}m` : t`Sleep`}</span>
                     </button>
-                    <button onClick={() => setShowBookmarks(true)} className="pressable flex flex-col items-center gap-0.5 text-text-secondary hover:text-text-primary" aria-label="Bookmarks">
-                      <BookmarkIcon className="h-5 w-5" /><span className="text-xs">Mark</span>
+                    <button onClick={() => setShowBookmarks(true)} className="pressable flex flex-col items-center gap-0.5 text-text-secondary hover:text-text-primary" aria-label={t`Bookmarks`}>
+                      <BookmarkIcon className="h-5 w-5" /><span className="text-xs"><Trans>Mark</Trans></span>
                     </button>
                   </div>
                 </div>
@@ -375,19 +376,19 @@ export function NowPlayingPage() {
                     <div className="flex flex-1 flex-col items-center gap-2">
                       {/* Main playback controls */}
                       <div className="flex items-center gap-3">
-                        <button onClick={handleSkipBack} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label="Rewind">
+                        <button onClick={handleSkipBack} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label={t`Rewind`}>
                           <RewindIcon className="h-5 w-5" />
                         </button>
-                        <button onClick={handlePrevSection} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label="Previous chapter">
+                        <button onClick={handlePrevSection} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label={t`Previous chapter`}>
                           <SkipBackIcon className="h-4 w-4" />
                         </button>
                         <button onClick={handleTogglePlayback} className="pressable flex h-12 w-12 items-center justify-center rounded-full bg-accent text-white shadow-lg shadow-accent/30" aria-label={isPlaying ? 'Pause' : 'Play'}>
                           {isBuffering ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" /> : isPlaying ? <PauseIcon className="h-6 w-6" /> : <PlayIcon className="h-6 w-6 pl-0.5" />}
                         </button>
-                        <button onClick={handleNextSection} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label="Next chapter">
+                        <button onClick={handleNextSection} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label={t`Next chapter`}>
                           <SkipForwardIcon className="h-4 w-4" />
                         </button>
-                        <button onClick={handleSkipForward} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label="Forward">
+                        <button onClick={handleSkipForward} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:text-text-primary" aria-label={t`Forward`}>
                           <FastForwardIcon className="h-5 w-5" />
                         </button>
                       </div>
@@ -401,11 +402,11 @@ export function NowPlayingPage() {
                           ref={progressBarRef}
                           role="slider"
                           tabIndex={0}
-                          aria-label="Playback progress"
+                          aria-label={t`Playback progress`}
                           aria-valuemin={0}
                           aria-valuemax={chunkInfo.total}
                           aria-valuenow={chunkInfo.current}
-                          aria-valuetext={`Part ${chunkInfo.current} of ${chunkInfo.total}, ${Math.round(chunkInfo.progress)}% complete`}
+                          aria-valuetext={t`Part ${chunkInfo.current} of ${chunkInfo.total}, ${Math.round(chunkInfo.progress)}% complete`}
                           className="relative h-6 flex-1 cursor-pointer touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0"
                           onClick={handleProgressBarClick}
                           onMouseDown={handleDragStart}
@@ -426,16 +427,16 @@ export function NowPlayingPage() {
 
                     {/* Right: Secondary controls */}
                     <div className="flex items-center gap-4">
-                      <button onClick={() => setShowSpeed(true)} className="pressable flex h-9 items-center gap-1.5 rounded-full px-3 text-text-secondary hover:bg-surface-2 hover:text-text-primary" aria-label="Change playback speed">
+                      <button onClick={() => setShowSpeed(true)} className="pressable flex h-9 items-center gap-1.5 rounded-full px-3 text-text-secondary hover:bg-surface-2 hover:text-text-primary" aria-label={t`Change playback speed`}>
                         <SpeedIcon className="h-4 w-4" /><span className="text-xs font-medium">{speed}×</span>
                       </button>
-                      <button onClick={() => setShowSleepTimer(true)} className={`pressable flex h-9 w-9 items-center justify-center rounded-full ${sleepTimerActive ? 'text-accent' : 'text-text-secondary hover:bg-surface-2 hover:text-text-primary'}`} aria-label="Sleep timer" title={sleepTimerActive ? `${remainingMinutes}m remaining` : 'Sleep timer'}>
+                      <button onClick={() => setShowSleepTimer(true)} className={`pressable flex h-9 w-9 items-center justify-center rounded-full ${sleepTimerActive ? 'text-accent' : 'text-text-secondary hover:bg-surface-2 hover:text-text-primary'}`} aria-label={t`Sleep timer`} title={sleepTimerActive ? `${remainingMinutes}m remaining` : 'Sleep timer'}>
                         <MoonIcon className="h-4 w-4" />
                       </button>
-                      <button onClick={() => setShowBookmarks(true)} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2 hover:text-text-primary" aria-label="Bookmarks" title="Add bookmark">
+                      <button onClick={() => setShowBookmarks(true)} className="pressable flex h-9 w-9 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2 hover:text-text-primary" aria-label={t`Bookmarks`} title={t`Add bookmark`}>
                         <BookmarkIcon className="h-4 w-4" />
                       </button>
-                      <button onClick={() => setShowLyrics(false)} className="pressable flex h-9 w-9 items-center justify-center rounded-full bg-accent text-white" aria-label="Hide lyrics" title="Hide lyrics">
+                      <button onClick={() => setShowLyrics(false)} className="pressable flex h-9 w-9 items-center justify-center rounded-full bg-accent text-white" aria-label={t`Hide lyrics`} title={t`Hide lyrics`}>
                         <TextIcon className="h-4 w-4" />
                       </button>
                     </div>
@@ -471,7 +472,7 @@ export function NowPlayingPage() {
                 <button
                   onClick={() => setShowLyrics(!showLyrics)}
                   className="absolute right-4 top-4 pressable flex h-10 w-10 items-center justify-center rounded-full bg-surface-2 text-text-secondary transition-colors hover:text-text-primary lg:hidden"
-                  aria-label="Show lyrics"
+                  aria-label={t`Show lyrics`}
                 >
                   <TextIcon className="h-5 w-5" />
                 </button>
@@ -499,11 +500,11 @@ export function NowPlayingPage() {
                     ref={progressBarRef}
                     role="slider"
                     tabIndex={0}
-                    aria-label="Playback progress"
+                    aria-label={t`Playback progress`}
                     aria-valuemin={0}
                     aria-valuemax={chunkInfo.total}
                     aria-valuenow={chunkInfo.current}
-                    aria-valuetext={`Part ${chunkInfo.current} of ${chunkInfo.total}, ${Math.round(chunkInfo.progress)}% complete`}
+                    aria-valuetext={t`Part ${chunkInfo.current} of ${chunkInfo.total}, ${Math.round(chunkInfo.progress)}% complete`}
                     className="relative h-8 w-full cursor-pointer touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0 lg:h-10"
                     onClick={handleProgressBarClick}
                     onMouseDown={handleDragStart}
@@ -549,12 +550,12 @@ export function NowPlayingPage() {
                   <div className="flex justify-between text-xs text-text-muted lg:text-sm">
                     <span>
                       {chunkInfo.total > 0 
-                        ? `Part ${chunkInfo.current} of ${chunkInfo.total}`
-                        : 'Loading...'}
+                        ? t`Part ${chunkInfo.current} of ${chunkInfo.total}`
+                        : t`Loading...`}
                     </span>
                     <span>
                       {isBuffering 
-                        ? 'Generating...' 
+                        ? t`Generating...` 
                         : `${Math.round(chunkInfo.progress)}%`}
                     </span>
                   </div>
@@ -562,7 +563,7 @@ export function NowPlayingPage() {
                   {/* Slow mode warning */}
                   {isBuffering && isSlowMode && (
                     <div className="mt-2 rounded-lg bg-warning/10 px-3 py-1.5 text-center text-xs text-warning">
-                      ⚠️ CPU mode (slow)
+                      <Trans>⚠️ CPU mode (slow)</Trans>
                     </div>
                   )}
                 </div>
@@ -574,7 +575,7 @@ export function NowPlayingPage() {
                     <button
                       onClick={handleSkipBack}
                       className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary lg:h-12 lg:w-12"
-                      aria-label="Rewind"
+                      aria-label={t`Rewind`}
                     >
                       <RewindIcon className="h-7 w-7" />
                     </button>
@@ -582,7 +583,7 @@ export function NowPlayingPage() {
                     <button
                       onClick={handlePrevSection}
                       className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary lg:h-12 lg:w-12"
-                      aria-label="Previous chapter"
+                      aria-label={t`Previous chapter`}
                     >
                       <SkipBackIcon className="h-5 w-5 lg:h-6 lg:w-6" />
                     </button>
@@ -604,7 +605,7 @@ export function NowPlayingPage() {
                     <button
                       onClick={handleNextSection}
                       className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary lg:h-12 lg:w-12"
-                      aria-label="Next chapter"
+                      aria-label={t`Next chapter`}
                     >
                       <SkipForwardIcon className="h-5 w-5 lg:h-6 lg:w-6" />
                     </button>
@@ -612,7 +613,7 @@ export function NowPlayingPage() {
                     <button
                       onClick={handleSkipForward}
                       className="pressable flex h-11 w-11 items-center justify-center rounded-full text-text-secondary hover:text-text-primary lg:h-12 lg:w-12"
-                      aria-label="Forward"
+                      aria-label={t`Forward`}
                     >
                       <FastForwardIcon className="h-7 w-7" />
                     </button>
@@ -623,7 +624,7 @@ export function NowPlayingPage() {
                     <button
                       onClick={() => setShowSpeed(true)}
                       className="pressable flex flex-col items-center gap-0.5 text-text-secondary hover:text-text-primary"
-                      aria-label="Change playback speed"
+                      aria-label={t`Change playback speed`}
                     >
                       <SpeedIcon className="h-5 w-5" />
                       <span className="text-xs font-medium">{speed}×</span>
@@ -634,16 +635,16 @@ export function NowPlayingPage() {
                       className={`pressable flex flex-col items-center gap-0.5 ${
                         sleepTimerActive ? 'text-accent' : 'text-text-secondary hover:text-text-primary'
                       }`}
-                      aria-label="Sleep timer"
+                      aria-label={t`Sleep timer`}
                     >
                       <MoonIcon className="h-5 w-5" />
-                      <span className="text-xs">{sleepTimerActive ? `${remainingMinutes}m` : 'Sleep'}</span>
+                      <span className="text-xs">{sleepTimerActive ? `${remainingMinutes}m` : t`Sleep`}</span>
                     </button>
 
                     <button
                       onClick={() => setShowBookmarks(true)}
                       className="pressable flex flex-col items-center gap-0.5 text-text-secondary hover:text-text-primary"
-                      aria-label="Bookmarks"
+                      aria-label={t`Bookmarks`}
                     >
                       <BookmarkIcon className="h-5 w-5" />
                       <span className="text-xs">Mark</span>
@@ -655,17 +656,17 @@ export function NowPlayingPage() {
                       aria-label="Settings"
                     >
                       <SettingsIcon className="h-5 w-5" />
-                      <span className="text-xs">Settings</span>
+                      <span className="text-xs"><Trans>Settings</Trans></span>
                     </button>
 
                     {/* Lyrics toggle - desktop only */}
                     <button
                       onClick={() => setShowLyrics(!showLyrics)}
                       className="pressable hidden flex-col items-center gap-0.5 text-text-secondary hover:text-text-primary lg:flex"
-                      aria-label="Show lyrics"
+                      aria-label={t`Show lyrics`}
                     >
                       <TextIcon className="h-5 w-5" />
-                      <span className="text-xs">Lyrics</span>
+                      <span className="text-xs"><Trans>Lyrics</Trans></span>
                     </button>
                   </div>
                 </div>
@@ -706,7 +707,7 @@ export function NowPlayingPage() {
             
             {/* Header */}
             <div className="flex items-center justify-between border-b border-surface-2 px-6 pb-4 md:pt-4">
-              <h2 className="text-lg font-semibold text-text-primary">Chapters</h2>
+              <h2 className="text-lg font-semibold text-text-primary"><Trans>Chapters</Trans></h2>
               <button
                 onClick={() => setShowChapters(false)}
                 className="pressable text-sm text-accent"

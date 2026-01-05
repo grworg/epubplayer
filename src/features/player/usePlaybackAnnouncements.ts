@@ -6,6 +6,7 @@
  */
 
 import { useEffect, useRef } from 'react'
+import { t } from '@lingui/macro'
 import { usePlayerStore } from './playerStore'
 import { useAnnounce } from '@/ui/accessibility'
 
@@ -40,21 +41,19 @@ export function usePlaybackAnnouncements() {
     
     switch (status) {
       case 'playing':
-        announce('Playback started')
+        announce(t`Playback started`)
         break
       case 'paused':
-        announce('Playback paused')
+        announce(t`Playback paused`)
         break
       case 'buffering':
         // Only announce buffering after a brief delay to avoid spam
         // The actual announcement is handled below with progress
         break
       case 'ready':
-        announce('Ready to play')
+        announce(t`Ready to play`)
         break
-      case 'error':
-        // Error is announced separately with the error message
-        break
+      // Note: errors are announced separately via the error state subscription
     }
   }, [status, announce])
   
@@ -65,7 +64,7 @@ export function usePlaybackAnnouncements() {
     prevBook.current = bookId
     
     if (currentBook) {
-      announce(`Now playing: ${currentBook.title} by ${currentBook.author}`)
+      announce(t`Now playing: ${currentBook.title} by ${currentBook.author}`)
     }
   }, [currentBook, announce])
   
@@ -80,7 +79,7 @@ export function usePlaybackAnnouncements() {
     // Don't announce on initial load (book announcement covers it)
     if (isInitialLoad) return
     
-    announce(`Chapter: ${currentSectionTitle}`)
+    announce(t`Chapter: ${currentSectionTitle}`)
   }, [currentSectionTitle, announce])
   
   // Announce errors
@@ -89,7 +88,7 @@ export function usePlaybackAnnouncements() {
     prevError.current = error
     
     if (error) {
-      announce(`Error: ${error}`, 'assertive')
+      announce(t`Error: ${error}`, 'assertive')
     }
   }, [error, announce])
   
@@ -104,9 +103,9 @@ export function usePlaybackAnnouncements() {
     lastBufferAnnounce.current = now
     
     if (bufferProgress > 0) {
-      announce(`Buffering: ${Math.round(bufferProgress * 100)}% complete`)
+      announce(t`Buffering: ${Math.round(bufferProgress * 100)}% complete`)
     } else {
-      announce('Buffering audio...')
+      announce(t`Buffering audio...`)
     }
   }, [isBuffering, bufferProgress, announce])
 }

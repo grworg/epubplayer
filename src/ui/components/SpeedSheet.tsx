@@ -1,3 +1,4 @@
+import { Trans, t } from '@lingui/macro'
 import { SpeedIcon, CheckIcon } from '@/ui/icons'
 import { useFocusTrap } from '@/ui/accessibility'
 
@@ -8,15 +9,17 @@ interface SpeedSheetProps {
   onSpeedChange: (speed: number) => void
 }
 
-const SPEED_OPTIONS = [
-  { value: 0.5, label: '0.5×', description: 'Half speed' },
-  { value: 0.75, label: '0.75×', description: 'Slower' },
-  { value: 1.0, label: '1×', description: 'Normal' },
-  { value: 1.25, label: '1.25×', description: 'Slightly faster' },
-  { value: 1.5, label: '1.5×', description: 'Faster' },
-  { value: 1.75, label: '1.75×', description: 'Much faster' },
-  { value: 2.0, label: '2×', description: 'Double speed' },
-]
+function getSpeedOptions() {
+  return [
+    { value: 0.5, label: '0.5×', description: t`Half speed` },
+    { value: 0.75, label: '0.75×', description: t`Slower` },
+    { value: 1.0, label: '1×', description: t`Normal` },
+    { value: 1.25, label: '1.25×', description: t`Slightly faster` },
+    { value: 1.5, label: '1.5×', description: t`Faster` },
+    { value: 1.75, label: '1.75×', description: t`Much faster` },
+    { value: 2.0, label: '2×', description: t`Double speed` },
+  ]
+}
 
 export function SpeedSheet({ isOpen, onClose, currentSpeed, onSpeedChange }: SpeedSheetProps) {
   const sheetRef = useFocusTrap<HTMLDivElement>({
@@ -30,6 +33,8 @@ export function SpeedSheet({ isOpen, onClose, currentSpeed, onSpeedChange }: Spe
     onSpeedChange(speed)
     onClose()
   }
+
+  const speedOptions = getSpeedOptions()
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
@@ -59,16 +64,18 @@ export function SpeedSheet({ isOpen, onClose, currentSpeed, onSpeedChange }: Spe
             <SpeedIcon className="h-5 w-5 text-accent" />
           </div>
           <div>
-            <h2 id="speed-sheet-title" className="text-lg font-semibold text-text-primary">Playback Speed</h2>
+            <h2 id="speed-sheet-title" className="text-lg font-semibold text-text-primary">
+              <Trans>Playback Speed</Trans>
+            </h2>
             <p className="text-sm text-text-secondary">
-              Currently {currentSpeed}×
+              <Trans>Currently {currentSpeed}×</Trans>
             </p>
           </div>
         </div>
 
         {/* Speed options grid */}
         <div className="grid grid-cols-3 gap-2 px-4 md:grid-cols-4">
-          {SPEED_OPTIONS.map((option) => {
+          {speedOptions.map((option) => {
             const isSelected = currentSpeed === option.value
             return (
               <button
@@ -98,10 +105,9 @@ export function SpeedSheet({ isOpen, onClose, currentSpeed, onSpeedChange }: Spe
 
         {/* Tip */}
         <p className="mt-4 px-6 text-center text-xs text-text-muted">
-          Tip: Higher speeds work best with AI voices
+          <Trans>Tip: Higher speeds work best with AI voices</Trans>
         </p>
       </div>
     </div>
   )
 }
-

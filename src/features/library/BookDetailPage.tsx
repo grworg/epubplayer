@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
+import { Trans, t } from '@lingui/macro'
 import { useBook } from './useBook'
 import { playbackController } from '@/features/player/PlaybackController'
 import { ChevronLeftIcon, PlayIcon, TrashIcon, ListIcon, LoaderIcon, EraserIcon, DownloadIcon } from '@/ui/icons'
@@ -19,12 +20,12 @@ export function BookDetailPage() {
   if (!book) {
     return (
       <div className="flex h-full flex-col items-center justify-center px-8">
-        <p className="mb-4 text-text-secondary">Book not found</p>
+        <p className="mb-4 text-text-secondary"><Trans>Book not found</Trans></p>
         <button
           onClick={() => navigate('/app')}
           className="pressable rounded-full bg-surface-2 px-6 py-2 text-text-primary"
         >
-          Go to Library
+          <Trans>Go to Library</Trans>
         </button>
       </div>
     )
@@ -47,7 +48,7 @@ export function BookDetailPage() {
   }
 
   const handleDelete = async () => {
-    if (confirm('Are you sure you want to remove this book and all its audio?')) {
+    if (confirm(t`Are you sure you want to remove this book and all its audio?`)) {
       await deleteBook()
       navigate('/app')
     }
@@ -55,7 +56,7 @@ export function BookDetailPage() {
 
   const handleClearAudio = async () => {
     if (
-      confirm('Delete all generated audio for this book? The book will remain in your library.')
+      confirm(t`Delete all generated audio for this book? The book will remain in your library.`)
     ) {
       await deleteAudioCache()
     }
@@ -95,7 +96,7 @@ export function BookDetailPage() {
         <button
           onClick={() => navigate(-1)}
           className="pressable flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2 hover:text-text-primary"
-          aria-label="Go back"
+          aria-label={t`Go back`}
         >
           <ChevronLeftIcon className="h-6 w-6" />
         </button>
@@ -104,8 +105,8 @@ export function BookDetailPage() {
           <button
             onClick={handleDownloadEpub}
             className="pressable flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2 hover:text-accent"
-            aria-label="Download EPUB"
-            title="Download original EPUB"
+            aria-label={t`Download EPUB`}
+            title={t`Download original EPUB`}
           >
             <DownloadIcon className="h-5 w-5" />
           </button>
@@ -113,15 +114,15 @@ export function BookDetailPage() {
         <button
           onClick={handleClearAudio}
           className="pressable flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2 hover:text-warning"
-          aria-label="Clear audio cache"
-          title="Clear audio cache"
+          aria-label={t`Clear audio cache`}
+          title={t`Clear audio cache`}
         >
           <EraserIcon className="h-5 w-5" />
         </button>
         <button
           onClick={handleDelete}
           className="pressable flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2 hover:text-error"
-          aria-label="Delete book"
+          aria-label={t`Delete book`}
         >
           <TrashIcon className="h-5 w-5" />
         </button>
@@ -147,13 +148,13 @@ export function BookDetailPage() {
             <h1 className="mb-2 text-2xl font-bold text-text-primary md:text-3xl">{book.title}</h1>
             <p className="mb-2 text-text-secondary md:text-lg">{book.author}</p>
             <p className="mb-4 text-sm text-text-muted">
-              {book.sections.length} chapters · ~{durationText}
+              <Trans>{book.sections.length} chapters · ~{durationText}</Trans>
             </p>
 
             {/* Storage info */}
             {book.storageStats && book.storageStats.audioSizeMB > 0 && (
               <p className="mb-4 text-xs text-text-muted">
-                {book.storageStats.audioSizeMB} MB cached audio
+                <Trans>{book.storageStats.audioSizeMB} MB cached audio</Trans>
               </p>
             )}
 
@@ -161,7 +162,7 @@ export function BookDetailPage() {
             {progress > 0 && (
               <div className="mb-4 w-full max-w-xs md:max-w-sm">
                 <div className="mb-1 flex justify-between text-xs text-text-muted">
-                  <span>{progress}% complete</span>
+                  <span><Trans>{progress}% complete</Trans></span>
                 </div>
                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
                   <div
@@ -178,7 +179,7 @@ export function BookDetailPage() {
               className="pressable flex items-center gap-3 rounded-full bg-accent px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-accent/25"
             >
               <PlayIcon className="h-6 w-6" />
-              {progress > 0 ? 'Continue Listening' : 'Start Listening'}
+              {progress > 0 ? <Trans>Continue Listening</Trans> : <Trans>Start Listening</Trans>}
             </button>
           </div>
         </div>
@@ -187,7 +188,7 @@ export function BookDetailPage() {
         <div className="pb-8">
           <div className="mb-4 flex items-center gap-2">
             <ListIcon className="h-5 w-5 text-text-secondary" />
-            <h2 className="text-lg font-semibold text-text-primary">Chapters</h2>
+            <h2 className="text-lg font-semibold text-text-primary"><Trans>Chapters</Trans></h2>
           </div>
           <div className="rounded-xl bg-surface-1 p-2">
             <div className="flex flex-col gap-1">

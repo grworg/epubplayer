@@ -1,5 +1,6 @@
 import { useMemo, useState, useSyncExternalStore } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Trans, t } from '@lingui/macro'
 import { logStore, type LogEntry } from '@/services/logging/logStore'
 
 function useLogEntries(): LogEntry[] {
@@ -78,45 +79,45 @@ export function DebugLogsPage() {
       <header className="px-5 py-4">
         <div className="flex items-center justify-between">
           <button onClick={() => navigate(-1)} className="pressable text-sm text-text-muted">
-            Back
+            <Trans>Back</Trans>
           </button>
-          <h1 className="text-xl font-bold text-text-primary">Debug Logs</h1>
+          <h1 className="text-xl font-bold text-text-primary"><Trans>Debug Logs</Trans></h1>
           <div className="w-10" />
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          <label htmlFor="log-filter" className="sr-only">Filter logs</label>
+          <label htmlFor="log-filter" className="sr-only"><Trans>Filter logs</Trans></label>
           <input
             id="log-filter"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Filter logs…"
+            placeholder={t`Filter logs…`}
             className="h-10 flex-1 min-w-[120px] rounded-lg bg-surface-1 px-3 text-sm text-text-primary outline-none ring-1 ring-border-muted"
           />
-          <label htmlFor="log-level" className="sr-only">Filter by log level</label>
+          <label htmlFor="log-level" className="sr-only"><Trans>Filter by log level</Trans></label>
           <select
             id="log-level"
             value={level}
             onChange={(e) => setLevel(e.target.value as typeof level)}
             className="h-10 rounded-lg bg-surface-1 px-3 text-sm text-text-primary outline-none ring-1 ring-border-muted"
-            aria-label="Filter by level"
+            aria-label={t`Filter by level`}
           >
-            <option value="all">All Levels</option>
-            <option value="error">Error</option>
-            <option value="warn">Warn</option>
-            <option value="info">Info</option>
-            <option value="log">Log</option>
-            <option value="debug">Debug</option>
+            <option value="all">{t`All Levels`}</option>
+            <option value="error">{t`Error`}</option>
+            <option value="warn">{t`Warn`}</option>
+            <option value="info">{t`Info`}</option>
+            <option value="log">{t`Log`}</option>
+            <option value="debug">{t`Debug`}</option>
           </select>
-          <label htmlFor="log-subsystem" className="sr-only">Filter by subsystem</label>
+          <label htmlFor="log-subsystem" className="sr-only"><Trans>Filter by subsystem</Trans></label>
           <select
             id="log-subsystem"
             value={subsystem}
             onChange={(e) => setSubsystem(e.target.value)}
             className="h-10 rounded-lg bg-surface-1 px-3 text-sm text-text-primary outline-none ring-1 ring-border-muted"
-            aria-label="Filter by subsystem"
+            aria-label={t`Filter by subsystem`}
           >
-            <option value="all">All Subsystems</option>
+            <option value="all">{t`All Subsystems`}</option>
             {subsystems.map((s) => (
               <option key={s} value={s}>
                 {s}
@@ -130,7 +131,7 @@ export function DebugLogsPage() {
             className="pressable rounded-lg bg-surface-1 px-3 py-2 text-sm text-text-primary ring-1 ring-border-muted"
             onClick={() => logStore.clear()}
           >
-            Clear
+            <Trans>Clear</Trans>
           </button>
           <button
             className="pressable rounded-lg bg-surface-1 px-3 py-2 text-sm text-text-primary ring-1 ring-border-muted"
@@ -144,29 +145,29 @@ export function DebugLogsPage() {
               }
             }}
           >
-            Copy
+            <Trans>Copy</Trans>
           </button>
           <button
             className="pressable rounded-lg bg-accent px-3 py-2 text-sm font-medium text-white ring-1 ring-accent"
             onClick={handleExport}
           >
-            Export Logs
+            <Trans>Export Logs</Trans>
           </button>
         </div>
 
         <p className="mt-2 text-xs text-text-muted">
-          Tip: Use <code className="rounded bg-surface-2 px-1">window.logConfig</code> in browser console to control logging at runtime.
+          <Trans>Tip: Use <code className="rounded bg-surface-2 px-1">window.logConfig</code> in browser console to control logging at runtime.</Trans>
         </p>
       </header>
 
       <div className="mx-auto w-full max-w-4xl flex-1 overflow-y-auto px-5 pb-8">
         <div className="rounded-xl bg-surface-1 ring-1 ring-border-muted">
           <div className="border-b border-border-muted px-4 py-3 text-xs text-text-muted">
-            Showing {filtered.length} / {entries.length}
+            <Trans>Showing {filtered.length} / {entries.length}</Trans>
           </div>
           <div className="divide-y divide-border-muted">
             {filtered.length === 0 ? (
-              <div className="px-4 py-6 text-sm text-text-muted">No logs.</div>
+              <div className="px-4 py-6 text-sm text-text-muted"><Trans>No logs.</Trans></div>
             ) : (
               filtered
                 .slice(-800) // keep UI snappy on mobile

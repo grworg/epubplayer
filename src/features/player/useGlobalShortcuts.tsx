@@ -5,8 +5,9 @@
  * Shortcuts are disabled when focus is on an input element.
  */
 
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { Trans, t } from '@lingui/macro'
 import { playbackController } from './PlaybackController'
 import { usePlayerStore } from './playerStore'
 import { useAnnounce } from '@/ui/accessibility'
@@ -16,16 +17,21 @@ interface ShortcutHelpItem {
   description: string
 }
 
-export const KEYBOARD_SHORTCUTS: ShortcutHelpItem[] = [
-  { key: 'Space', description: 'Play / Pause' },
-  { key: '←', description: 'Skip back' },
-  { key: '→', description: 'Skip forward' },
-  { key: '[', description: 'Previous chapter' },
-  { key: ']', description: 'Next chapter' },
-  { key: 'B', description: 'Add bookmark' },
-  { key: '?', description: 'Show keyboard shortcuts' },
-  { key: 'Escape', description: 'Close dialog / Go back' },
-]
+export function getKeyboardShortcuts(): ShortcutHelpItem[] {
+  return [
+    { key: 'Space', description: t`Play / Pause` },
+    { key: '←', description: t`Skip back` },
+    { key: '→', description: t`Skip forward` },
+    { key: '[', description: t`Previous chapter` },
+    { key: ']', description: t`Next chapter` },
+    { key: 'B', description: t`Add bookmark` },
+    { key: '?', description: t`Show keyboard shortcuts` },
+    { key: 'Escape', description: t`Close dialog / Go back` },
+  ]
+}
+
+// For backwards compatibility
+export const KEYBOARD_SHORTCUTS = getKeyboardShortcuts()
 
 interface UseGlobalShortcutsOptions {
   /** Callback to show keyboard shortcuts help */
@@ -77,7 +83,7 @@ export function useGlobalShortcuts({ onShowHelp, onAddBookmark }: UseGlobalShort
         event.preventDefault()
         if (currentBook) {
           playbackController.togglePlayback()
-          announce(isPlaying ? 'Paused' : 'Playing')
+          announce(isPlaying ? t`Paused` : t`Playing`)
         }
         break
         
@@ -85,7 +91,7 @@ export function useGlobalShortcuts({ onShowHelp, onAddBookmark }: UseGlobalShort
         event.preventDefault()
         if (currentBook) {
           playbackController.skipBack()
-          announce('Skipped back')
+          announce(t`Skipped back`)
         }
         break
         
@@ -93,7 +99,7 @@ export function useGlobalShortcuts({ onShowHelp, onAddBookmark }: UseGlobalShort
         event.preventDefault()
         if (currentBook) {
           playbackController.skipForward()
-          announce('Skipped forward')
+          announce(t`Skipped forward`)
         }
         break
         
@@ -101,7 +107,7 @@ export function useGlobalShortcuts({ onShowHelp, onAddBookmark }: UseGlobalShort
         event.preventDefault()
         if (currentBook) {
           playbackController.previousSection()
-          announce('Previous chapter')
+          announce(t`Previous chapter`)
         }
         break
         
@@ -109,7 +115,7 @@ export function useGlobalShortcuts({ onShowHelp, onAddBookmark }: UseGlobalShort
         event.preventDefault()
         if (currentBook) {
           playbackController.nextSection()
-          announce('Next chapter')
+          announce(t`Next chapter`)
         }
         break
         
@@ -118,7 +124,7 @@ export function useGlobalShortcuts({ onShowHelp, onAddBookmark }: UseGlobalShort
         event.preventDefault()
         if (currentBook && onAddBookmark) {
           onAddBookmark()
-          announce('Adding bookmark')
+          announce(t`Adding bookmark`)
         }
         break
         
@@ -161,6 +167,8 @@ export function useGlobalShortcuts({ onShowHelp, onAddBookmark }: UseGlobalShort
 export function KeyboardShortcutsHelp({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null
   
+  const shortcuts = getKeyboardShortcuts()
+  
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
@@ -178,11 +186,11 @@ export function KeyboardShortcutsHelp({ isOpen, onClose }: { isOpen: boolean; on
         className="relative max-h-[80vh] w-full max-w-md overflow-y-auto rounded-2xl bg-surface-1 p-6 shadow-2xl"
       >
         <h2 id="shortcuts-title" className="mb-4 text-xl font-bold text-text-primary">
-          Keyboard Shortcuts
+          <Trans>Keyboard Shortcuts</Trans>
         </h2>
         
         <div className="space-y-3">
-          {KEYBOARD_SHORTCUTS.map((shortcut) => (
+          {shortcuts.map((shortcut) => (
             <div key={shortcut.key} className="flex items-center justify-between">
               <span className="text-text-secondary">{shortcut.description}</span>
               <kbd className="rounded bg-surface-3 px-2 py-1 font-mono text-sm text-text-primary">
@@ -196,7 +204,7 @@ export function KeyboardShortcutsHelp({ isOpen, onClose }: { isOpen: boolean; on
           onClick={onClose}
           className="mt-6 w-full rounded-xl bg-surface-2 py-3 font-medium text-text-primary hover:bg-surface-3"
         >
-          Close
+          <Trans>Close</Trans>
         </button>
       </div>
     </div>
