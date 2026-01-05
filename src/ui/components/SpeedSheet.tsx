@@ -1,4 +1,5 @@
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import { SpeedIcon, CheckIcon } from '@/ui/icons'
 import { useFocusTrap } from '@/ui/accessibility'
 

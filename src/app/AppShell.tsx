@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { MiniPlayer } from '@/features/player/MiniPlayer'
 import { usePlayerStore } from '@/features/player/playerStore'
 import { playbackController } from '@/features/player/PlaybackController'

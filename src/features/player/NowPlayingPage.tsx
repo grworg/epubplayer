@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import { usePlayerStore } from './playerStore'
 import { playbackController } from './PlaybackController'
 import { useSleepTimer } from './useSleepTimer'

@@ -1,7 +1,8 @@
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import {
   useSleepTimer,
-  SLEEP_TIMER_OPTIONS,
+  getSleepTimerOptions,
   type SleepTimerDuration,
 } from '@/features/player/useSleepTimer'
 import { MoonIcon } from '@/ui/icons'
@@ -18,6 +19,9 @@ export function SleepTimerSheet({ isOpen, onClose }: SleepTimerSheetProps) {
     isActive: isOpen,
     onEscape: onClose,
   })
+  
+  // Get options inside component (after i18n is initialized)
+  const sleepTimerOptions = getSleepTimerOptions()
 
   if (!isOpen) return null
 
@@ -61,7 +65,7 @@ export function SleepTimerSheet({ isOpen, onClose }: SleepTimerSheetProps) {
 
         {/* Options */}
         <div className="space-y-1 px-4">
-          {SLEEP_TIMER_OPTIONS.map((option) => (
+          {sleepTimerOptions.map((option) => (
             <button
               key={option.value}
               onClick={() => handleSelect(option.value)}

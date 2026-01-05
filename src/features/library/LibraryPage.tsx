@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import { useLibrary } from './useLibrary'
 import { useImportEPUB } from '@/features/import/useImportEPUB'
 import { PlusIcon, UploadIcon, HeadphonesIcon, LoaderIcon, SettingsIcon, BellIcon, SmartphoneIcon, GitHubIcon } from '@/ui/icons'

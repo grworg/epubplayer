@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { t } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import { usePlayerStore } from './playerStore'
 import { playbackController } from './PlaybackController'
 import { PlayIcon, PauseIcon } from '@/ui/icons'

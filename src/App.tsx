@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { I18nProvider } from '@lingui/react'
 import { i18n, initI18n } from '@/i18n'
 import { AppShell } from '@/app/AppShell'

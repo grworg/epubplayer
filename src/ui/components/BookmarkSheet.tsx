@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import { useBookmarks } from '@/features/player/useBookmarks'
 import { usePlayerStore } from '@/features/player/playerStore'
 import { playbackController } from '@/features/player/PlaybackController'

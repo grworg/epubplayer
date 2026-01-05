@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useRef } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import { usePlayerStore } from './playerStore'
 import { useAnnounce } from '@/ui/accessibility'
 

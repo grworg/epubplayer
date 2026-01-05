@@ -1,4 +1,5 @@
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import { InstallIcon, CheckIcon } from '@/ui/icons'
 import { usePWAInstall, getInstallInstructions } from './usePWAInstall'
 import { useFocusTrap } from '@/ui/accessibility'

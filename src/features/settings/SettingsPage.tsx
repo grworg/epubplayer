@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import { useStorageStats } from './useStorageStats'
 import { settingsRepository, DEFAULT_SETTINGS, type SettingKey } from '@/services/storage/settingsRepository'
 import { ttsManager, type TTSEngine } from '@/services/tts'

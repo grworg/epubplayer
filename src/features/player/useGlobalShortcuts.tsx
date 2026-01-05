@@ -7,7 +7,8 @@
 
 import { useEffect, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Trans, t } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import { playbackController } from './PlaybackController'
 import { usePlayerStore } from './playerStore'
 import { useAnnounce } from '@/ui/accessibility'
@@ -29,9 +30,6 @@ export function getKeyboardShortcuts(): ShortcutHelpItem[] {
     { key: 'Escape', description: t`Close dialog / Go back` },
   ]
 }
-
-// For backwards compatibility
-export const KEYBOARD_SHORTCUTS = getKeyboardShortcuts()
 
 interface UseGlobalShortcutsOptions {
   /** Callback to show keyboard shortcuts help */
