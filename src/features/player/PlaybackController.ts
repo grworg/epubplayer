@@ -789,15 +789,19 @@ class PlaybackController {
    * - browser/kokoro: voiceId
    * - piper: piperModel
    * - supertonic: supertonicVoice
+   * - sherpa: sherpaVoice
    */
   private getVoiceForEngine(settings: {
     voiceId: string
     piperModel: string
     supertonicVoice: string
+    sherpaVoice: string
   }): string {
     switch (this.currentEngine) {
       case 'supertonic':
         return settings.supertonicVoice
+      case 'sherpa':
+        return settings.sherpaVoice
       case 'piper':
         return settings.piperModel
       default:

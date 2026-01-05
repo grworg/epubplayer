@@ -13,6 +13,7 @@ import { settingsRepository } from '@/services/storage/settingsRepository'
 import { ttsService as kokoroTTS } from './ttsService'
 import { piperService } from './piperService'
 import { supertonicService } from './supertonicService'
+import { sherpaService } from './sherpaService'
 import type {
   TTSEngine,
   TTSEngineInfo,
@@ -82,6 +83,17 @@ const ENGINE_REGISTRY: Record<TTSEngine, TTSEngineInfo> = {
       generatesBlobs: true,
       requiresInit: true,
       slowOnCPU: true,        // WASM fallback is very slow
+    },
+  },
+  sherpa: {
+    id: 'sherpa',
+    name: 'Sherpa (Multi-Speaker)',
+    description: 'Neural TTS with proper phonemization. 900+ voices. ~100MB download.',
+    available: true,
+    capabilities: {
+      generatesBlobs: true,
+      requiresInit: true,
+      slowOnCPU: false,       // WASM-only but optimized
     },
   },
 }
@@ -212,6 +224,11 @@ class TTSManager {
           await supertonicService.initialize()
           break
 
+        case 'sherpa':
+          this.wireUpService(sherpaService, 'sherpa')
+          await sherpaService.initialize()
+          break
+
         case 'browser':
           // Browser TTS doesn't need initialization
           break
@@ -315,6 +332,17 @@ class TTSManager {
           }
         }
 
+        case 'sherpa': {
+          const result = await sherpaService.generateChunk(text, chunkIndex, voiceId)
+          return {
+            requestId: result.requestId,
+            blob: result.blob,
+            duration: result.duration,
+            chunkIndex: result.chunkIndex,
+            text: result.text,
+          }
+        }
+
         default:
           throw new Error(`Unknown TTS engine: ${this.currentEngine}`)
       }
@@ -333,6 +361,8 @@ class TTSManager {
         return piperService.splitIntoChunks(text)
       case 'supertonic':
         return supertonicService.splitIntoChunks(text)
+      case 'sherpa':
+        return sherpaService.splitIntoChunks(text)
       default:
         return kokoroTTS.splitIntoChunks(text)
     }
@@ -376,6 +406,9 @@ class TTSManager {
       case 'supertonic':
         supertonicService.cancelAll()
         break
+      case 'sherpa':
+        sherpaService.cancelAll()
+        break
     }
   }
 
@@ -389,6 +422,9 @@ class TTSManager {
         break
       case 'supertonic':
         supertonicService.destroy()
+        break
+      case 'sherpa':
+        sherpaService.destroy()
         break
     }
     this.isInitialized = false

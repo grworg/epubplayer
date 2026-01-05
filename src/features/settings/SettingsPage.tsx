@@ -7,6 +7,7 @@ import { settingsRepository, DEFAULT_SETTINGS, type SettingKey } from '@/service
 import { ttsManager, type TTSEngine } from '@/services/tts'
 import { PIPER_MODELS } from '@/services/tts/piperService'
 import { SUPERTONIC_VOICES } from '@/services/tts/supertonicService'
+import { SHERPA_VOICES } from '@/services/tts/sherpaService'
 import { playbackController } from '@/features/player/PlaybackController'
 import { ChevronLeftIcon, ChevronRightIcon, VolumeIcon, HeadphonesIcon, TrashIcon, LoaderIcon, CheckIcon, SmartphoneIcon, GlobeIcon } from '@/ui/icons'
 import { useFocusTrap } from '@/ui/accessibility'
@@ -30,6 +31,7 @@ function getTTSEngines() {
   return [
     { id: 'browser' as TTSEngine, name: t`Browser (Instant)`, description: t`Uses your device's built-in voices. Fast and reliable.` },
     { id: 'supertonic' as TTSEngine, name: t`Supertonic (Recommended)`, description: t`AI voice with great quality and speed. Works on most devices. ~260MB download.` },
+    { id: 'sherpa' as TTSEngine, name: t`Sherpa (Multi-Speaker)`, description: t`Neural TTS with 900+ voices. Proper phonemization. ~100MB download.` },
     { id: 'kokoro' as TTSEngine, name: t`Kokoro (Premium)`, description: t`Highest quality AI voice. Requires powerful GPU for smooth playback.` },
     { id: 'piper' as TTSEngine, name: t`Piper (Experimental)`, description: t`⚠️ Under development - may not work yet.` },
   ]
@@ -58,6 +60,13 @@ const PIPER_VOICES = PIPER_MODELS.map((m: typeof PIPER_MODELS[number]) => ({
 
 // Supertonic voice options
 const SUPERTONIC_VOICE_OPTIONS = SUPERTONIC_VOICES.map((v) => ({
+  id: v.id,
+  name: v.name,
+  description: v.description,
+}))
+
+// Sherpa voice options (multi-speaker model)
+const SHERPA_VOICE_OPTIONS = SHERPA_VOICES.map((v) => ({
   id: v.id,
   name: v.name,
   description: v.description,
@@ -146,7 +155,7 @@ export function SettingsPage() {
 
     // Proactively apply TTS engine runtime changes.
     // This hot-swaps the TTS engine without requiring an app refresh.
-    if (key === 'processingDevice' || key === 'modelConfig' || key === 'ttsEngine' || key === 'piperModel' || key === 'supertonicVoice' || key === 'supertonicDevice') {
+    if (key === 'processingDevice' || key === 'modelConfig' || key === 'ttsEngine' || key === 'piperModel' || key === 'supertonicVoice' || key === 'supertonicDevice' || key === 'sherpaVoice') {
       try {
         // Destroy the old TTS engine (terminates worker)
         ttsManager.destroy()
@@ -190,9 +199,13 @@ export function SettingsPage() {
     if (settings.ttsEngine === 'supertonic') {
       return SUPERTONIC_VOICE_OPTIONS.find((v) => v.id === id)?.name || id
     }
+    if (settings.ttsEngine === 'sherpa') {
+      return SHERPA_VOICE_OPTIONS.find((v) => v.id === id)?.name || id
+    }
     return KOKORO_VOICES.find((v: { id: string; name: string }) => v.id === id)?.name || id
   }
   const getSupertonicVoiceName = (id: string) => SUPERTONIC_VOICE_OPTIONS.find((v) => v.id === id)?.name || id
+  const getSherpaVoiceName = (id: string) => SHERPA_VOICE_OPTIONS.find((v) => v.id === id)?.name || id
   const getPiperModelName = (id: string) => PIPER_VOICES.find((v: { id: string; name: string }) => v.id === id)?.name || id
   const getModelName = (id: string) => getModelConfigs().find((m) => m.id === id)?.name || id
   const getEngineName = (id: string) => getTTSEngines().find((e) => e.id === id)?.name || id
@@ -305,6 +318,23 @@ export function SettingsPage() {
                 value={getPiperModelName(settings.piperModel)}
                 description={t`Each voice is a different neural model`}
                 onClick={() => setActiveSheet('piperModel')}
+              />
+              <SettingsItem
+                label={t`Buffer Ahead`}
+                value={getBufferAheadLabel()}
+                description={t`Keeps generating ahead even while paused`}
+                onClick={() => setActiveSheet('bufferAhead')}
+              />
+            </>
+          )}
+          {settings.ttsEngine === 'sherpa' && (
+            <>
+              <SettingsItem
+                icon={<VolumeIcon className="h-5 w-5" />}
+                label={t`Voice`}
+                value={getSherpaVoiceName(settings.sherpaVoice)}
+                description={t`900+ AI voices available`}
+                onClick={() => setActiveSheet('sherpaVoice')}
               />
               <SettingsItem
                 label={t`Buffer Ahead`}
@@ -472,6 +502,7 @@ export function SettingsPage() {
               settings.ttsEngine === 'browser' ? 'Web Speech API' :
               settings.ttsEngine === 'piper' ? 'Piper VITS' :
               settings.ttsEngine === 'supertonic' ? 'Supertonic 66M' :
+              settings.ttsEngine === 'sherpa' ? 'Sherpa-ONNX' :
               'Kokoro.js 82M'
             } 
           />
@@ -565,6 +596,15 @@ export function SettingsPage() {
         options={getSupertonicDevices().map((d) => ({ id: d.id, label: d.name, description: d.description }))}
         value={settings.supertonicDevice}
         onChange={(v) => updateSetting('supertonicDevice', v as typeof settings.supertonicDevice)}
+      />
+
+      <SelectionSheet
+        isOpen={activeSheet === 'sherpaVoice'}
+        onClose={() => setActiveSheet(null)}
+        title={t`Select Sherpa Voice`}
+        options={SHERPA_VOICE_OPTIONS.map((v) => ({ id: v.id, label: v.name, description: v.description }))}
+        value={settings.sherpaVoice}
+        onChange={(v) => updateSetting('sherpaVoice', v as typeof settings.sherpaVoice)}
       />
 
       <SelectionSheet

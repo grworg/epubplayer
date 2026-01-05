@@ -269,26 +269,23 @@ async function handleInit(message: InitMessage) {
     } as ProgressResponse)
 
     // Initialize ONNX Runtime for WASM
+    // Use same version and path as Supertonic worker for consistency
     // @ts-expect-error - Dynamic import from CDN
-    const ortModule = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/esm/ort.min.js')
+    const ortModule = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.2/dist/ort.all.mjs')
     
-    // The module might export differently - check various patterns
-    const ort = ortModule.default || ortModule
+    console.log('[piperWorker] ONNX module loaded:', Object.keys(ortModule || {}).slice(0, 10))
     
-    console.log('[piperWorker] ONNX module loaded:', Object.keys(ort || {}).slice(0, 10))
-    
-    if (!ort || !ort.InferenceSession) {
+    if (!ortModule || !ortModule.InferenceSession) {
       throw new Error('ONNX Runtime failed to load. Try using Browser TTS instead.')
     }
     
-    // Configure ONNX Runtime for WASM (check if env exists first)
-    if (ort.env?.wasm) {
-      ort.env.wasm.numThreads = 1
-      ort.env.wasm.simd = true
-    }
+    // Configure ONNX Runtime for WASM - must disable proxy for worker context
+    ortModule.env.wasm.proxy = false
+    ortModule.env.wasm.numThreads = 1
+    ortModule.env.wasm.simd = true
     
     // Create inference session with WASM backend
-    const session = await ort.InferenceSession.create(modelBuffer, {
+    const session = await ortModule.InferenceSession.create(modelBuffer, {
       executionProviders: ['wasm'],
       graphOptimizationLevel: 'all',
     })
@@ -304,7 +301,7 @@ async function handleInit(message: InitMessage) {
       session,
       config: configJson,
       sampleRate: modelConfig.sampleRate,
-      ort,
+      ort: ortModule,
     }
     currentModelId = message.modelId
 

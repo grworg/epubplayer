@@ -21,3 +21,7 @@ export type { PiperConfig, PiperGeneratedAudio, PiperModelId } from './piperServ
 // Supertonic TTS service
 export { supertonicService, SUPERTONIC_VOICES } from './supertonicService'
 export type { SupertonicConfig, SupertonicGeneratedAudio, SupertonicVoiceId } from './supertonicService'
+
+// Sherpa-ONNX TTS service
+export { sherpaService, SHERPA_VOICES } from './sherpaService'
+export type { SherpaConfig, SherpaGeneratedAudio, SherpaVoiceId } from './sherpaService'

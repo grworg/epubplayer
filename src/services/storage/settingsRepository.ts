@@ -29,6 +29,9 @@ interface Settings {
   supertonicVoice: string
   supertonicDevice: 'wasm' | 'webgpu'
 
+  // Sherpa-ONNX settings
+  sherpaVoice: string
+
   // Playback settings
   defaultSpeed: number
   skipForwardSeconds: number
@@ -55,6 +58,7 @@ export const DEFAULT_SETTINGS: Settings = {
   piperModel: 'en_US-amy-medium',
   supertonicVoice: 'F1',
   supertonicDevice: 'webgpu', // Default to WebGPU for best performance; WASM is fallback
+  sherpaVoice: 'speaker-0', // Default Sherpa speaker
   defaultSpeed: 1.0,
   skipForwardSeconds: 30,
   skipBackSeconds: 30,
