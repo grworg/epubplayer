@@ -37,7 +37,13 @@ export function ReceiveLibraryPage() {
 
   const handleBack = () => {
     cancel()
-    navigate(-1)
+    // If there's no meaningful history (e.g., came directly from QR code scan),
+    // navigate to landing page instead of trying to go back
+    if (window.history.length <= 2) {
+      navigate('/')
+    } else {
+      navigate(-1)
+    }
   }
 
   const handleDone = () => {
