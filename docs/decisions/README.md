@@ -25,11 +25,12 @@ An Architecture Decision Record captures a significant architectural decision al
 | [ADR-0008](./0008-zustand-for-ui-state.md) | Zustand for UI State Management | Accepted | 2025-01-01 |
 | [ADR-0009](./0009-four-tts-engines.md) | Four TTS Engines with Graceful Fallback | Accepted | 2025-01-01 |
 | [ADR-0010](./0010-capability-based-tts-abstraction.md) | Capability-Based TTS Engine Abstraction | Accepted | 2025-01-01 |
-| [ADR-0011](./0011-peer-to-peer-library-transfer.md) | Peer-to-Peer Library Transfer via WebRTC | Proposed | 2025-12-31 |
+| [ADR-0011](./0011-peer-to-peer-library-transfer.md) | Peer-to-Peer Library Transfer via WebRTC | Accepted | 2025-12-31 |
 | [ADR-0012](./0012-supertonic-webgpu-memory-management.md) | Supertonic WebGPU Memory Management | Proposed | 2025-01-01 |
 | [ADR-0013](./0013-structured-logging-system.md) | Structured Logging System | Accepted | 2025-12-31 |
 | [ADR-0014](./0014-multi-book-context-switching.md) | Multi-Book Context Switching | Accepted | 2025-01-01 |
 | [ADR-0015](./0015-internationalization-with-lingui.md) | Internationalization with Lingui | Accepted | 2026-01-05 |
+| [ADR-0016](./0016-transfer-session-architecture.md) | Transfer Session Architecture | Accepted | 2026-01-06 |
 
 ## Creating a New ADR
 

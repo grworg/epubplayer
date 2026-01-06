@@ -1,250 +1,46 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+/**
+ * Share Library Page (Sender)
+ * 
+ * Displays QR code and waits for receiver to connect.
+ * Uses the new transfer session architecture (ADR-0016).
+ */
+
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
-import type Peer from 'peerjs'
-import type { DataConnection } from 'peerjs'
-import {
-  createPeerAndWait,
-  sendMessage,
-  sendBlob,
-  getShortCode,
-  type PeerServiceState,
-  type TransferMessage,
-} from '@/services/p2p'
+import { getShortCode } from '@/services/transfer'
 import { bookRepository } from '@/services/storage'
-import { db, type Book, hashBlob } from '@/services/storage/db'
 import { ChevronLeftIcon, LoaderIcon, CheckIcon, SmartphoneIcon, WifiIcon } from '@/ui/icons'
-
-type TransferState =
-  | { phase: 'initializing' }
-  | { phase: 'waiting'; peerId: string }
-  | { phase: 'connected' }
-  | { phase: 'comparing' } // New: comparing libraries
-  | { phase: 'transferring'; currentBook: string; currentIndex: number; totalBooks: number; skippedBooks: number; progress: number }
-  | { phase: 'complete'; bookCount: number; skippedCount: number }
-  | { phase: 'error'; message: string }
+import { useSenderSession } from './useTransferSession'
 
 export function ShareLibraryPage() {
   const navigate = useNavigate()
-  const [state, setState] = useState<TransferState>({ phase: 'initializing' })
-  const [_books, setBooks] = useState<Book[]>([])
+  const { state, cancel, reset } = useSenderSession()
   const [transferableCount, setTransferableCount] = useState(0)
-  const peerRef = useRef<Peer | null>(null)
-  const connectionRef = useRef<DataConnection | null>(null)
-  const abortControllerRef = useRef<AbortController | null>(null)
-  const receiverHashesRef = useRef<Set<string> | null>(null)
-  // Promise-based approach for receiving hashes (avoids race condition with polling)
-  const hashesReceivedResolveRef = useRef<((hashes: Set<string>) => void) | null>(null)
 
-  // Load books on mount and check which ones can be transferred
+  // Load book count on mount
   useEffect(() => {
-    bookRepository.getAll().then((allBooks) => {
-      setBooks(allBooks)
-      const withBlob = allBooks.filter(b => b.epubBlob && b.epubBlob.size > 0)
+    bookRepository.getAll().then((books) => {
+      const withBlob = books.filter(b => b.epubBlob && b.epubBlob.size > 0)
       setTransferableCount(withBlob.length)
-      console.log(`[Transfer:Sender] ${withBlob.length}/${allBooks.length} books have EPUB data`)
     })
   }, [])
 
-  // Initialize peer connection
-  useEffect(() => {
-    const abortController = new AbortController()
-    abortControllerRef.current = abortController
-
-    const handleStateChange = (peerState: PeerServiceState) => {
-      if (peerState.status === 'waiting' && peerState.peerId) {
-        setState({ phase: 'waiting', peerId: peerState.peerId })
-      } else if (peerState.status === 'connected') {
-        setState({ phase: 'connected' })
-      } else if (peerState.status === 'error') {
-        setState({ phase: 'error', message: peerState.error || 'Connection failed' })
-      }
-    }
-
-    const handleMessage = (message: TransferMessage) => {
-      // Handle receiver's book hashes for deduplication
-      if (message.type === 'my-books') {
-        console.log(`[Transfer:Sender] Received ${message.hashes.length} hashes from receiver`)
-        const hashes = new Set(message.hashes)
-        receiverHashesRef.current = hashes
-        // Resolve the promise if someone is waiting
-        if (hashesReceivedResolveRef.current) {
-          hashesReceivedResolveRef.current(hashes)
-          hashesReceivedResolveRef.current = null
-        }
-      }
-    }
-
-    createPeerAndWait(handleStateChange, handleMessage, abortController.signal)
-      .then(async (result) => {
-        if (result) {
-          peerRef.current = result.peer
-          connectionRef.current = result.connection
-          // Start transfer when connected
-          await startTransfer(result.connection)
-        }
-      })
-      .catch((err) => {
-        console.error('[Transfer:Sender] Connection/transfer failed:', err)
-        setState({ phase: 'error', message: err?.message || 'Transfer failed unexpectedly' })
-      })
-
-    return () => {
-      abortController.abort()
-      peerRef.current?.destroy()
-    }
-  }, [])
-
-  const startTransfer = useCallback(
-    async (connection: DataConnection) => {
-      console.log('[Transfer:Sender] Starting transfer process...')
-      setState({ phase: 'comparing' })
-      
-      // Wait for receiver to send their book hashes using Promise (avoids race condition)
-      console.log('[Transfer:Sender] Waiting for receiver to send their book hashes...')
-      
-      let receiverHashes: Set<string>
-      
-      // Check if hashes were already received (could happen if receiver was very fast)
-      if (receiverHashesRef.current) {
-        console.log('[Transfer:Sender] Hashes already received')
-        receiverHashes = receiverHashesRef.current
-      } else {
-        // Wait for hashes with timeout using Promise
-        const hashesPromise = new Promise<Set<string>>((resolve) => {
-          hashesReceivedResolveRef.current = resolve
-        })
-        
-        const timeoutPromise = new Promise<Set<string>>((resolve) => {
-          setTimeout(() => {
-            console.log('[Transfer:Sender] Timeout waiting for receiver hashes, proceeding with empty set')
-            resolve(new Set<string>())
-          }, 15000) // Increased timeout to 15 seconds for slow mobile IndexedDB
-        })
-        
-        receiverHashes = await Promise.race([hashesPromise, timeoutPromise])
-        hashesReceivedResolveRef.current = null // Clean up
-      }
-      
-      console.log(`[Transfer:Sender] Receiver has ${receiverHashes.size} books`)
-      
-      // Get all books and compute their hashes
-      const allBooks = await db.books.toArray()
-      const booksWithData: Array<{ book: Book; hash: string }> = []
-      
-      for (const book of allBooks) {
-        if (book.epubBlob && book.epubBlob.size > 0) {
-          // Use existing contentHash or compute it
-          const hash = book.contentHash || await hashBlob(book.epubBlob)
-          booksWithData.push({ book, hash })
-        }
-      }
-      
-      // Filter out books that receiver already has
-      const newBooks = booksWithData.filter(({ hash }) => !receiverHashes.has(hash))
-      const skippedBooks = booksWithData.filter(({ hash }) => receiverHashes.has(hash))
-      
-      console.log(`[Transfer:Sender] ${newBooks.length} new books to transfer, ${skippedBooks.length} already on receiver`)
-      if (skippedBooks.length > 0) {
-        console.log('[Transfer:Sender] Skipping (already on receiver):')
-        skippedBooks.forEach(({ book }) => console.log(`  - "${book.title}"`))
-      }
-      
-      // Send book count (including skipped info)
-      sendMessage(connection, { 
-        type: 'book-count', 
-        count: newBooks.length,
-        skipped: skippedBooks.length 
-      })
-      
-      if (newBooks.length === 0) {
-        console.log('[Transfer:Sender] No new books to transfer')
-        sendMessage(connection, { type: 'all-complete' })
-        setState({ phase: 'complete', bookCount: 0, skippedCount: skippedBooks.length })
-        return
-      }
-
-      // Transfer each new book
-      let successCount = 0
-      for (let i = 0; i < newBooks.length; i++) {
-        const { book, hash } = newBooks[i]
-        const epubBlob = book.epubBlob!
-        
-        console.log(`[Transfer:Sender] Starting book ${i + 1}/${newBooks.length}: "${book.title}"`)
-        
-        setState({
-          phase: 'transferring',
-          currentBook: book.title,
-          currentIndex: i + 1,
-          totalBooks: newBooks.length,
-          skippedBooks: skippedBooks.length,
-          progress: 0,
-        })
-
-        // Send book metadata with content hash
-        const sizeKB = (epubBlob.size / 1024).toFixed(1)
-        console.log(`[Transfer:Sender] Sending metadata for "${book.title}" (${sizeKB} KB, hash: ${hash})`)
-        
-        sendMessage(connection, {
-          type: 'book-start',
-          id: book.id,
-          title: book.title,
-          author: book.author,
-          size: epubBlob.size,
-          contentHash: hash,
-        })
-
-        // Send the EPUB blob
-        console.log(`[Transfer:Sender] Sending EPUB data for "${book.title}"...`)
-        await sendBlob(connection, epubBlob)
-        console.log(`[Transfer:Sender] ✓ EPUB data sent for "${book.title}"`)
-
-        // Signal book complete
-        sendMessage(connection, { type: 'book-complete', id: book.id })
-        successCount++
-
-        setState({
-          phase: 'transferring',
-          currentBook: book.title,
-          currentIndex: i + 1,
-          totalBooks: newBooks.length,
-          skippedBooks: skippedBooks.length,
-          progress: 100,
-        })
-
-        // Small delay between books
-        await new Promise((r) => setTimeout(r, 100))
-      }
-
-      // All done
-      console.log(`[Transfer:Sender] ✓ ${successCount} books transferred, ${skippedBooks.length} skipped (already on device)`)
-      sendMessage(connection, { type: 'all-complete' })
-      setState({ phase: 'complete', bookCount: successCount, skippedCount: skippedBooks.length })
-    },
-    []
-  )
-
   const handleBack = () => {
-    abortControllerRef.current?.abort()
-    peerRef.current?.destroy()
+    cancel()
     navigate(-1)
   }
 
   const handleDone = () => {
-    peerRef.current?.destroy()
     navigate('/app')
   }
 
   const handleRetry = () => {
-    peerRef.current?.destroy()
-    setState({ phase: 'initializing' })
-    // Re-trigger the effect by remounting (navigate away and back)
-    navigate('/app')
-    setTimeout(() => navigate('/app/share-library'), 0)
+    reset()
   }
 
-  // Generate the QR code URL
-  const qrUrl = state.phase === 'waiting' 
+  // Generate QR code URL
+  const qrUrl = state.peerId
     ? `${window.location.origin}/app/receive-library?peer=${getShortCode(state.peerId)}`
     : ''
 
@@ -264,44 +60,62 @@ export function ShareLibraryPage() {
 
       {/* Content */}
       <div className="flex flex-1 flex-col items-center justify-center px-6 pb-8">
-        {state.phase === 'initializing' && <InitializingState />}
-        
-        {state.phase === 'waiting' && (
+        {(state.status === 'idle' || state.status === 'initializing') && (
+          <InitializingState />
+        )}
+
+        {state.status === 'awaiting-peer' && state.peerId && (
           <WaitingState 
             peerId={state.peerId} 
             qrUrl={qrUrl} 
             bookCount={transferableCount} 
           />
         )}
-        
-        {state.phase === 'connected' && <ConnectedState />}
-        
-        {state.phase === 'comparing' && <ComparingState />}
-        
-        {state.phase === 'transferring' && (
+
+        {(state.status === 'handshaking' || state.status === 'comparing') && (
+          <ConnectedState />
+        )}
+
+        {state.status === 'transferring' && state.plan && (
           <TransferringState
-            currentBook={state.currentBook}
-            currentIndex={state.currentIndex}
-            totalBooks={state.totalBooks}
-            skippedBooks={state.skippedBooks}
+            currentBook={state.plan.books[state.currentBookIndex]?.title ?? ''}
+            currentIndex={state.currentBookIndex + 1}
+            totalBooks={state.plan.books.length}
+            skippedBooks={state.plan.skippedCount}
           />
         )}
-        
-        {state.phase === 'complete' && (
+
+        {state.status === 'complete' && state.stats && (
           <CompleteState 
-            bookCount={state.bookCount} 
-            skippedCount={state.skippedCount}
+            bookCount={state.stats.booksTransferred} 
+            skippedCount={state.stats.booksSkipped}
             onDone={handleDone} 
           />
         )}
-        
-        {state.phase === 'error' && (
-          <ErrorState message={state.message} onRetry={handleRetry} onBack={handleBack} />
+
+        {state.status === 'error' && state.error && (
+          <ErrorState 
+            message={state.error.message} 
+            onRetry={handleRetry} 
+            onBack={handleBack} 
+          />
+        )}
+
+        {state.status === 'cancelled' && (
+          <ErrorState 
+            message="Transfer was cancelled" 
+            onRetry={handleRetry} 
+            onBack={handleBack} 
+          />
         )}
       </div>
     </div>
   )
 }
+
+// ============================================================================
+// State Components
+// ============================================================================
 
 function InitializingState() {
   return (
@@ -380,23 +194,11 @@ function WaitingState({ peerId, qrUrl, bookCount }: { peerId: string; qrUrl: str
 function ConnectedState() {
   return (
     <div className="text-center">
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-success/20">
-        <CheckIcon className="h-10 w-10 text-success" />
-      </div>
-      <h2 className="text-xl font-semibold text-text-primary">Connected!</h2>
-      <p className="mt-2 text-text-secondary">Starting transfer...</p>
-    </div>
-  )
-}
-
-function ComparingState() {
-  return (
-    <div className="text-center">
       <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-accent/20">
         <LoaderIcon className="h-10 w-10 text-accent" />
       </div>
-      <h2 className="text-xl font-semibold text-text-primary">Comparing Libraries</h2>
-      <p className="mt-2 text-text-secondary">Checking which books need to be transferred...</p>
+      <h2 className="text-xl font-semibold text-text-primary">Connected!</h2>
+      <p className="mt-2 text-text-secondary">Comparing libraries...</p>
     </div>
   )
 }
@@ -412,7 +214,7 @@ function TransferringState({
   totalBooks: number
   skippedBooks: number
 }) {
-  const progress = (currentIndex / totalBooks) * 100
+  const progress = totalBooks > 0 ? (currentIndex / totalBooks) * 100 : 0
 
   return (
     <div className="w-full max-w-sm text-center">
@@ -440,9 +242,11 @@ function TransferringState({
         />
       </div>
       
-      <p className="text-sm text-text-muted">
-        Sending: <span className="text-text-secondary">{currentBook}</span>
-      </p>
+      {currentBook && (
+        <p className="text-sm text-text-muted">
+          Sending: <span className="text-text-secondary">{currentBook}</span>
+        </p>
+      )}
     </div>
   )
 }
@@ -536,4 +340,3 @@ function ErrorState({
     </div>
   )
 }
-

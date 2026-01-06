@@ -1,6 +1,6 @@
 # Peer-to-Peer Library Transfer via WebRTC
 
-- **Status**: Accepted
+- **Status**: Accepted (implementation details superseded by [ADR-0016](./0016-transfer-session-architecture.md))
 - **Date**: 2025-12-31
 - **Deciders**: Ben
 

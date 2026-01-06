@@ -1,254 +1,52 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import type { DataConnection } from 'peerjs'
-import type Peer from 'peerjs'
-import {
-  connectToPeer,
-  sendMessage,
-  type PeerServiceState,
-  type TransferMessage,
-} from '@/services/p2p'
-import { parseEPUB } from '@/services/epub'
-import { bookRepository, sectionRepository, playbackRepository } from '@/services/storage'
-import { settingsRepository } from '@/services/storage/settingsRepository'
-import { hashBlob } from '@/services/storage/db'
-import { ChevronLeftIcon, LoaderIcon, CheckIcon, SmartphoneIcon, WifiIcon } from '@/ui/icons'
+/**
+ * Receive Library Page (Receiver)
+ * 
+ * Allows entering a code or scanning QR to connect and receive books.
+ * Uses the new transfer session architecture (ADR-0016).
+ */
 
-type ReceiveState =
-  | { phase: 'input' }
-  | { phase: 'connecting' }
-  | { phase: 'connected' }
-  | { phase: 'receiving'; totalBooks: number; completedBooks: number; skippedBooks: number; currentBook?: string }
-  | { phase: 'complete'; bookCount: number; skippedCount: number }
-  | { phase: 'error'; message: string }
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { ChevronLeftIcon, LoaderIcon, CheckIcon, SmartphoneIcon, WifiIcon } from '@/ui/icons'
+import { useReceiverSession } from './useTransferSession'
 
 export function ReceiveLibraryPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const [state, setState] = useState<ReceiveState>({ phase: 'input' })
+  const { state, start, cancel, reset } = useReceiverSession()
   const [code, setCode] = useState('')
-  const peerRef = useRef<Peer | null>(null)
-  const connectionRef = useRef<DataConnection | null>(null)
-  const abortControllerRef = useRef<AbortController | null>(null)
   
-  // Track incoming book data
-  const pendingBookRef = useRef<{
-    id: string
-    title: string
-    author: string
-    size: number
-    contentHash: string
-  } | null>(null)
-  const completedCountRef = useRef(0)
-  const totalBooksRef = useRef(0)
-  const skippedBooksRef = useRef(0)
+  // Track if we've auto-started from URL params
+  const hasAutoStartedRef = useRef(false)
 
-  // Track if we've initiated connection to prevent double-connect (for QR code auto-connect)
-  const hasInitiatedConnectionRef = useRef(false)
-
-  const handleMessage = useCallback(async (message: TransferMessage) => {
-    const timestamp = new Date().toISOString().split('T')[1].slice(0, 12)
-    const log = (msg: string, data?: unknown) => {
-      if (data !== undefined) {
-        console.log(`[${timestamp}] [Transfer:Receiver] ${msg}`, data)
-      } else {
-        console.log(`[${timestamp}] [Transfer:Receiver] ${msg}`)
-      }
-    }
-    
-    switch (message.type) {
-      case 'book-count':
-        log(`Expecting ${message.count} new books from sender (${message.skipped} already on this device)`)
-        totalBooksRef.current = message.count
-        skippedBooksRef.current = message.skipped
-        completedCountRef.current = 0
-        setState({
-          phase: 'receiving',
-          totalBooks: message.count,
-          completedBooks: 0,
-          skippedBooks: message.skipped,
-        })
-        break
-        
-      case 'book-start':
-        log(`Starting to receive: "${message.title}" by ${message.author} (${(message.size / 1024).toFixed(1)} KB, hash: ${message.contentHash})`)
-        pendingBookRef.current = {
-          id: message.id,
-          title: message.title,
-          author: message.author,
-          size: message.size,
-          contentHash: message.contentHash,
-        }
-        setState((prev) =>
-          prev.phase === 'receiving'
-            ? { ...prev, currentBook: message.title }
-            : prev
-        )
-        break
-        
-      case 'book-data':
-        if (pendingBookRef.current) {
-          const book = pendingBookRef.current
-          log(`Received EPUB data for "${book.title}" (${(message.data.byteLength / 1024).toFixed(1)} KB)`)
-          
-          try {
-            // Convert ArrayBuffer to Blob/File
-            log(`Converting to File object...`)
-            const blob = new Blob([message.data], { type: 'application/epub+zip' })
-            const file = new File([blob], `${book.title}.epub`, {
-              type: 'application/epub+zip',
-            })
-            
-            // Verify content hash
-            const computedHash = await hashBlob(file)
-            if (computedHash !== book.contentHash) {
-              console.warn(`[Transfer:Receiver] Hash mismatch for "${book.title}": expected ${book.contentHash}, got ${computedHash}`)
-            }
-            
-            // Parse and save the EPUB using existing import logic
-            log(`Parsing EPUB...`)
-            const { book: parsedBook, sections } = await parseEPUB(file)
-            log(`Parsed: "${parsedBook.title}" with ${sections.length} sections`)
-            
-            // Check if book already exists (by ID or hash)
-            const existsById = await bookRepository.exists(parsedBook.id)
-            const existsByHash = await bookRepository.existsByContentHash(book.contentHash)
-            
-            if (!existsById && !existsByHash) {
-              log(`Saving book to IndexedDB...`)
-              await bookRepository.add({
-                ...parsedBook,
-                epubBlob: file,
-                contentHash: book.contentHash,
-              })
-              if (sections.length > 0) {
-                await sectionRepository.addBulk(sections)
-              }
-              
-              // Initialize playback state
-              const voiceId = await settingsRepository.get('voiceId')
-              const modelConfig = await settingsRepository.get('modelConfig')
-              await playbackRepository.initialize(parsedBook.id, voiceId, modelConfig)
-              
-              log(`✓ Successfully imported: "${parsedBook.title}"`)
-            } else {
-              log(`⚠ Book already exists in library: "${parsedBook.title}" - skipping`)
-            }
-          } catch (err) {
-            console.error(`[Transfer:Receiver] ✗ Failed to import "${book.title}":`, err)
-          }
-        } else {
-          console.warn('[Transfer:Receiver] Received book-data without pending book metadata!')
-        }
-        break
-        
-      case 'book-complete':
-        completedCountRef.current++
-        log(`✓ Book ${completedCountRef.current}/${totalBooksRef.current} complete`)
-        pendingBookRef.current = null
-        setState((prev) =>
-          prev.phase === 'receiving'
-            ? {
-                ...prev,
-                completedBooks: completedCountRef.current,
-                currentBook: undefined,
-              }
-            : prev
-        )
-        break
-        
-      case 'all-complete':
-        log(`✓ Transfer complete! Received ${completedCountRef.current} new books (${skippedBooksRef.current} were already here)`)
-        setState({
-          phase: 'complete',
-          bookCount: completedCountRef.current,
-          skippedCount: skippedBooksRef.current,
-        })
-        break
-        
-      case 'error':
-        console.error('[Transfer:Receiver] Error from sender:', message.message)
-        setState({ phase: 'error', message: message.message })
-        break
-    }
-  }, [])
-
-  const handleConnect = useCallback(async (targetCode?: string) => {
-    const codeToUse = targetCode || code
-    if (!codeToUse.trim()) return
-    
-    console.log(`[Transfer:Receiver] User initiated connection with code: ${codeToUse}`)
-    setState({ phase: 'connecting' })
-    
-    const abortController = new AbortController()
-    abortControllerRef.current = abortController
-    
-    const handleStateChange = (peerState: PeerServiceState) => {
-      console.log(`[Transfer:Receiver] Connection state changed: ${peerState.status}`, peerState.error ? `(${peerState.error})` : '')
-      if (peerState.status === 'connected') {
-        console.log('[Transfer:Receiver] ✓ Connected to sender')
-        setState({ phase: 'connected' })
-      } else if (peerState.status === 'error') {
-        console.error('[Transfer:Receiver] ✗ Connection failed:', peerState.error)
-        setState({ phase: 'error', message: peerState.error || 'Connection failed' })
-      }
-    }
-    
-    const result = await connectToPeer(
-      codeToUse,
-      handleStateChange,
-      handleMessage,
-      abortController.signal
-    )
-    
-    if (result) {
-      console.log('[Transfer:Receiver] Connection established, peer and connection refs set')
-      peerRef.current = result.peer
-      connectionRef.current = result.connection
-      
-      // Send our book hashes for deduplication
-      console.log('[Transfer:Receiver] Fetching local book hashes for deduplication...')
-      const myHashes = await bookRepository.getAllContentHashes()
-      console.log(`[Transfer:Receiver] Sending ${myHashes.length} book hashes to sender`)
-      sendMessage(result.connection, { type: 'my-books', hashes: myHashes })
-      console.log('[Transfer:Receiver] Waiting for books...')
-    } else {
-      console.log('[Transfer:Receiver] Connection attempt returned null (aborted or failed)')
-    }
-  }, [code, handleMessage])
-
-  // Check for peer ID in URL params (from QR code) and auto-connect
+  // Auto-connect if peer param is in URL (from QR code)
   useEffect(() => {
     const peerParam = searchParams.get('peer')
-    if (peerParam && !hasInitiatedConnectionRef.current) {
-      hasInitiatedConnectionRef.current = true
-      setCode(peerParam)
-      // Auto-connect when coming from QR code
-      handleConnect(peerParam)
+    if (peerParam && !hasAutoStartedRef.current) {
+      hasAutoStartedRef.current = true
+      setCode(peerParam.toUpperCase())
+      start(peerParam)
     }
-    
-    // Cleanup: if component unmounts during connection, abort it
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort()
-      }
+  }, [searchParams, start])
+
+  const handleConnect = () => {
+    if (code.length === 6) {
+      start(code)
     }
-  }, [searchParams, handleConnect])
+  }
 
   const handleBack = () => {
-    abortControllerRef.current?.abort()
-    peerRef.current?.destroy()
+    cancel()
     navigate(-1)
   }
 
   const handleDone = () => {
-    peerRef.current?.destroy()
     navigate('/app')
   }
 
   const handleRetry = () => {
-    peerRef.current?.destroy()
-    setState({ phase: 'input' })
+    reset()
+    hasAutoStartedRef.current = false
     setCode('')
   }
 
@@ -274,42 +72,60 @@ export function ReceiveLibraryPage() {
 
       {/* Content */}
       <div className="flex flex-1 flex-col items-center justify-center px-6 pb-8">
-        {state.phase === 'input' && (
+        {state.status === 'idle' && (
           <InputState
             code={code}
             onCodeChange={handleCodeChange}
-            onConnect={() => handleConnect()}
+            onConnect={handleConnect}
           />
         )}
-        
-        {state.phase === 'connecting' && <ConnectingState />}
-        
-        {state.phase === 'connected' && <ConnectedState />}
-        
-        {state.phase === 'receiving' && (
+
+        {state.status === 'connecting' && <ConnectingState />}
+
+        {(state.status === 'handshaking' || state.status === 'comparing') && (
+          <ConnectedState />
+        )}
+
+        {state.status === 'transferring' && state.plan && (
           <ReceivingState
-            totalBooks={state.totalBooks}
+            totalBooks={state.plan.books.length}
             completedBooks={state.completedBooks}
-            skippedBooks={state.skippedBooks}
-            currentBook={state.currentBook}
+            skippedBooks={state.plan.skippedCount}
+            currentBook={state.plan.books[state.currentBookIndex]?.title}
           />
         )}
-        
-        {state.phase === 'complete' && (
+
+        {state.status === 'complete' && state.stats && (
           <CompleteState 
-            bookCount={state.bookCount} 
-            skippedCount={state.skippedCount}
+            bookCount={state.stats.booksTransferred} 
+            skippedCount={state.stats.booksSkipped}
             onDone={handleDone} 
           />
         )}
-        
-        {state.phase === 'error' && (
-          <ErrorState message={state.message} onRetry={handleRetry} onBack={handleBack} />
+
+        {state.status === 'error' && state.error && (
+          <ErrorState 
+            message={state.error.message} 
+            onRetry={handleRetry} 
+            onBack={handleBack} 
+          />
+        )}
+
+        {state.status === 'cancelled' && (
+          <ErrorState 
+            message="Transfer was cancelled" 
+            onRetry={handleRetry} 
+            onBack={handleBack} 
+          />
         )}
       </div>
     </div>
   )
 }
+
+// ============================================================================
+// State Components
+// ============================================================================
 
 function InputState({
   code,
@@ -421,7 +237,7 @@ function ConnectedState() {
         <CheckIcon className="h-10 w-10 text-success" />
       </div>
       <h2 className="text-xl font-semibold text-text-primary">Connected!</h2>
-      <p className="mt-2 text-text-secondary">Waiting for books...</p>
+      <p className="mt-2 text-text-secondary">Comparing libraries...</p>
     </div>
   )
 }
@@ -572,4 +388,3 @@ function ErrorState({
     </div>
   )
 }
-
