@@ -1,21 +1,41 @@
 /**
  * PDF Parser
  *
- * Extracts text from PDF files using PDF.js (Web Worker) with
- * optional OCR fallback via Tesseract.js for scanned documents.
+ * Extracts text from PDF files using PDF.js with optional OCR fallback
+ * via Tesseract.js for scanned documents.
+ *
+ * PDF.js manages its own internal web worker for heavy parsing,
+ * so we run it on the main thread and let it handle concurrency.
  *
  * Produces ParsedContent for the shared import pipeline.
  */
 
+import * as pdfjsLib from 'pdfjs-dist'
 import { createLogger } from '@/services/logging'
-import { handleWorkerLog } from '@/services/logging'
 import { hashBlob } from '@/services/storage/db'
 import { detectSectionsFromTextBlocks } from './sectionDetector'
 import type { ParsedContent, ImportProgressCallback, TextBlock } from './types'
-import type { PDFWorkerMessage, PDFTextItem } from './pdfWorker'
-import type { OCRWorkerMessage } from './ocrWorker'
 
 const log = createLogger('import')
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString()
+
+// ============================================================================
+// Types
+// ============================================================================
+
+interface PDFTextItem {
+  text: string
+  fontSize: number
+  fontName: string
+  pageIndex: number
+}
+
+const SCANNED_CHARS_PER_PAGE_THRESHOLD = 50
 
 // ============================================================================
 // Public API
@@ -23,9 +43,6 @@ const log = createLogger('import')
 
 export interface PDFParseOptions {
   onProgress?: ImportProgressCallback
-  /**
-   * Called when a scanned PDF is detected. Return true to proceed with OCR.
-   */
   onScanDetected?: () => Promise<boolean>
 }
 
@@ -41,16 +58,16 @@ export async function parsePDF(
   const arrayBuffer = await file.arrayBuffer()
   const contentHash = await hashBlob(file)
 
-  // Run PDF.js extraction in a worker
+  // Extract text using PDF.js (it manages its own worker internally)
   onProgress?.('Extracting text...', 10)
-  const extraction = await runPDFWorker(arrayBuffer, onProgress)
+  const extraction = await extractPDFText(arrayBuffer, onProgress)
 
   let textBlocks: TextBlock[]
 
   if (extraction.isLikelyScanned) {
     log.info('Scanned PDF detected', {
       avgCharsPerPage: Math.round(
-        extraction.metadata.totalChars / Math.max(1, extraction.metadata.pageCount),
+        extraction.totalChars / Math.max(1, extraction.pageCount),
       ),
     })
 
@@ -58,22 +75,20 @@ export async function parsePDF(
 
     if (shouldOCR) {
       onProgress?.('Running OCR...', 30)
-      const ocrText = await runOCR(arrayBuffer, extraction.metadata.pageCount, onProgress)
+      const ocrText = await runOCR(arrayBuffer, extraction.pageCount, onProgress)
       textBlocks = ocrText.map((page) => ({
         text: page.text,
         pageIndex: page.pageIndex,
       }))
     } else {
-      // Use whatever sparse text we got from PDF.js
       textBlocks = extraction.items.map(itemToTextBlock)
     }
   } else {
     textBlocks = extraction.items.map(itemToTextBlock)
   }
 
-  // Detect sections
   onProgress?.('Detecting sections...', 80)
-  const title = extraction.metadata.title || stripExtension(file.name)
+  const title = extraction.title || stripExtension(file.name)
   const sections = detectSectionsFromTextBlocks(textBlocks, title)
 
   onProgress?.('Done', 100)
@@ -87,7 +102,7 @@ export async function parsePDF(
   return {
     metadata: {
       title,
-      author: extraction.metadata.author || 'Unknown Author',
+      author: extraction.author || 'Unknown Author',
       sourceType: 'pdf',
     },
     sections,
@@ -97,116 +112,103 @@ export async function parsePDF(
 }
 
 // ============================================================================
-// Worker Coordination
+// PDF.js Text Extraction
 // ============================================================================
 
 interface PDFExtraction {
   items: PDFTextItem[]
-  metadata: {
-    title?: string
-    author?: string
-    pageCount: number
-    totalChars: number
-  }
+  title?: string
+  author?: string
+  pageCount: number
+  totalChars: number
   isLikelyScanned: boolean
 }
 
-function runPDFWorker(
+async function extractPDFText(
   arrayBuffer: ArrayBuffer,
   onProgress?: ImportProgressCallback,
 ): Promise<PDFExtraction> {
-  return new Promise((resolve, reject) => {
-    const worker = new Worker(
-      new URL('./pdfWorker.ts', import.meta.url),
-      { type: 'module' },
-    )
+  const pdf = await pdfjsLib.getDocument({
+    data: arrayBuffer,
+    useSystemFonts: true,
+  }).promise
 
-    worker.onmessage = (e: MessageEvent<PDFWorkerMessage>) => {
-      if (e.data.type === 'log') {
-        handleWorkerLog(e.data as never)
-        return
-      }
+  const pageCount = pdf.numPages
+  log.info('PDF loaded', { pages: pageCount })
 
-      switch (e.data.type) {
-        case 'progress': {
-          const pct = Math.round((e.data.current / e.data.total) * 70) + 10
-          onProgress?.(e.data.step, pct)
-          break
-        }
-        case 'result':
-          worker.terminate()
-          resolve({
-            items: e.data.items,
-            metadata: e.data.metadata,
-            isLikelyScanned: e.data.isLikelyScanned,
-          })
-          break
-        case 'error':
-          worker.terminate()
-          reject(new Error(e.data.message))
-          break
-      }
+  const pdfMetadata = await pdf.getMetadata().catch(() => null)
+  const info = pdfMetadata?.info as Record<string, string> | undefined
+
+  const items: PDFTextItem[] = []
+  let totalChars = 0
+
+  for (let i = 0; i < pageCount; i++) {
+    const pct = Math.round(((i + 1) / pageCount) * 70) + 10
+    onProgress?.(`Extracting text (page ${i + 1}/${pageCount})...`, pct)
+
+    const page = await pdf.getPage(i + 1)
+    const content = await page.getTextContent()
+
+    for (const item of content.items) {
+      if (!('str' in item)) continue
+      const text = item.str
+      if (!text.trim()) continue
+
+      const fontSize = Math.abs(item.transform?.[0] ?? 12)
+      const fontName = item.fontName ?? ''
+
+      items.push({ text, fontSize, fontName, pageIndex: i })
+      totalChars += text.length
     }
+  }
 
-    worker.onerror = (error) => {
-      worker.terminate()
-      reject(new Error(error.message || 'PDF worker failed'))
-    }
+  const avgCharsPerPage = pageCount > 0 ? totalChars / pageCount : 0
 
-    worker.postMessage({ type: 'extract', arrayBuffer }, [arrayBuffer])
-  })
+  return {
+    items,
+    title: info?.Title || undefined,
+    author: info?.Author || undefined,
+    pageCount,
+    totalChars,
+    isLikelyScanned: avgCharsPerPage < SCANNED_CHARS_PER_PAGE_THRESHOLD,
+  }
 }
+
+// ============================================================================
+// OCR (on-demand Tesseract.js)
+// ============================================================================
 
 async function runOCR(
   pdfArrayBuffer: ArrayBuffer,
   pageCount: number,
   onProgress?: ImportProgressCallback,
 ): Promise<{ pageIndex: number; text: string }[]> {
-  // Render PDF pages to images first using PDF.js on the main thread
-  // (canvas rendering requires DOM access, can't run in worker)
   onProgress?.('Rendering pages for OCR...', 30)
   const pageImages = await renderPDFPagesToImages(pdfArrayBuffer, pageCount, onProgress)
 
-  return new Promise((resolve, reject) => {
-    const worker = new Worker(
-      new URL('./ocrWorker.ts', import.meta.url),
-      { type: 'module' },
-    )
+  onProgress?.('Loading OCR engine...', 50)
+  const Tesseract = await import('tesseract.js')
+  const worker = await Tesseract.createWorker('eng')
 
-    worker.onmessage = (e: MessageEvent<OCRWorkerMessage>) => {
-      if (e.data.type === 'log') {
-        handleWorkerLog(e.data as never)
-        return
-      }
+  const results: { pageIndex: number; text: string }[] = []
 
-      switch (e.data.type) {
-        case 'progress': {
-          const pct = Math.round((e.data.current / e.data.total) * 40) + 50
-          onProgress?.(e.data.step, pct)
-          break
-        }
-        case 'result':
-          worker.terminate()
-          resolve(e.data.pages)
-          break
-        case 'error':
-          worker.terminate()
-          reject(new Error(e.data.message))
-          break
-      }
-    }
+  for (let i = 0; i < pageImages.length; i++) {
+    const pct = Math.round(((i + 1) / pageImages.length) * 40) + 50
+    onProgress?.(`OCR page ${i + 1} of ${pageImages.length}...`, pct)
 
-    worker.onerror = (error) => {
-      worker.terminate()
-      reject(new Error(error.message || 'OCR worker failed'))
-    }
+    const imageBlob = new Blob([pageImages[i]], { type: 'image/png' })
+    const result = await worker.recognize(imageBlob)
+    results.push({ pageIndex: i, text: result.data.text })
+  }
 
-    const transferable = pageImages.map((img) => img.buffer)
-    worker.postMessage(
-      { type: 'recognize', pageImages, language: 'eng' },
-      transferable as Transferable[],
-    )
+  await worker.terminate()
+
+  log.info('OCR complete', {
+    pages: results.length,
+    totalChars: results.reduce((sum, p) => sum + p.text.length, 0),
   })
+
+  return results
 }
 
 async function renderPDFPagesToImages(
@@ -214,12 +216,6 @@ async function renderPDFPagesToImages(
   pageCount: number,
   onProgress?: ImportProgressCallback,
 ): Promise<ArrayBuffer[]> {
-  const pdfjsLib = await import('pdfjs-dist')
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-  ).toString()
-
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise
   const images: ArrayBuffer[] = []
   const canvas = document.createElement('canvas')
