@@ -19,7 +19,6 @@ import type {
 import {
   parseEPUBToContent,
   parsePDF,
-  parseWebUrl,
   parseText,
   parseMultiPageWebsite,
   fetchAndDiscover,

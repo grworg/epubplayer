@@ -229,7 +229,7 @@ async function renderPDFPagesToImages(
     canvas.width = viewport.width
     canvas.height = viewport.height
 
-    await page.render({ canvasContext: ctx, viewport }).promise
+    await page.render({ canvasContext: ctx, viewport, canvas }).promise
 
     const blob = await new Promise<Blob>((resolve) =>
       canvas.toBlob((b) => resolve(b!), 'image/png'),

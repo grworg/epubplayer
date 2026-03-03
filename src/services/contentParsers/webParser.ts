@@ -20,11 +20,14 @@ const log = createLogger('import')
  * The caller can catch this and try Jina Reader as a fallback.
  */
 export class ThinContentError extends Error {
-  constructor(public readonly extractedChars: number) {
+  readonly extractedChars: number
+
+  constructor(extractedChars: number) {
     super(
       'Very little text was extracted. The site may use JavaScript to load content.',
     )
     this.name = 'ThinContentError'
+    this.extractedChars = extractedChars
   }
 }
 
@@ -95,7 +98,7 @@ export async function parseHtmlContent(
   })
 
   onProgress?.('Detecting sections...', 70)
-  const htmlBlocks = extractHtmlBlocks(article.content)
+  const htmlBlocks = extractHtmlBlocks(article.content ?? '')
   const title = article.title || extractTitleFromUrl(sourceUrl) || 'Untitled'
   const sections = detectSectionsFromHtml(htmlBlocks, title)
   const contentHash = await hashText(article.textContent)
@@ -106,7 +109,7 @@ export async function parseHtmlContent(
     metadata: {
       title,
       author: article.byline || 'Unknown Author',
-      description: article.excerpt || undefined,
+      description: article.excerpt ?? undefined,
       sourceType: 'web',
       sourceUrl,
     },

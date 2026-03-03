@@ -41,12 +41,12 @@ export interface RenderedContent {
 }
 
 export class FetchError extends Error {
-  constructor(
-    message: string,
-    public readonly triedStrategies: FetchStrategy[],
-  ) {
+  readonly triedStrategies: FetchStrategy[]
+
+  constructor(message: string, triedStrategies: FetchStrategy[]) {
     super(message)
     this.name = 'FetchError'
+    this.triedStrategies = triedStrategies
   }
 }
 

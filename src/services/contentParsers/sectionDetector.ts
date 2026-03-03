@@ -43,7 +43,7 @@ export function detectSectionsFromTextBlocks(
   blocks: TextBlock[],
   fallbackTitle: string,
 ): DetectedSection[] {
-  if (blocks.length === 0) return [singleSection(fallbackTitle, '')]
+  if (blocks.length === 0) return singleSection(fallbackTitle, '')
 
   const bodyFontSize = computeBodyFontSize(blocks)
   // Require 50% larger than body text to be a heading — very conservative
@@ -113,7 +113,7 @@ export function detectSectionsFromHtml(
   htmlBlocks: HtmlBlock[],
   fallbackTitle: string,
 ): DetectedSection[] {
-  if (htmlBlocks.length === 0) return [singleSection(fallbackTitle, '')]
+  if (htmlBlocks.length === 0) return singleSection(fallbackTitle, '')
 
   // Only split on H1 — the strongest signal of a true section boundary
   const raw: { title: string; texts: string[]; confidence: SectionConfidence }[] = []
@@ -155,7 +155,7 @@ export function detectSectionsFromHtml(
   )
   if (!allSubstantial || sections.length <= 1) {
     const allText = sections.map((s) => s.textContent).join(' ')
-    return [singleSection(fallbackTitle, allText)]
+    return singleSection(fallbackTitle, allText)
   }
 
   return cleanupSections(sections, fallbackTitle)
@@ -170,7 +170,7 @@ export function detectSectionsFromPlainText(
   fallbackTitle: string,
 ): DetectedSection[] {
   const normalized = text.replace(/\r\n/g, '\n').trim()
-  if (!normalized) return [singleSection(fallbackTitle, '')]
+  if (!normalized) return singleSection(fallbackTitle, '')
 
   const lines = normalized.split('\n')
 
@@ -326,7 +326,7 @@ function cleanupSections(
   let cleaned = sections.filter((s) => s.textContent.trim().length > 0)
 
   if (cleaned.length === 0) {
-    return [singleSection(fallbackTitle, '')]
+    return singleSection(fallbackTitle, '')
   }
 
   // Merge undersized sections into their next neighbor
