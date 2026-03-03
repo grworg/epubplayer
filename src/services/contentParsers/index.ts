@@ -16,7 +16,7 @@ export type { EPUBParseOptions } from './epubAdapter'
 export { parsePDF } from './pdfParser'
 export type { PDFParseOptions } from './pdfParser'
 
-export { parseWebUrl, parseHtmlContent, fetchAndDiscover, parseMultiPageWebsite, discoverPages } from './webParser'
+export { parseWebUrl, parseHtmlContent, parseUrlWithReader, fetchAndDiscover, parseMultiPageWebsite, discoverPages, ThinContentError } from './webParser'
 export type { WebParseOptions } from './webParser'
 
 export { discoverLinkedPages } from './linkDiscovery'
@@ -25,7 +25,8 @@ export type { DiscoveredPage } from './linkDiscovery'
 export { parseText } from './textParser'
 export type { TextParseOptions } from './textParser'
 
-export { fetchUrl, FetchError } from './fetchService'
+export { fetchUrl, fetchRenderedContent, FetchError } from './fetchService'
+export type { RenderedContent } from './fetchService'
 
 export {
   detectSectionsFromTextBlocks,

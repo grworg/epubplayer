@@ -24,8 +24,10 @@ import {
   parseMultiPageWebsite,
   fetchAndDiscover,
   parseHtmlContent,
+  parseUrlWithReader,
   collapseToSingleSection,
   FetchError,
+  ThinContentError,
 } from '@/services/contentParsers'
 import { saveImportedContent } from './saveImport'
 
@@ -149,10 +151,10 @@ export function useImport() {
       })
 
       try {
+        // Step 1: Fetch HTML and discover sibling pages
         const { html, finalUrl, pages } = await fetchAndDiscover(url, updateProgress)
 
         if (pages.length >= 2) {
-          // Multi-page site detected — show page picker
           setState((prev) => ({
             ...prev,
             step: 'pagePicker',
@@ -161,11 +163,44 @@ export function useImport() {
             fetchedUrl: finalUrl,
             progressLabel: '',
           }))
-        } else {
-          // Single page — parse directly
-          updateProgress('Extracting article...', 50)
-          const content = await parseHtmlContent(html, finalUrl, updateProgress)
+          return
+        }
 
+        // Step 2: Extract article with Readability
+        updateProgress('Extracting article...', 50)
+        const content = await parseHtmlContent(html, finalUrl, updateProgress)
+
+        setState((prev) => ({
+          ...prev,
+          step: 'preview',
+          parsedContent: content,
+          progressLabel: '',
+          progressPercent: 100,
+        }))
+      } catch (error) {
+        const shouldTryReader =
+          error instanceof FetchError || error instanceof ThinContentError
+
+        if (!shouldTryReader) {
+          log.error('URL import failed', error)
+          setState((prev) => ({
+            ...prev,
+            step: 'error',
+            error: error instanceof Error ? error.message : 'Failed to fetch URL',
+            suggestPaste: true,
+          }))
+          return
+        }
+
+        // Step 3: Fetch or Readability failed — try Jina Reader (once)
+        log.info('Primary strategy failed, trying reader service', {
+          reason: error instanceof ThinContentError
+            ? `thin content (${error.extractedChars} chars)`
+            : 'fetch failed',
+        })
+
+        try {
+          const content = await parseUrlWithReader(url, updateProgress)
           setState((prev) => ({
             ...prev,
             step: 'preview',
@@ -173,21 +208,16 @@ export function useImport() {
             progressLabel: '',
             progressPercent: 100,
           }))
+        } catch (readerError) {
+          log.error('All URL import strategies exhausted', readerError)
+          setState((prev) => ({
+            ...prev,
+            step: 'error',
+            error:
+              'Could not extract content from this page. Try pasting the article text instead.',
+            suggestPaste: true,
+          }))
         }
-      } catch (error) {
-        log.error('URL import failed', error)
-
-        const isFetchError = error instanceof FetchError
-        setState((prev) => ({
-          ...prev,
-          step: 'error',
-          error: isFetchError
-            ? "Couldn't reach that page. Try pasting the article text instead."
-            : error instanceof Error
-              ? error.message
-              : 'Failed to fetch URL',
-          suggestPaste: isFetchError,
-        }))
       }
     },
     [updateProgress],

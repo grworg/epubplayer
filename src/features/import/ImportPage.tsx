@@ -9,13 +9,14 @@
  * After parsing, shows a section preview before saving.
  */
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, Component, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
 import { useImport, type ImportStep } from './useImport'
 import { SectionPreview } from './SectionPreview'
 import { PagePicker } from './PagePicker'
+import { createLogger } from '@/services/logging'
 import {
   ArrowLeftIcon,
   FileTextIcon,
@@ -26,6 +27,60 @@ import {
   AlertCircleIcon,
   CheckCircleIcon,
 } from '@/ui/icons'
+
+const log = createLogger('import')
+
+// ============================================================================
+// Error Boundary
+// ============================================================================
+
+interface ErrorBoundaryProps {
+  onReset: () => void
+  children: ReactNode
+}
+
+interface ErrorBoundaryState {
+  error: Error | null
+}
+
+class ImportErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state: ErrorBoundaryState = { error: null }
+
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+
+  componentDidCatch(error: Error) {
+    log.error('Import UI crashed', error)
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="flex flex-col items-center py-16 text-center">
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-error/10">
+            <AlertCircleIcon className="h-10 w-10 text-error" />
+          </div>
+          <p className="mb-2 text-lg font-medium text-text-primary">Something went wrong</p>
+          <p className="mb-6 max-w-xs text-sm text-text-secondary">
+            {this.state.error.message || 'An unexpected error occurred during import.'}
+          </p>
+          <button
+            onClick={() => {
+              this.setState({ error: null })
+              this.props.onReset()
+            }}
+            className="pressable rounded-xl bg-accent px-6 py-3 font-medium text-white"
+          >
+            Try Again
+          </button>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
 
 // ============================================================================
 // Tab Types
@@ -87,37 +142,39 @@ export function ImportPage() {
       {/* Content area */}
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl px-5 pb-8">
-          {importState.step === 'idle' || importState.step === 'error' ? (
-            <SourceSelection
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              importState={importState}
-              onSwitchToPaste={switchToPaste}
-            />
-          ) : importState.step === 'processing' || importState.step === 'saving' ? (
-            <ProcessingView
-              label={importState.progressLabel}
-              percent={importState.progressPercent}
-              step={importState.step}
-            />
-          ) : importState.step === 'pagePicker' ? (
-            <PagePicker
-              pages={importState.discoveredPages}
-              onImportSelected={importState.importSelectedPages}
-              onImportSingle={importState.importSinglePage}
-              onCancel={importState.reset}
-            />
-          ) : importState.step === 'preview' && importState.parsedContent ? (
-            <SectionPreview
-              content={importState.parsedContent}
-              onCollapse={importState.collapseToOneSection}
-              onUpdateMetadata={importState.updateMetadata}
-              onSave={handleSave}
-              onCancel={importState.reset}
-            />
-          ) : importState.step === 'success' ? (
-            <SuccessView />
-          ) : null}
+          <ImportErrorBoundary onReset={importState.reset}>
+            {importState.step === 'idle' || importState.step === 'error' ? (
+              <SourceSelection
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                importState={importState}
+                onSwitchToPaste={switchToPaste}
+              />
+            ) : importState.step === 'processing' || importState.step === 'saving' ? (
+              <ProcessingView
+                label={importState.progressLabel}
+                percent={importState.progressPercent}
+                step={importState.step}
+              />
+            ) : importState.step === 'pagePicker' ? (
+              <PagePicker
+                pages={importState.discoveredPages}
+                onImportSelected={importState.importSelectedPages}
+                onImportSingle={importState.importSinglePage}
+                onCancel={importState.reset}
+              />
+            ) : importState.step === 'preview' && importState.parsedContent ? (
+              <SectionPreview
+                content={importState.parsedContent}
+                onCollapse={importState.collapseToOneSection}
+                onUpdateMetadata={importState.updateMetadata}
+                onSave={handleSave}
+                onCancel={importState.reset}
+              />
+            ) : importState.step === 'success' ? (
+              <SuccessView />
+            ) : null}
+          </ImportErrorBoundary>
         </div>
       </div>
     </div>

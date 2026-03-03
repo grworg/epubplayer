@@ -242,7 +242,8 @@ function SectionRow({
 // Helpers
 // ============================================================================
 
-function countWords(text: string): number {
+function countWords(text: string | undefined | null): number {
+  if (!text) return 0
   return text.split(/\s+/).filter(Boolean).length
 }
 

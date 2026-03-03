@@ -417,7 +417,7 @@ export function DownloadIcon(props: IconProps) {
   )
 }
 
-export function LoaderIcon(props: IconProps) {
+export function LoaderIcon({ className, ...rest }: IconProps) {
   return (
     <svg
       aria-hidden="true"
@@ -428,8 +428,8 @@ export function LoaderIcon(props: IconProps) {
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="animate-spin"
-      {...props}
+      className={`animate-spin ${className ?? ''}`}
+      {...rest}
     >
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
     </svg>

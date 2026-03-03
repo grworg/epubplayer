@@ -8,12 +8,25 @@
 import { Readability } from '@mozilla/readability'
 import { createLogger } from '@/services/logging'
 import { hashText } from '@/services/storage/db'
-import { fetchUrl, FetchError } from './fetchService'
-import { detectSectionsFromHtml } from './sectionDetector'
+import { fetchUrl, fetchRenderedContent, FetchError } from './fetchService'
+import { detectSectionsFromHtml, detectSectionsFromPlainText } from './sectionDetector'
 import { discoverLinkedPages, type DiscoveredPage } from './linkDiscovery'
 import type { ParsedContent, DetectedSection, ImportProgressCallback, HtmlBlock } from './types'
 
 const log = createLogger('import')
+
+/**
+ * Thrown when Readability extracts too little text.
+ * The caller can catch this and try Jina Reader as a fallback.
+ */
+export class ThinContentError extends Error {
+  constructor(public readonly extractedChars: number) {
+    super(
+      'Very little text was extracted. The site may use JavaScript to load content.',
+    )
+    this.name = 'ThinContentError'
+  }
+}
 
 // ============================================================================
 // Public API
@@ -67,7 +80,12 @@ export async function parseHtmlContent(
   const article = new Readability(doc, { charThreshold: 50 }).parse()
 
   if (!article || !article.textContent?.trim()) {
-    throw new Error('No readable content found on this page')
+    throw new ThinContentError(0)
+  }
+
+  const MIN_USEFUL_CONTENT = 500
+  if (article.textContent.trim().length < MIN_USEFUL_CONTENT) {
+    throw new ThinContentError(article.textContent.trim().length)
   }
 
   log.info('Article extracted', {
@@ -76,13 +94,10 @@ export async function parseHtmlContent(
     contentLength: article.textContent.length,
   })
 
-  // Walk the article HTML to extract blocks with heading structure
   onProgress?.('Detecting sections...', 70)
   const htmlBlocks = extractHtmlBlocks(article.content)
   const title = article.title || extractTitleFromUrl(sourceUrl) || 'Untitled'
   const sections = detectSectionsFromHtml(htmlBlocks, title)
-
-  // Compute content hash from the extracted text
   const contentHash = await hashText(article.textContent)
 
   onProgress?.('Done', 100)
@@ -98,6 +113,64 @@ export async function parseHtmlContent(
     sections,
     contentHash,
   }
+}
+
+// ============================================================================
+// Jina Reader Content Builder
+// ============================================================================
+
+/**
+ * Build ParsedContent from Jina Reader output (markdown text).
+ * Jina already extracts the article, so we just need section detection.
+ */
+async function buildFromRendered(
+  rendered: { title: string; text: string; description?: string; url: string },
+  sourceUrl: string,
+  onProgress?: ImportProgressCallback,
+): Promise<ParsedContent> {
+  log.info('Building from rendered content', {
+    title: rendered.title,
+    contentLength: rendered.text.length,
+  })
+
+  onProgress?.('Detecting sections...', 80)
+  const title = rendered.title || extractTitleFromUrl(sourceUrl) || 'Untitled'
+  const sections = detectSectionsFromPlainText(rendered.text, title)
+  const contentHash = await hashText(rendered.text)
+
+  onProgress?.('Done', 100)
+
+  return {
+    metadata: {
+      title,
+      author: 'Unknown Author',
+      description: rendered.description,
+      sourceType: 'web',
+      sourceUrl,
+    },
+    sections,
+    contentHash,
+  }
+}
+
+/**
+ * Parse a URL using Jina Reader directly (bypasses fetch + Readability).
+ * Use this as a fallback when normal fetching fails entirely.
+ */
+export async function parseUrlWithReader(
+  url: string,
+  onProgress?: ImportProgressCallback,
+): Promise<ParsedContent> {
+  onProgress?.('Trying reader service...', 30)
+
+  const rendered = await fetchRenderedContent(url)
+  if (!rendered || rendered.text.length < 200) {
+    throw new Error(
+      'Could not extract content from this page. The site may block all external access. Try pasting the article text instead.',
+    )
+  }
+
+  return buildFromRendered(rendered, url, onProgress)
 }
 
 // ============================================================================

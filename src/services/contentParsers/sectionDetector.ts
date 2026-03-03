@@ -228,7 +228,7 @@ export function collapseToSingleSection(
   sections: DetectedSection[],
   title: string,
 ): DetectedSection[] {
-  const combined = sections.map((s) => s.textContent).join(' ')
+  const combined = sections.map((s) => s.textContent ?? '').join(' ')
   return [
     {
       title,

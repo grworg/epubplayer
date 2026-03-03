@@ -4,7 +4,8 @@
  * Cascading strategy for fetching arbitrary URLs from the browser:
  * 1. Direct fetch (works for CORS-friendly sites)
  * 2. Public CORS proxy (allorigins.win by default, configurable)
- * 3. Reports failure so UI can suggest paste fallback
+ * 3. Jina Reader (headless browser rendering for JS-heavy sites)
+ * 4. Reports failure so UI can suggest paste fallback
  *
  * The proxy URL is stored in settings, so users can swap it without code changes.
  */
@@ -14,16 +15,29 @@ import { settingsRepository } from '@/services/storage/settingsRepository'
 
 const log = createLogger('import')
 
+const JINA_READER_BASE = 'https://r.jina.ai/'
+
 // ============================================================================
 // Types
 // ============================================================================
 
-export type FetchStrategy = 'direct' | 'proxy'
+export type FetchStrategy = 'direct' | 'proxy' | 'reader'
 
 export interface FetchResult {
   html: string
   strategy: FetchStrategy
   finalUrl: string
+}
+
+/**
+ * Content extracted by a reader/rendering service (e.g. Jina Reader).
+ * Already cleaned — no need for Readability post-processing.
+ */
+export interface RenderedContent {
+  title: string
+  text: string
+  description?: string
+  url: string
 }
 
 export class FetchError extends Error {
@@ -102,19 +116,47 @@ async function tryDirectFetch(url: string): Promise<string | null> {
 }
 
 async function tryProxyFetch(url: string): Promise<string | null> {
-  try {
-    const proxyBaseUrl = await settingsRepository.get('corsProxyUrl')
-    const proxyUrl = `${proxyBaseUrl}${encodeURIComponent(url)}`
+  const proxyBaseUrl = await settingsRepository.get('corsProxyUrl')
 
-    log.debug('Trying proxy fetch', { proxy: proxyBaseUrl })
+  // Strategy 2a: Try the raw proxy endpoint
+  const rawResult = await fetchViaProxy(
+    `${proxyBaseUrl}${encodeURIComponent(url)}`,
+    'raw',
+  )
+  if (rawResult) return rawResult
+
+  // Strategy 2b: Try allorigins JSON endpoint as fallback
+  // (sometimes the raw endpoint fails but JSON works)
+  if (proxyBaseUrl.includes('allorigins.win')) {
+    const jsonUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`
+    const jsonResult = await fetchViaProxy(jsonUrl, 'json')
+    if (jsonResult) return jsonResult
+  }
+
+  return null
+}
+
+async function fetchViaProxy(
+  proxyUrl: string,
+  mode: 'raw' | 'json',
+): Promise<string | null> {
+  try {
+    log.debug('Trying proxy fetch', { proxyUrl: proxyUrl.substring(0, 80), mode })
 
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 15_000)
+    const timeout = setTimeout(() => controller.abort(), 25_000)
 
     const response = await fetch(proxyUrl, { signal: controller.signal })
     clearTimeout(timeout)
 
     if (!response.ok) return null
+
+    if (mode === 'json') {
+      const json = await response.json()
+      const contents = json?.contents
+      if (typeof contents === 'string' && contents.length > 100) return contents
+      return null
+    }
 
     const text = await response.text()
     if (!text || text.length < 100) return null
@@ -122,6 +164,70 @@ async function tryProxyFetch(url: string): Promise<string | null> {
     return text
   } catch (error) {
     log.debug('Proxy fetch failed', {
+      mode,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
+}
+
+// ============================================================================
+// Jina Reader (JS-rendered content extraction)
+// ============================================================================
+
+/**
+ * Fetch rendered content via Jina Reader API.
+ * Jina runs a headless browser, so it handles JS-rendered pages.
+ * Returns structured content (title + clean text) or null on failure.
+ */
+export async function fetchRenderedContent(url: string): Promise<RenderedContent | null> {
+  const normalizedUrl = normalizeUrl(url)
+
+  try {
+    log.debug('Trying Jina Reader', { url: normalizedUrl })
+
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 45_000)
+
+    const response = await fetch(`${JINA_READER_BASE}${normalizedUrl}`, {
+      signal: controller.signal,
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+    clearTimeout(timeout)
+
+    if (!response.ok) {
+      log.debug('Jina Reader returned non-OK', { status: response.status })
+      return null
+    }
+
+    const json = await response.json()
+    const data = json?.data
+    if (!data?.content || typeof data.content !== 'string') {
+      log.debug('Jina Reader returned no content')
+      return null
+    }
+
+    const text = data.content.trim()
+    if (text.length < 200) {
+      log.debug('Jina Reader returned too little content', { length: text.length })
+      return null
+    }
+
+    log.info('Jina Reader succeeded', {
+      title: data.title,
+      contentLength: text.length,
+    })
+
+    return {
+      title: data.title || '',
+      text,
+      description: data.description || undefined,
+      url: data.url || normalizedUrl,
+    }
+  } catch (error) {
+    log.debug('Jina Reader failed', {
       error: error instanceof Error ? error.message : String(error),
     })
     return null
