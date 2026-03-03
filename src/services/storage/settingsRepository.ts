@@ -45,6 +45,9 @@ interface Settings {
 
   // Sleep timer
   sleepTimerMinutes: number
+
+  // Import settings
+  corsProxyUrl: string
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -68,6 +71,7 @@ export const DEFAULT_SETTINGS: Settings = {
   bufferAheadMinutes: 3,
   maxChunkChars: 300,
   sleepTimerMinutes: 0,
+  corsProxyUrl: 'https://api.allorigins.win/raw?url=',
 }
 
 export type SettingKey = keyof Settings

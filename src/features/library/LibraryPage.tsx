@@ -1,9 +1,8 @@
-import { useRef, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
 import { useLibrary } from './useLibrary'
-import { useImportEPUB } from '@/features/import/useImportEPUB'
 import { PlusIcon, UploadIcon, HeadphonesIcon, LoaderIcon, SettingsIcon, BellIcon, SmartphoneIcon, GitHubIcon } from '@/ui/icons'
 import { OnboardingSetup } from '@/features/onboarding/OnboardingSetup'
 import { settingsRepository } from '@/services/storage/settingsRepository'
@@ -12,15 +11,11 @@ import { InstallPromptSheet } from '@/features/pwa/InstallPromptSheet'
 
 export function LibraryPage() {
   const navigate = useNavigate()
-  const { books, isLoading, refresh } = useLibrary()
-  const { importFile, isImporting, status, progress, error, reset } = useImportEPUB()
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [showImportStatus, setShowImportStatus] = useState(false)
+  const { books, isLoading } = useLibrary()
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState<boolean | null>(null)
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
   const { shouldShowPrompt: hasInstallNotification } = usePWAInstall()
 
-  // Check onboarding status
   useEffect(() => {
     settingsRepository.get('hasCompletedOnboarding').then(setHasCompletedOnboarding)
   }, [])
@@ -28,40 +23,9 @@ export function LibraryPage() {
   const handleOnboardingComplete = async (defaultBookId?: string) => {
     await settingsRepository.set('hasCompletedOnboarding', true)
     setHasCompletedOnboarding(true)
-    await refresh() // Refresh to show the newly installed default book
-    
-    // If a default book was installed, navigate to it
     if (defaultBookId) {
       navigate(`/app/book/${defaultBookId}`)
     }
-  }
-
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    setShowImportStatus(true)
-    const bookId = await importFile(file)
-
-    if (bookId) {
-      await refresh()
-      // Navigate to the new book after a short delay
-      setTimeout(() => {
-        setShowImportStatus(false)
-        reset()
-        navigate(`/app/book/${bookId}`)
-      }, 1000)
-    }
-
-    // Reset input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
-  }
-
-  const dismissStatus = () => {
-    setShowImportStatus(false)
-    reset()
   }
 
   return (
@@ -70,7 +34,6 @@ export function LibraryPage() {
       <header className="flex items-center justify-between px-5 py-4">
         <h1 className="text-2xl font-bold text-text-primary"><Trans>Library</Trans></h1>
         <div className="flex items-center gap-2">
-          {/* Notification bell - shows when there's an install prompt */}
           {hasInstallNotification && (
             <button
               onClick={() => setShowInstallPrompt(true)}
@@ -79,11 +42,9 @@ export function LibraryPage() {
               title={t`Install app`}
             >
               <BellIcon className="h-5 w-5" />
-              {/* Notification dot */}
               <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-accent shadow-lg shadow-accent/50" />
             </button>
           )}
-          {/* GitHub link */}
           <a
             href="https://github.com/grworg/epubplayer"
             target="_blank"
@@ -94,7 +55,6 @@ export function LibraryPage() {
           >
             <GitHubIcon className="h-5 w-5" />
           </a>
-          {/* Device sync - share/import library */}
           <button
             onClick={() => navigate('/app/share-library')}
             className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-surface-1 text-text-primary hover:bg-surface-2"
@@ -112,45 +72,14 @@ export function LibraryPage() {
             <SettingsIcon className="h-5 w-5" />
           </button>
           <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isImporting}
-            className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white disabled:opacity-50"
+            onClick={() => navigate('/app/import')}
+            className="pressable flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white"
             aria-label={t`Add book`}
           >
-            {isImporting ? <LoaderIcon className="h-5 w-5" /> : <PlusIcon className="h-5 w-5" />}
+            <PlusIcon className="h-5 w-5" />
           </button>
         </div>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".epub,application/epub+zip"
-          onChange={handleFileSelect}
-          className="hidden"
-          aria-label={t`Select EPUB file to import`}
-        />
       </header>
-
-      {/* Import status toast */}
-      {showImportStatus && (status === 'parsing' || status === 'saving' || status === 'error') && (
-        <div
-          className={`mx-5 mb-4 rounded-xl p-4 ${
-            status === 'error' ? 'bg-error/10 text-error' : 'bg-surface-2 text-text-primary'
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            {status !== 'error' && <LoaderIcon className="h-5 w-5 text-accent" />}
-            <div className="flex-1">
-              <p className="font-medium">{status === 'error' ? t`Import Failed` : t`Importing...`}</p>
-              <p className="text-sm text-text-secondary">{error || progress}</p>
-            </div>
-            {status === 'error' && (
-              <button onClick={dismissStatus} className="text-sm text-text-secondary underline">
-                <Trans>Dismiss</Trans>
-              </button>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Book grid */}
       <div className="flex-1 overflow-y-auto px-5 pb-4">
@@ -161,13 +90,13 @@ export function LibraryPage() {
         ) : books.length === 0 && !hasCompletedOnboarding ? (
           <OnboardingSetup onComplete={handleOnboardingComplete} />
         ) : books.length === 0 ? (
-          <EmptyLibrary onAddBook={() => fileInputRef.current?.click()} />
+          <EmptyLibrary onAddBook={() => navigate('/app/import')} />
         ) : (
           <div className="grid grid-cols-1 gap-4 pb-2 md:grid-cols-2 lg:grid-cols-3">
             {books.map((book) => (
               <BookCard key={book.id} book={book} onClick={() => navigate(`/app/book/${book.id}`)} />
             ))}
-            <AddBookCard onAddBook={() => fileInputRef.current?.click()} disabled={isImporting} />
+            <AddBookCard onAddBook={() => navigate('/app/import')} />
           </div>
         )}
       </div>
@@ -186,17 +115,16 @@ function EmptyLibrary({ onAddBook }: { onAddBook: () => void }) {
       </div>
       <h2 className="mb-2 text-xl font-semibold text-text-primary"><Trans>No books yet</Trans></h2>
       <p className="mb-6 text-text-secondary">
-        <Trans>Add your first EPUB to start listening. This is an offline-first EPUB reader and audiobook generator — your books, generated audio, and settings are stored locally on this device.</Trans>
+        <Trans>Import an EPUB, PDF, or web article to start listening. Your books, generated audio, and settings are stored locally on this device.</Trans>
       </p>
       <button
         onClick={onAddBook}
         className="pressable flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-white"
       >
         <UploadIcon className="h-5 w-5" />
-        <Trans>Add EPUB</Trans>
+        <Trans>Add Book</Trans>
       </button>
       
-      {/* Import from another device - prominent option for returning users */}
       <Link
         to="/app/receive-library"
         className="pressable mt-4 flex items-center gap-2 rounded-full bg-surface-1 px-6 py-3 font-medium text-text-primary hover:bg-surface-2"
@@ -265,22 +193,21 @@ function BookCard({ book, onClick }: BookCardProps) {
   )
 }
 
-function AddBookCard({ onAddBook, disabled }: { onAddBook: () => void; disabled?: boolean }) {
+function AddBookCard({ onAddBook }: { onAddBook: () => void }) {
   return (
     <div className="flex flex-col gap-2">
       <button
         onClick={onAddBook}
-        disabled={disabled}
-        className="pressable group flex w-full items-center gap-4 rounded-2xl border border-dashed border-border-muted bg-surface-0 p-4 text-left text-text-secondary transition-colors hover:bg-surface-1 disabled:opacity-50 md:flex-col md:items-center md:justify-center md:py-12"
-        aria-label={t`Upload EPUB`}
+        className="pressable group flex w-full items-center gap-4 rounded-2xl border border-dashed border-border-muted bg-surface-0 p-4 text-left text-text-secondary transition-colors hover:bg-surface-1 md:flex-col md:items-center md:justify-center md:py-12"
+        aria-label={t`Import book`}
       >
         <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-surface-1 text-accent md:h-16 md:w-16">
           <UploadIcon className="h-6 w-6 md:h-8 md:w-8" />
         </div>
         <div className="min-w-0 flex-1 md:mt-4 md:flex-initial md:text-center">
-          <p className="text-base font-semibold text-text-primary"><Trans>Upload EPUB</Trans></p>
+          <p className="text-base font-semibold text-text-primary"><Trans>Add Book</Trans></p>
           <p className="mt-0.5 text-sm text-text-secondary md:hidden">
-            <Trans>Add another book to your library.</Trans>
+            <Trans>Import EPUB, PDF, or web article</Trans>
           </p>
         </div>
       </button>

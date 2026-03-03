@@ -10,7 +10,7 @@ This document provides a high-level overview of how the EPUB Player application 
 
 1. [Mission & Core Philosophy](#1-mission--core-philosophy)
 2. [High-Level Architecture](#2-high-level-architecture)
-3. [EPUB Import Pipeline](#3-epub-import-pipeline)
+3. [Multi-Source Import Pipeline](#3-multi-source-import-pipeline)
 4. [TTS Engine Architecture](#4-tts-engine-architecture)
 5. [Buffering System](#5-buffering-system)
 6. [Playback System](#6-playback-system)
@@ -76,26 +76,39 @@ EPUB Player transforms EPUB ebooks into audiobooks using text-to-speech, all run
 
 ---
 
-## 3. EPUB Import Pipeline
+## 3. Multi-Source Import Pipeline
 
-**Entry points:**
-1. User uploads via file picker
-2. Default book installed during onboarding
+**Supported sources** ([ADR-0018](./decisions/0018-multi-source-import.md)):
+1. EPUB files (existing, via epubjs)
+2. PDF files (text-based + scanned via OCR)
+3. Web URLs / articles (via Readability.js)
+4. Pasted text or HTML
 
 **Processing flow:**
 
 ```
-File Input ──► parseEPUB() ──► Save to IndexedDB
-                   │
-                   ├── Extract metadata (title, author, ID)
-                   ├── Extract cover image
-                   └── Extract sections (spine items → plain text)
+Import Sources ──► Content Parsers ──► Section Detector ──► Save Pipeline ──► IndexedDB
+
+  EPUB file  ──► epubAdapter     ──┐
+  PDF file   ──► pdfParser       ──┤
+  URL        ──► webParser       ──┼──► detectSections() ──► saveImportedContent()
+  Paste      ──► textParser      ──┘
 ```
+
+All parsers produce a shared `ParsedContent` shape, which feeds into a single save pipeline. Section detection uses heading heuristics, font-size analysis (PDFs), HTML heading tags (web), and pattern matching ("Chapter N"). Falls back to a single section when no reliable boundaries are found.
+
+**Entry points:**
+1. Import page (`/app/import`) — tabbed UI for File, URL, and Paste
+2. Default book installed during onboarding (still uses EPUB path)
 
 **Key design choices:**
 - Text normalization at import time (consistent TTS quality)
-- Original EPUB blob stored for potential re-export
+- Original file blob stored for potential re-export
 - Text hash computed per section for cache keying
+- PDF.js runs in a Web Worker for non-blocking extraction
+- Tesseract.js OCR loaded on-demand only for scanned PDFs (~15MB)
+- URL fetching cascades: direct → CORS proxy (allorigins.win) → paste fallback
+- Section preview lets users review detected chapters before saving
 
 ---
 

@@ -31,6 +31,8 @@ An Architecture Decision Record captures a significant architectural decision al
 | [ADR-0014](./0014-multi-book-context-switching.md) | Multi-Book Context Switching | Accepted | 2025-01-01 |
 | [ADR-0015](./0015-internationalization-with-lingui.md) | Internationalization with Lingui | Accepted | 2026-01-05 |
 | [ADR-0016](./0016-transfer-session-architecture.md) | Transfer Session Architecture | Accepted | 2026-01-06 |
+| [ADR-0017](./0017-user-bug-reporting-system.md) | User Bug Reporting System | Proposed | 2026-01-12 |
+| [ADR-0018](./0018-multi-source-import.md) | Multi-Source Import | Accepted | 2026-03-02 |
 
 ## Creating a New ADR
 

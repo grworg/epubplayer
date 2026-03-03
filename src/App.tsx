@@ -16,6 +16,7 @@ import { DebugLogsPage } from '@/features/debug/DebugLogsPage'
 import { FindEbooksPage } from '@/features/discover/FindEbooksPage'
 import { ShareLibraryPage, ReceiveLibraryPage } from '@/features/transfer'
 import { AccessibilityPage } from '@/features/accessibility/AccessibilityPage'
+import { ImportPage } from '@/features/import/ImportPage'
 import { LiveRegionProvider } from '@/ui/accessibility'
 import { usePlaybackAnnouncements } from '@/features/player/usePlaybackAnnouncements'
 import { useGlobalShortcuts, KeyboardShortcutsHelp } from '@/features/player/useGlobalShortcuts'
@@ -89,6 +90,7 @@ export default function App() {
                 <Route path="share-library" element={<ShareLibraryPage />} />
                 <Route path="receive-library" element={<ReceiveLibraryPage />} />
                 <Route path="accessibility" element={<AccessibilityPage />} />
+                <Route path="import" element={<ImportPage />} />
               </Route>
             </Routes>
           </AccessibilityProvider>
