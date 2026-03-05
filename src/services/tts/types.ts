@@ -15,7 +15,7 @@
  * Available TTS engines.
  * Add new engines here - this is the ONLY place engine IDs should be defined.
  */
-export type TTSEngine = 'browser' | 'piper' | 'kokoro' | 'supertonic' | 'sherpa'
+export type TTSEngine = 'browser' | 'piper' | 'kokoro' | 'supertonic' | 'sherpa' | 'kitten'
 
 // ============================================================================
 // Engine Capabilities

@@ -32,6 +32,9 @@ interface Settings {
   // Sherpa-ONNX settings
   sherpaVoice: string
 
+  // KittenTTS settings
+  kittenVoice: string
+
   // Playback settings
   defaultSpeed: number
   skipForwardSeconds: number
@@ -62,6 +65,7 @@ export const DEFAULT_SETTINGS: Settings = {
   supertonicVoice: 'F1',
   supertonicDevice: 'webgpu', // Default to WebGPU for best performance; WASM is fallback
   sherpaVoice: 'speaker-0', // Default Sherpa speaker
+  kittenVoice: 'expr-voice-2-m', // Default KittenTTS voice
   defaultSpeed: 1.0,
   skipForwardSeconds: 30,
   skipBackSeconds: 30,

@@ -33,6 +33,7 @@ An Architecture Decision Record captures a significant architectural decision al
 | [ADR-0016](./0016-transfer-session-architecture.md) | Transfer Session Architecture | Accepted | 2026-01-06 |
 | [ADR-0017](./0017-user-bug-reporting-system.md) | User Bug Reporting System | Proposed | 2026-01-12 |
 | [ADR-0018](./0018-multi-source-import.md) | Multi-Source Import | Accepted | 2026-03-02 |
+| [ADR-0019](./0019-kittentts-lightweight-engine.md) | KittenTTS as Lightweight TTS Engine | Accepted | 2026-03-02 |
 
 ## Creating a New ADR
 

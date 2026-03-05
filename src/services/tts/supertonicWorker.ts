@@ -230,10 +230,12 @@ async function loadOrt(): Promise<any> {
   if (ort) return ort
 
   // @ts-expect-error Dynamic import from CDN
-  // Upgraded to 1.23.2 - may have WebGPU fixes
-  const module = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.2/dist/ort.all.mjs')
+  const module = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.2/dist/ort.all.mjs')
   ort = module
   ort.env.wasm.proxy = false
+  const cores = typeof navigator !== 'undefined' ? (navigator.hardwareConcurrency || 4) : 4
+  ort.env.wasm.numThreads = cores
+  workerLog.info('ONNX Runtime WASM configured', { numThreads: cores, hardwareConcurrency: cores })
   return ort
 }
 

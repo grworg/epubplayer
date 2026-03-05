@@ -25,3 +25,7 @@ export type { SupertonicConfig, SupertonicGeneratedAudio, SupertonicVoiceId } fr
 // Sherpa-ONNX TTS service
 export { sherpaService, SHERPA_VOICES } from './sherpaService'
 export type { SherpaConfig, SherpaGeneratedAudio, SherpaVoiceId } from './sherpaService'
+
+// KittenTTS service
+export { kittenService, KITTEN_VOICES } from './kittenService'
+export type { KittenConfig, KittenGeneratedAudio, KittenVoiceId } from './kittenService'

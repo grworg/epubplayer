@@ -310,7 +310,7 @@ async function configureWebGPULibraries() {
   try {
     // prettier-ignore
     // @ts-expect-error Dynamic import from CDN
-    const transformers = await import(/* @vite-ignore */ 'https://esm.run/@huggingface/transformers')
+    const transformers = await import(/* @vite-ignore */ 'https://esm.run/@huggingface/transformers@3.8.1')
 
     if (transformers.env?.backends?.onnx) {
       transformers.env.backends.onnx.wasm.proxy = false
@@ -329,7 +329,7 @@ async function configureWebGPULibraries() {
   try {
     // prettier-ignore
     // @ts-expect-error Dynamic import from CDN
-    const ort = await import(/* @vite-ignore */ 'https://esm.run/onnxruntime-web/webgpu')
+    const ort = await import(/* @vite-ignore */ 'https://esm.run/onnxruntime-web@1.24.2/webgpu')
 
     ort.env.debug = true
     ort.env.logLevel = 'verbose'
@@ -459,14 +459,14 @@ async function loadKokoroModule(): Promise<KokoroModule> {
   try {
     // prettier-ignore
     // @ts-expect-error Dynamic import from CDN
-    const module = await import(/* @vite-ignore */ 'https://esm.run/kokoro-js@latest')
-    console.log('[ttsWorker] Loaded kokoro-js@latest')
+    const module = await import(/* @vite-ignore */ 'https://esm.run/kokoro-js@1.2.1')
+    console.log('[ttsWorker] Loaded kokoro-js@1.2.1')
     return module as KokoroModule
   } catch {
     // prettier-ignore
     // @ts-expect-error Dynamic import from CDN
     const module = await import(/* @vite-ignore */ 'https://esm.run/kokoro-js')
-    console.log('[ttsWorker] Loaded kokoro-js (default)')
+    console.log('[ttsWorker] Loaded kokoro-js (fallback)')
     return module as KokoroModule
   }
 }

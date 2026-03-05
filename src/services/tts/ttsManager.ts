@@ -14,6 +14,7 @@ import { ttsService as kokoroTTS } from './ttsService'
 import { piperService } from './piperService'
 import { supertonicService } from './supertonicService'
 import { sherpaService } from './sherpaService'
+import { kittenService } from './kittenService'
 import type {
   TTSEngine,
   TTSEngineInfo,
@@ -94,6 +95,17 @@ const ENGINE_REGISTRY: Record<TTSEngine, TTSEngineInfo> = {
       generatesBlobs: true,
       requiresInit: true,
       slowOnCPU: false,       // WASM-only but optimized
+    },
+  },
+  kitten: {
+    id: 'kitten',
+    name: 'Kitten (Light)',
+    description: 'Lightweight neural TTS. Fast on any device, no GPU needed. ~24MB download.',
+    available: true,
+    capabilities: {
+      generatesBlobs: true,
+      requiresInit: true,
+      slowOnCPU: false,       // Designed for CPU inference
     },
   },
 }
@@ -229,6 +241,11 @@ class TTSManager {
           await sherpaService.initialize()
           break
 
+        case 'kitten':
+          this.wireUpService(kittenService, 'kitten')
+          await kittenService.initialize()
+          break
+
         case 'browser':
           // Browser TTS doesn't need initialization
           break
@@ -343,6 +360,17 @@ class TTSManager {
           }
         }
 
+        case 'kitten': {
+          const result = await kittenService.generateChunk(text, chunkIndex, voiceId)
+          return {
+            requestId: result.requestId,
+            blob: result.blob,
+            duration: result.duration,
+            chunkIndex: result.chunkIndex,
+            text: result.text,
+          }
+        }
+
         default:
           throw new Error(`Unknown TTS engine: ${this.currentEngine}`)
       }
@@ -363,6 +391,8 @@ class TTSManager {
         return supertonicService.splitIntoChunks(text)
       case 'sherpa':
         return sherpaService.splitIntoChunks(text)
+      case 'kitten':
+        return kittenService.splitIntoChunks(text)
       default:
         return kokoroTTS.splitIntoChunks(text)
     }
@@ -409,6 +439,9 @@ class TTSManager {
       case 'sherpa':
         sherpaService.cancelAll()
         break
+      case 'kitten':
+        kittenService.cancelAll()
+        break
     }
   }
 
@@ -425,6 +458,9 @@ class TTSManager {
         break
       case 'sherpa':
         sherpaService.destroy()
+        break
+      case 'kitten':
+        kittenService.destroy()
         break
     }
     this.isInitialized = false

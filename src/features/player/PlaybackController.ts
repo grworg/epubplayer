@@ -790,12 +790,14 @@ class PlaybackController {
    * - piper: piperModel
    * - supertonic: supertonicVoice
    * - sherpa: sherpaVoice
+   * - kitten: kittenVoice
    */
   private getVoiceForEngine(settings: {
     voiceId: string
     piperModel: string
     supertonicVoice: string
     sherpaVoice: string
+    kittenVoice: string
   }): string {
     switch (this.currentEngine) {
       case 'supertonic':
@@ -804,6 +806,8 @@ class PlaybackController {
         return settings.sherpaVoice
       case 'piper':
         return settings.piperModel
+      case 'kitten':
+        return settings.kittenVoice
       default:
         return settings.voiceId
     }

@@ -271,7 +271,7 @@ async function handleInit(message: InitMessage) {
     // Initialize ONNX Runtime for WASM
     // Use same version and path as Supertonic worker for consistency
     // @ts-expect-error - Dynamic import from CDN
-    const ortModule = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.2/dist/ort.all.mjs')
+    const ortModule = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.2/dist/ort.all.mjs')
     
     console.log('[piperWorker] ONNX module loaded:', Object.keys(ortModule || {}).slice(0, 10))
     
