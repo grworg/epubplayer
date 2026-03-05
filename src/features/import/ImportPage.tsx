@@ -14,8 +14,9 @@ import { useNavigate } from 'react-router-dom'
 import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
 import { useImport, type ImportStep } from './useImport'
-import { SectionPreview } from './SectionPreview'
 import { PagePicker } from './PagePicker'
+import { BookEditorView } from '@/features/editor/BookEditorView'
+import type { EditorSection } from '@/features/editor/useBookEditor'
 import { createLogger } from '@/services/logging'
 import {
   ArrowLeftIcon,
@@ -105,8 +106,11 @@ export function ImportPage() {
     }
   }
 
-  const handleSave = async () => {
-    const bookId = await importState.save()
+  const handleEditorSave = async (activeSections: EditorSection[], metadata?: { title: string; author: string }) => {
+    const bookId = await importState.save({
+      sections: activeSections.map((s) => ({ title: s.title, textContent: s.textContent, confidence: 'high' as const })),
+      metadata,
+    })
     if (bookId) {
       setTimeout(() => navigate(`/app/book/${bookId}`), 800)
     }
@@ -130,7 +134,7 @@ export function ImportPage() {
         </button>
         <h1 className="text-xl font-bold text-text-primary">
           {importState.step === 'preview' ? (
-            <Trans>Preview</Trans>
+            <Trans>Edit Sections</Trans>
           ) : importState.step === 'pagePicker' ? (
             <Trans>Select Pages</Trans>
           ) : (
@@ -164,12 +168,17 @@ export function ImportPage() {
                 onCancel={importState.reset}
               />
             ) : importState.step === 'preview' && importState.parsedContent ? (
-              <SectionPreview
-                content={importState.parsedContent}
-                onCollapse={importState.collapseToOneSection}
-                onUpdateMetadata={importState.updateMetadata}
-                onSave={handleSave}
+              <BookEditorView
+                mode="import"
+                initialSections={importState.parsedContent.sections.map((s) => ({
+                  title: s.title,
+                  textContent: s.textContent,
+                }))}
+                bookTitle={importState.parsedContent.metadata.title}
+                bookAuthor={importState.parsedContent.metadata.author}
+                onSave={handleEditorSave}
                 onCancel={importState.reset}
+                onUpdateMetadata={importState.updateMetadata}
               />
             ) : importState.step === 'success' ? (
               <SuccessView />

@@ -15,6 +15,7 @@ import type {
   ParsedContent,
   ImportProgressCallback,
   DiscoveredPage,
+  DetectedSection,
 } from '@/services/contentParsers'
 import {
   parseEPUBToContent,
@@ -24,7 +25,6 @@ import {
   fetchAndDiscover,
   parseHtmlContent,
   parseUrlWithReader,
-  collapseToSingleSection,
   FetchError,
   ThinContentError,
 } from '@/services/contentParsers'
@@ -329,24 +329,6 @@ export function useImport() {
     [updateProgress],
   )
 
-  // ---- Collapse sections to single chapter ----
-
-  const collapseToOneSection = useCallback(() => {
-    setState((prev) => {
-      if (!prev.parsedContent) return prev
-      return {
-        ...prev,
-        parsedContent: {
-          ...prev.parsedContent,
-          sections: collapseToSingleSection(
-            prev.parsedContent.sections,
-            prev.parsedContent.metadata.title,
-          ),
-        },
-      }
-    })
-  }, [])
-
   // ---- Update metadata before saving ----
 
   const updateMetadata = useCallback(
@@ -369,9 +351,22 @@ export function useImport() {
   )
 
   // ---- Save to library ----
+  // Accepts optional overrides so callers (e.g. the book editor) can pass
+  // edited sections/metadata directly without async state-update races.
 
-  const save = useCallback(async (): Promise<string | null> => {
+  const save = useCallback(async (overrides?: {
+    sections?: DetectedSection[]
+    metadata?: { title?: string; author?: string }
+  }): Promise<string | null> => {
     if (!state.parsedContent) return null
+
+    const content: ParsedContent = overrides
+      ? {
+          ...state.parsedContent,
+          ...(overrides.sections && { sections: overrides.sections }),
+          metadata: { ...state.parsedContent.metadata, ...overrides.metadata },
+        }
+      : state.parsedContent
 
     setState((prev) => ({
       ...prev,
@@ -380,7 +375,7 @@ export function useImport() {
     }))
 
     try {
-      const result = await saveImportedContent(state.parsedContent)
+      const result = await saveImportedContent(content)
 
       if ('error' in result) {
         setState((prev) => ({
@@ -423,7 +418,6 @@ export function useImport() {
     importSelectedPages,
     importSinglePage,
     importText,
-    collapseToOneSection,
     updateMetadata,
     save,
     reset,

@@ -1,11 +1,12 @@
 /**
  * Shared Save Pipeline
  *
- * Converts ParsedContent from any parser (EPUB, PDF, Web, Text)
- * into Book + Section records in IndexedDB.
+ * Converts section data into IndexedDB Section records.
+ * Used by both the import flow (new book) and the editor (existing book).
  *
- * Single save path for all import methods — deduplication, section creation,
- * and playback initialization happen exactly once here.
+ * buildSectionRecords: section data → Section[] (pure transform + hashing)
+ * saveImportedContent: full import pipeline (dedup, create book, init playback)
+ * saveEditedSections:  replace sections on an existing book
  */
 
 import { createLogger } from '@/services/logging'
@@ -23,12 +24,55 @@ import type { ParsedContent } from '@/services/contentParsers'
 const log = createLogger('import')
 
 // ============================================================================
-// Public API
+// Shared Section Builder
+// ============================================================================
+
+/**
+ * Convert raw section data into IndexedDB Section records.
+ * Normalizes whitespace, hashes text, estimates duration,
+ * filters empties, and re-indexes.
+ */
+export async function buildSectionRecords(
+  bookId: string,
+  sections: { title: string; textContent: string }[],
+): Promise<Section[]> {
+  const records: Section[] = await Promise.all(
+    sections.map(async (s, index) => {
+      const textContent = s.textContent.replace(/\s+/g, ' ').trim()
+      const textHash = await hashText(textContent)
+      const charCount = textContent.length
+      const estimatedDuration = Math.ceil((charCount / 5 / 150) * 60)
+
+      return {
+        id: sectionId(bookId, index),
+        bookId,
+        index,
+        title: s.title || `Section ${index + 1}`,
+        href: '',
+        textContent,
+        textHash,
+        charCount,
+        estimatedDuration,
+      }
+    }),
+  )
+
+  const nonEmpty = records.filter((s) => s.charCount > 0)
+
+  return nonEmpty.map((s, i) => ({
+    ...s,
+    index: i,
+    id: sectionId(bookId, i),
+  }))
+}
+
+// ============================================================================
+// Import (new book)
 // ============================================================================
 
 /**
  * Save parsed content to the library.
- * Returns the book ID on success, or null if the book already exists.
+ * Returns the book ID on success, or an error if the book already exists.
  */
 export async function saveImportedContent(
   content: ParsedContent,
@@ -41,10 +85,8 @@ export async function saveImportedContent(
     sections: sections.length,
   })
 
-  // Generate a stable book ID from the content hash
   const bookId = await hashText(`${metadata.sourceType}:${contentHash}`)
 
-  // Deduplication checks
   const existsById = await bookRepository.exists(bookId)
   if (existsById) {
     log.info('Book already in library (by ID)', { bookId })
@@ -57,43 +99,12 @@ export async function saveImportedContent(
     return { error: 'This content is already in your library (same content)' }
   }
 
-  // Build Section records
-  const sectionRecords: Section[] = await Promise.all(
-    sections.map(async (detected, index) => {
-      const textContent = detected.textContent.replace(/\s+/g, ' ').trim()
-      const textHash = await hashText(textContent)
-      const charCount = textContent.length
-      const estimatedDuration = Math.ceil((charCount / 5 / 150) * 60)
+  const finalSections = await buildSectionRecords(bookId, sections)
 
-      return {
-        id: sectionId(bookId, index),
-        bookId,
-        index,
-        title: detected.title || `Section ${index + 1}`,
-        href: '',
-        textContent,
-        textHash,
-        charCount,
-        estimatedDuration,
-      }
-    }),
-  )
-
-  // Filter out empty sections
-  const nonEmptySections = sectionRecords.filter((s) => s.charCount > 0)
-
-  if (nonEmptySections.length === 0) {
+  if (finalSections.length === 0) {
     return { error: 'No readable text content found' }
   }
 
-  // Re-index after filtering
-  const finalSections = nonEmptySections.map((s, i) => ({
-    ...s,
-    index: i,
-    id: sectionId(bookId, i),
-  }))
-
-  // Save book record
   await bookRepository.add({
     id: bookId,
     title: metadata.title,
@@ -107,12 +118,8 @@ export async function saveImportedContent(
     contentHash,
   })
 
-  // Save section records
-  if (finalSections.length > 0) {
-    await sectionRepository.addBulk(finalSections)
-  }
+  await sectionRepository.addBulk(finalSections)
 
-  // Initialize playback state
   const voiceId = await settingsRepository.get('voiceId')
   const modelConfig = await settingsRepository.get('modelConfig')
   await playbackRepository.initialize(bookId, voiceId, modelConfig)
@@ -124,4 +131,25 @@ export async function saveImportedContent(
   })
 
   return { bookId }
+}
+
+// ============================================================================
+// Edit existing book
+// ============================================================================
+
+/**
+ * Replace all sections of an existing book with editor output.
+ * Clears audio cache since section content/ordering may have changed.
+ */
+export async function saveEditedSections(
+  bookId: string,
+  sections: { title: string; textContent: string }[],
+): Promise<void> {
+  const finalSections = await buildSectionRecords(bookId, sections)
+
+  await sectionRepository.replaceForBook(bookId, finalSections)
+  await bookRepository.update(bookId, { totalSections: finalSections.length })
+  await bookRepository.deleteAudioCache(bookId)
+
+  log.info('Book sections updated', { bookId, sections: finalSections.length })
 }

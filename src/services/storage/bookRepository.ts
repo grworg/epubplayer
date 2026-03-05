@@ -157,4 +157,14 @@ export const sectionRepository = {
   async deleteForBook(bookId: string): Promise<number> {
     return await db.sections.where('bookId').equals(bookId).delete()
   },
+
+  /**
+   * Replace all sections for a book atomically (delete + re-insert)
+   */
+  async replaceForBook(bookId: string, sections: Section[]): Promise<void> {
+    await db.transaction('rw', db.sections, async () => {
+      await db.sections.where('bookId').equals(bookId).delete()
+      await db.sections.bulkAdd(sections)
+    })
+  },
 }

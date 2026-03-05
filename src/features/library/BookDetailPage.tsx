@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro'
 import { t } from '@lingui/core/macro'
 import { useBook } from './useBook'
 import { playbackController } from '@/features/player/PlaybackController'
-import { ChevronLeftIcon, PlayIcon, TrashIcon, ListIcon, LoaderIcon, EraserIcon, DownloadIcon } from '@/ui/icons'
+import { ChevronLeftIcon, PlayIcon, TrashIcon, ListIcon, LoaderIcon, EraserIcon, DownloadIcon, EditIcon } from '@/ui/icons'
 
 export function BookDetailPage() {
   const { bookId } = useParams<{ bookId: string }>()
@@ -112,6 +112,14 @@ export function BookDetailPage() {
             <DownloadIcon className="h-5 w-5" />
           </button>
         )}
+        <button
+          onClick={() => navigate(`/app/book/${book.id}/edit`)}
+          className="pressable flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2 hover:text-accent"
+          aria-label={t`Edit sections`}
+          title={t`Edit sections`}
+        >
+          <EditIcon className="h-5 w-5" />
+        </button>
         <button
           onClick={handleClearAudio}
           className="pressable flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface-2 hover:text-warning"

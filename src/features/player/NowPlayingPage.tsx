@@ -25,6 +25,7 @@ import {
   BookmarkIcon,
   TextIcon,
   SettingsIcon,
+  EditIcon,
 } from '@/ui/icons'
 
 export function NowPlayingPage() {
@@ -709,12 +710,24 @@ export function NowPlayingPage() {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-surface-2 px-6 pb-4 md:pt-4">
               <h2 className="text-lg font-semibold text-text-primary"><Trans>Chapters</Trans></h2>
-              <button
-                onClick={() => setShowChapters(false)}
-                className="pressable text-sm text-accent"
-              >
-                Done
-              </button>
+              <div className="flex items-center gap-3">
+                {currentBook && (
+                  <button
+                    onClick={() => { setShowChapters(false); navigate(`/app/book/${currentBook.id}/edit`) }}
+                    className="pressable flex items-center gap-1 text-sm text-text-secondary hover:text-accent"
+                    aria-label={t`Edit sections`}
+                  >
+                    <EditIcon className="h-4 w-4" />
+                    <Trans>Edit</Trans>
+                  </button>
+                )}
+                <button
+                  onClick={() => setShowChapters(false)}
+                  className="pressable text-sm text-accent"
+                >
+                  Done
+                </button>
+              </div>
             </div>
             
             {/* Chapter list */}

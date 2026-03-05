@@ -17,6 +17,7 @@ import { FindEbooksPage } from '@/features/discover/FindEbooksPage'
 import { ShareLibraryPage, ReceiveLibraryPage } from '@/features/transfer'
 import { AccessibilityPage } from '@/features/accessibility/AccessibilityPage'
 import { ImportPage } from '@/features/import/ImportPage'
+import { BookEditorPage } from '@/features/editor/BookEditorPage'
 import { LiveRegionProvider } from '@/ui/accessibility'
 import { usePlaybackAnnouncements } from '@/features/player/usePlaybackAnnouncements'
 import { useGlobalShortcuts, KeyboardShortcutsHelp } from '@/features/player/useGlobalShortcuts'
@@ -81,6 +82,7 @@ export default function App() {
               <Route path="/app" element={<AppShell />}>
                 <Route index element={<LibraryPage />} />
                 <Route path="book/:bookId" element={<BookDetailPage />} />
+                <Route path="book/:bookId/edit" element={<BookEditorPage />} />
                 <Route path="playing" element={<NowPlayingPage />} />
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="help" element={<HelpPage />} />
