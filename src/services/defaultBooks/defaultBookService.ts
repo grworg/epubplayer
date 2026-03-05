@@ -18,9 +18,9 @@ export interface DefaultBookInfo {
  */
 export const DEFAULT_BOOKS: DefaultBookInfo[] = [
   {
-    id: 'default:alice-in-wonderland',
-    path: '/books/alice-in-wonderland.epub',
-    filename: 'alice-in-wonderland.epub',
+    id: 'default:civil-disobedience',
+    path: '/books/civil-disobedience.epub',
+    filename: 'civil-disobedience.epub',
   },
 ]
 
