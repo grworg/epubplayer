@@ -137,6 +137,12 @@ class PlaybackController {
       }
     }
 
+    // Clear stale chunk data from previous book.
+    // ChunkManager indexes by sectionIndex alone (no bookId), so leftover
+    // sections cause isSectionLoaded() to return true for the new book,
+    // skipping the load and serving the old book's text/audio.
+    chunkManager.clear()
+
     // Start loading the new book (now we're in 'idle' state)
     if (!playbackStateMachine.dispatch({ type: 'LOAD_BOOK', bookId: book.id })) {
       log.error('Failed to start loading book', { bookId: book.id, status: playbackStateMachine.getStatus() })
