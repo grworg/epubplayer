@@ -44,7 +44,7 @@ export function BrowsePage() {
   const gutendex = useGutendex()
   const [searchInput, setSearchInput] = useState('')
   const [selectedBook, setSelectedBook] = useState<GutenbergBook | null>(null)
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>()
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const handleSearchChange = useCallback(
     (value: string) => {

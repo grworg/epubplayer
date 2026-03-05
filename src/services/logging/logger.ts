@@ -31,6 +31,7 @@ export type Subsystem =
   | 'import'     // EPUB import
   | 'app'        // General app/UI
   | 'debug'      // Debug utilities
+  | 'gutendex'   // Gutendex API client
   | 'console'    // Fallback for raw console.log calls
 
 export interface Logger {
