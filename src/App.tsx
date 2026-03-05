@@ -14,6 +14,7 @@ import { HelpPage } from '@/features/help/HelpPage'
 import { TermsPage } from '@/features/legal/TermsPage'
 import { DebugLogsPage } from '@/features/debug/DebugLogsPage'
 import { FindEbooksPage } from '@/features/discover/FindEbooksPage'
+import { BrowsePage } from '@/features/discover/BrowsePage'
 import { ShareLibraryPage, ReceiveLibraryPage } from '@/features/transfer'
 import { AccessibilityPage } from '@/features/accessibility/AccessibilityPage'
 import { ImportPage } from '@/features/import/ImportPage'
@@ -87,6 +88,7 @@ export default function App() {
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="help" element={<HelpPage />} />
                 <Route path="terms" element={<TermsPage />} />
+                <Route path="browse" element={<BrowsePage />} />
                 <Route path="find-ebooks" element={<FindEbooksPage />} />
                 <Route path="debug-logs" element={<DebugLogsPage />} />
                 <Route path="share-library" element={<ShareLibraryPage />} />

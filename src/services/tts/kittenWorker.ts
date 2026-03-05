@@ -399,7 +399,7 @@ async function runInference(text: string, voiceId: string, speed: number): Promi
   }
 
   normalizePeak(combined)
-  combined = trimSilence(combined)
+  combined = trimSilence(combined) as Float32Array<ArrayBuffer>
 
   return {
     wav: combined,

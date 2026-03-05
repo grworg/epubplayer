@@ -251,6 +251,15 @@ body {
   }
 }
 
+/* Hide scrollbar but keep scrolling (for horizontal chip rows) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Live region for screen reader announcements */
 .a11y-live-region {
   position: absolute;

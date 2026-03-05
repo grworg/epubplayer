@@ -135,7 +135,7 @@ function EmptyLibrary({ onAddBook }: { onAddBook: () => void }) {
       
       <div className="mt-6 space-y-2 text-sm text-text-muted">
         <p>
-          <Trans>Don't have any EPUBs?</Trans> <Link className="text-accent underline" to="/app/find-ebooks"><Trans>Find free ebooks →</Trans></Link>
+          <Trans>Don't have any EPUBs?</Trans> <Link className="text-accent underline" to="/app/browse"><Trans>Browse free ebooks →</Trans></Link>
         </p>
         <p>
           <Trans>New here? Visit</Trans> <Link className="text-accent underline" to="/app/help"><Trans>Help &amp; How it works</Trans></Link>.
@@ -212,10 +212,10 @@ function AddBookCard({ onAddBook }: { onAddBook: () => void }) {
         </div>
       </button>
       <Link 
-        to="/app/find-ebooks" 
+        to="/app/browse" 
         className="text-center text-sm text-text-muted hover:text-accent"
       >
-        <Trans>Need EPUBs? Find free ebooks →</Trans>
+        <Trans>Need EPUBs? Browse free ebooks →</Trans>
       </Link>
     </div>
   )

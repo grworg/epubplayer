@@ -2,11 +2,13 @@ import { useEffect, useState, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Trans } from '@lingui/react/macro'
 import { MiniPlayer } from '@/features/player/MiniPlayer'
+import { AppNav } from '@/ui/components/AppNav'
 import { usePlayerStore } from '@/features/player/playerStore'
 import { playbackController } from '@/features/player/PlaybackController'
 import { ttsManager } from '@/services/tts'
 import { settingsRepository } from '@/services/storage/settingsRepository'
 import { bookRepository } from '@/services/storage'
+import { getPopularBooks } from '@/services/gutendex'
 import { createLogger } from '@/services/logging'
 
 const log = createLogger('app')
@@ -17,6 +19,11 @@ export function AppShell() {
   const setCurrentBook = usePlayerStore((s) => s.setCurrentBook)
   const [ttsPreloadStatus, setTtsPreloadStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
   const rehydrationAttempted = useRef(false)
+
+  // Warm the Gutendex cache so Browse loads instantly
+  useEffect(() => {
+    getPopularBooks(1).catch(() => {})
+  }, [])
 
   // Rehydrate playback state after page refresh
   // When the store has a persisted currentBook but the controller isn't loaded,
@@ -152,6 +159,9 @@ export function AppShell() {
   // Now Playing page needs full-bleed layout
   const isFullBleed = location.pathname === '/app/playing'
 
+  // Show bottom nav on Library and Browse pages
+  const showNav = location.pathname === '/app' || location.pathname === '/app/browse'
+
   return (
     <div className="flex h-full flex-col bg-surface-0">
       {/* TTS preload indicator - subtle, non-blocking */}
@@ -162,8 +172,8 @@ export function AppShell() {
         </div>
       )}
 
-      {/* Main content area */}
-      <main id="main-content" className="flex-1 overflow-y-auto overflow-x-hidden">
+      {/* Main content area — offset for desktop sidebar when nav is visible */}
+      <main id="main-content" className={`flex-1 overflow-y-auto overflow-x-hidden ${showNav ? 'md:ml-[60px]' : ''}`}>
         <div className={isFullBleed ? 'h-full' : 'mx-auto h-full max-w-6xl'}>
           <Outlet />
         </div>
@@ -171,6 +181,9 @@ export function AppShell() {
 
       {/* Mini player (shows when a book is active and not on Now Playing page) */}
       {showMiniPlayer && <MiniPlayer />}
+
+      {/* Bottom tab bar (mobile) + sidebar (desktop) */}
+      {showNav && <AppNav />}
     </div>
   )
 }
