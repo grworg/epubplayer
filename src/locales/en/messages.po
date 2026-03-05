@@ -25,10 +25,27 @@ msgstr "(local browser storage)."
 msgid "(standard website files, cached by your browser/PWA)."
 msgstr "(standard website files, cached by your browser/PWA)."
 
+#. placeholder {0}: gutendex.totalCount
+#. placeholder {1}: gutendex.topic
+#: src/features/discover/BrowsePage.tsx:127
+msgid "{0} books in {1}"
+msgstr "{0} books in {1}"
+
 #. placeholder {0}: book.sections.length
-#: src/features/library/BookDetailPage.tsx:152
+#: src/features/library/BookDetailPage.tsx:160
 msgid "{0} chapters · ~{durationText}"
 msgstr "{0} chapters · ~{durationText}"
+
+#. placeholder {0}: issues.reduce((n, i) => n + i.count, 0)
+#: src/features/editor/SectionDetailSheet.tsx:135
+msgid "{0} issues detected"
+msgstr "{0} issues detected"
+
+#. placeholder {0}: editor.junkCount
+#. placeholder {1}: editor.activeSections.length
+#: src/features/editor/BookEditorView.tsx:180
+msgid "{0} likely junk · {1} sections"
+msgstr "{0} likely junk · {1} sections"
 
 #. placeholder {0}: stats.totalAudioSizeMB
 #. placeholder {1}: stats.totalChunkCount
@@ -38,7 +55,7 @@ msgid "{0} MB audio • {1} chunks • {2} books"
 msgstr "{0} MB audio • {1} chunks • {2} books"
 
 #. placeholder {0}: book.storageStats.audioSizeMB
-#: src/features/library/BookDetailPage.tsx:158
+#: src/features/library/BookDetailPage.tsx:166
 msgid "{0} MB cached audio"
 msgstr "{0} MB cached audio"
 
@@ -47,7 +64,18 @@ msgstr "{0} MB cached audio"
 msgid "{0} min"
 msgstr "{0} min"
 
-#: src/features/library/BookDetailPage.tsx:166
+#. placeholder {0}: gutendex.totalCount
+#. placeholder {1}: gutendex.query
+#: src/features/discover/BrowsePage.tsx:125
+msgid "{0} results for “{1}”"
+msgstr "{0} results for “{1}”"
+
+#. placeholder {0}: editor.activeSections.length
+#: src/features/editor/BookEditorView.tsx:182
+msgid "{0} sections"
+msgstr "{0} sections"
+
+#: src/features/library/BookDetailPage.tsx:174
 msgid "{progress}% complete"
 msgstr "{progress}% complete"
 
@@ -62,7 +90,7 @@ msgstr "{remainingMinutes} {0} remaining"
 msgid "{s} seconds"
 msgstr "{s} seconds"
 
-#: src/features/player/NowPlayingPage.tsx:567
+#: src/features/player/NowPlayingPage.tsx:568
 msgid "⚠️ CPU mode (slow)"
 msgstr "⚠️ CPU mode (slow)"
 
@@ -162,7 +190,7 @@ msgstr "Add book"
 msgid "Add Book"
 msgstr "Add Book"
 
-#: src/features/player/NowPlayingPage.tsx:437
+#: src/features/player/NowPlayingPage.tsx:438
 #: src/features/player/useGlobalShortcuts.tsx:28
 #: src/ui/components/BookmarkSheet.tsx:95
 msgid "Add bookmark"
@@ -172,13 +200,21 @@ msgstr "Add bookmark"
 #~ msgid "Add EPUB"
 #~ msgstr "Add EPUB"
 
+#: src/features/discover/GutenbergBookSheet.tsx:243
+msgid "Add to Library"
+msgstr "Add to Library"
+
 #: src/features/library/LibraryPage.tsx:189
 #~ msgid "Add your first EPUB to start listening. This is an offline-first EPUB reader and audiobook generator — your books, generated audio, and settings are stored locally on this device."
 #~ msgstr "Add your first EPUB to start listening. This is an offline-first EPUB reader and audiobook generator — your books, generated audio, and settings are stored locally on this device."
 
-#: src/features/import/ImportPage.tsx:522
+#: src/features/import/ImportPage.tsx:531
 msgid "Added to Library!"
 msgstr "Added to Library!"
+
+#: src/features/discover/GutenbergBookSheet.tsx:175
+msgid "Added to your library!"
+msgstr "Added to your library!"
 
 #: src/features/player/useGlobalShortcuts.tsx:125
 msgid "Adding bookmark"
@@ -197,16 +233,24 @@ msgid "AI voice with great quality and speed. Works on most devices. ~260MB down
 msgstr "AI voice with great quality and speed. Works on most devices. ~260MB download."
 
 #: src/features/import/SectionPreview.tsx:174
-msgid "All content will be imported as a single chapter."
-msgstr "All content will be imported as a single chapter."
+#~ msgid "All content will be imported as a single chapter."
+#~ msgstr "All content will be imported as a single chapter."
 
 #: src/features/debug/DebugLogsPage.tsx:106
 msgid "All Levels"
 msgstr "All Levels"
 
+#: src/features/editor/BookEditorView.tsx:228
+msgid "All sections removed. Use undo to restore."
+msgstr "All sections removed. Use undo to restore."
+
 #: src/features/debug/DebugLogsPage.tsx:121
 msgid "All Subsystems"
 msgstr "All Subsystems"
+
+#: src/features/discover/GutenbergBookSheet.tsx:185
+msgid "Already in your library"
+msgstr "Already in your library"
 
 #: src/features/legal/TermsPage.tsx:102
 msgid "App updates/assets"
@@ -216,19 +260,19 @@ msgstr "App updates/assets"
 msgid "Are you sure you want to remove this book and all its audio?"
 msgstr "Are you sure you want to remove this book and all its audio?"
 
-#: src/features/import/ImportPage.tsx:366
+#: src/features/import/ImportPage.tsx:375
 msgid "Article or webpage URL"
 msgstr "Article or webpage URL"
 
-#: src/features/import/ImportPage.tsx:425
+#: src/features/import/ImportPage.tsx:434
 msgid "Article title"
 msgstr "Article title"
 
-#: src/features/import/ImportPage.tsx:432
+#: src/features/import/ImportPage.tsx:441
 msgid "Author"
 msgstr "Author"
 
-#: src/features/import/ImportPage.tsx:439
+#: src/features/import/ImportPage.tsx:448
 msgid "Author name"
 msgstr "Author name"
 
@@ -244,9 +288,13 @@ msgstr "Authors keep ~95% vs ~30%"
 msgid "Auto"
 msgstr "Auto"
 
+#: src/features/editor/SectionDetailSheet.tsx:167
+msgid "Auto-Clean"
+msgstr "Auto-Clean"
+
 #: src/features/import/SectionPreview.tsx:228
-msgid "Auto-detected section boundary"
-msgstr "Auto-detected section boundary"
+#~ msgid "Auto-detected section boundary"
+#~ msgstr "Auto-detected section boundary"
 
 #: src/features/settings/SettingsPage.tsx:278
 #: src/features/settings/SettingsPage.tsx:700
@@ -254,8 +302,9 @@ msgid "Auto-rewind on Resume"
 msgstr "Auto-rewind on Resume"
 
 #: src/features/debug/DebugLogsPage.tsx:83
+#: src/features/editor/BookEditorPage.tsx:103
 #: src/features/help/HelpPage.tsx:47
-#: src/features/import/ImportPage.tsx:127
+#: src/features/import/ImportPage.tsx:131
 #: src/features/settings/SettingsPage.tsx:251
 msgid "Back"
 msgstr "Back"
@@ -280,6 +329,7 @@ msgstr "Best performance — fast and smooth playback"
 msgid "Best quality, required for WebGPU"
 msgstr "Best quality, required for WebGPU"
 
+#: src/features/editor/BookEditorPage.tsx:70
 #: src/features/library/BookDetailPage.tsx:24
 msgid "Book not found"
 msgstr "Book not found"
@@ -296,9 +346,9 @@ msgstr "Bookmark deleted"
 msgid "Bookmark note"
 msgstr "Bookmark note"
 
-#: src/features/player/NowPlayingPage.tsx:334
-#: src/features/player/NowPlayingPage.tsx:437
-#: src/features/player/NowPlayingPage.tsx:648
+#: src/features/player/NowPlayingPage.tsx:335
+#: src/features/player/NowPlayingPage.tsx:438
+#: src/features/player/NowPlayingPage.tsx:649
 #: src/ui/components/BookmarkSheet.tsx:89
 msgid "Bookmarks"
 msgstr "Bookmarks"
@@ -310,6 +360,15 @@ msgstr "Borrow modern books free"
 #: src/features/landing/LandingPage.tsx:34
 msgid "Brought to Life"
 msgstr "Brought to Life"
+
+#: src/features/discover/BrowsePage.tsx:86
+#: src/ui/components/AppNav.tsx:17
+msgid "Browse"
+msgstr "Browse"
+
+#: src/features/library/LibraryPage.tsx:138
+msgid "Browse free ebooks →"
+msgstr "Browse free ebooks →"
 
 #: src/features/settings/SettingsPage.tsx:33
 msgid "Browser (Instant)"
@@ -345,8 +404,8 @@ msgstr "Buy books you actually own — no DRM means you can read them in any app
 msgid "Buy Direct from Authors"
 msgstr "Buy Direct from Authors"
 
+#: src/features/editor/BookEditorView.tsx:239
 #: src/features/import/PagePicker.tsx:155
-#: src/features/import/SectionPreview.tsx:184
 #: src/ui/components/BookmarkSheet.tsx:120
 msgid "Cancel"
 msgstr "Cancel"
@@ -355,9 +414,9 @@ msgstr "Cancel"
 msgid "Cancel Timer"
 msgstr "Cancel Timer"
 
-#: src/features/player/NowPlayingPage.tsx:328
-#: src/features/player/NowPlayingPage.tsx:431
-#: src/features/player/NowPlayingPage.tsx:628
+#: src/features/player/NowPlayingPage.tsx:329
+#: src/features/player/NowPlayingPage.tsx:432
+#: src/features/player/NowPlayingPage.tsx:629
 msgid "Change playback speed"
 msgstr "Change playback speed"
 
@@ -376,9 +435,9 @@ msgstr "Chapter {0} · {1}"
 msgid "Chapter: {currentSectionTitle}"
 msgstr "Chapter: {currentSectionTitle}"
 
-#: src/features/library/BookDetailPage.tsx:192
-#: src/features/player/NowPlayingPage.tsx:227
-#: src/features/player/NowPlayingPage.tsx:711
+#: src/features/library/BookDetailPage.tsx:200
+#: src/features/player/NowPlayingPage.tsx:228
+#: src/features/player/NowPlayingPage.tsx:712
 msgid "Chapters"
 msgstr "Chapters"
 
@@ -398,6 +457,10 @@ msgstr "chunks"
 msgid "Classic literature, out-of-copyright works, and openly licensed content — all completely free."
 msgstr "Classic literature, out-of-copyright works, and openly licensed content — all completely free."
 
+#: src/features/editor/BookEditorView.tsx:197
+msgid "Clean All"
+msgstr "Clean All"
+
 #: src/features/debug/DebugLogsPage.tsx:135
 msgid "Clear"
 msgstr "Clear"
@@ -410,8 +473,8 @@ msgstr "Clear All Audio"
 msgid "Clear All Data"
 msgstr "Clear All Data"
 
-#: src/features/library/BookDetailPage.tsx:118
-#: src/features/library/BookDetailPage.tsx:119
+#: src/features/library/BookDetailPage.tsx:126
+#: src/features/library/BookDetailPage.tsx:127
 msgid "Clear audio cache"
 msgstr "Clear audio cache"
 
@@ -421,13 +484,15 @@ msgid "Clear audio for {0}"
 msgstr "Clear audio for {0}"
 
 #: src/features/import/SectionPreview.tsx:114
-msgid "Click to edit author"
-msgstr "Click to edit author"
+#~ msgid "Click to edit author"
+#~ msgstr "Click to edit author"
 
 #: src/features/import/SectionPreview.tsx:84
-msgid "Click to edit title"
-msgstr "Click to edit title"
+#~ msgid "Click to edit title"
+#~ msgstr "Click to edit title"
 
+#: src/features/discover/GutenbergBookSheet.tsx:60
+#: src/features/editor/SectionDetailSheet.tsx:123
 #: src/features/player/useGlobalShortcuts.tsx:205
 msgid "Close"
 msgstr "Close"
@@ -436,11 +501,11 @@ msgstr "Close"
 msgid "Close dialog / Go back"
 msgstr "Close dialog / Go back"
 
-#: src/features/import/ImportPage.tsx:446
+#: src/features/import/ImportPage.tsx:455
 msgid "Content"
 msgstr "Content"
 
-#: src/features/library/BookDetailPage.tsx:183
+#: src/features/library/BookDetailPage.tsx:191
 msgid "Continue Listening"
 msgstr "Continue Listening"
 
@@ -495,7 +560,7 @@ msgstr "Default Speed"
 msgid "Delete all generated audio for this book? The book will remain in your library."
 msgstr "Delete all generated audio for this book? The book will remain in your library."
 
-#: src/features/library/BookDetailPage.tsx:126
+#: src/features/library/BookDetailPage.tsx:134
 msgid "Delete book"
 msgstr "Delete book"
 
@@ -505,8 +570,8 @@ msgid "Delete bookmark: {0}"
 msgstr "Delete bookmark: {0}"
 
 #: src/features/import/SectionPreview.tsx:133
-msgid "Detected Sections"
-msgstr "Detected Sections"
+#~ msgid "Detected Sections"
+#~ msgstr "Detected Sections"
 
 #: src/features/settings/SettingsPage.tsx:504
 msgid "Device Sync"
@@ -520,13 +585,17 @@ msgstr "Disabled"
 msgid "Disclaimers"
 msgstr "Disclaimers"
 
+#: src/features/discover/BrowsePage.tsx:207
+msgid "Discover free ebooks from Project Gutenberg"
+msgstr "Discover free ebooks from Project Gutenberg"
+
 #: src/features/discover/FindEbooksPage.tsx:214
 msgid "Discover where to get EPUBs — free classics, DRM-free stores, and more."
 msgstr "Discover where to get EPUBs — free classics, DRM-free stores, and more."
 
-#: src/features/library/LibraryPage.tsx:148
-#~ msgid "Dismiss"
-#~ msgstr "Dismiss"
+#: src/features/editor/BookEditorView.tsx:264
+msgid "Dismiss"
+msgstr "Dismiss"
 
 #: src/features/library/LibraryPage.tsx:138
 msgid "Don't have any EPUBs?"
@@ -535,6 +604,10 @@ msgstr "Don't have any EPUBs?"
 #: src/features/pwa/InstallPromptSheet.tsx:113
 msgid "Don't show again"
 msgstr "Don't show again"
+
+#: src/features/editor/SectionDetailSheet.tsx:184
+msgid "Done"
+msgstr "Done"
 
 #: src/ui/components/SpeedSheet.tsx:21
 msgid "Double speed"
@@ -548,17 +621,44 @@ msgstr "Download EPUB"
 msgid "Download original EPUB"
 msgstr "Download original EPUB"
 
+#: src/features/discover/GutenbergBookSheet.tsx:224
+msgid "Downloading..."
+msgstr "Downloading..."
+
+#: src/features/discover/BrowsePage.tsx:267
+#: src/features/discover/GutenbergBookSheet.tsx:90
+msgid "downloads"
+msgstr "downloads"
+
 #: src/features/discover/FindEbooksPage.tsx:69
 msgid "DRM-Free Bookstores"
 msgstr "DRM-Free Bookstores"
 
-#: src/features/import/ImportPage.tsx:323
+#: src/features/import/ImportPage.tsx:332
 msgid "Drop EPUB or PDF here"
 msgstr "Drop EPUB or PDF here"
 
 #: src/features/settings/SettingsPage.tsx:331
 msgid "Each voice is a different neural model"
 msgstr "Each voice is a different neural model"
+
+#: src/features/player/NowPlayingPage.tsx:721
+msgid "Edit"
+msgstr "Edit"
+
+#: src/features/editor/BookEditorPage.tsx:108
+msgid "Edit Book"
+msgstr "Edit Book"
+
+#: src/features/library/BookDetailPage.tsx:118
+#: src/features/library/BookDetailPage.tsx:119
+#: src/features/player/NowPlayingPage.tsx:718
+msgid "Edit sections"
+msgstr "Edit sections"
+
+#: src/features/import/ImportPage.tsx:137
+msgid "Edit Sections"
+msgstr "Edit Sections"
 
 #: src/features/settings/SettingsPage.tsx:124
 #: src/features/settings/SettingsPage.tsx:228
@@ -614,11 +714,11 @@ msgstr "Faster load times"
 msgid "Fastest, smallest (WASM only)"
 msgstr "Fastest, smallest (WASM only)"
 
-#: src/features/import/ImportPage.tsx:384
+#: src/features/import/ImportPage.tsx:393
 msgid "Fetch Article"
 msgstr "Fetch Article"
 
-#: src/features/import/ImportPage.tsx:200
+#: src/features/import/ImportPage.tsx:209
 msgid "File"
 msgstr "File"
 
@@ -652,12 +752,12 @@ msgid "Find Ebooks — EPUB Player"
 msgstr "Find Ebooks — EPUB Player"
 
 #: src/features/library/LibraryPage.tsx:138
-msgid "Find free ebooks →"
-msgstr "Find free ebooks →"
+#~ msgid "Find free ebooks →"
+#~ msgstr "Find free ebooks →"
 
-#: src/features/player/NowPlayingPage.tsx:323
-#: src/features/player/NowPlayingPage.tsx:392
-#: src/features/player/NowPlayingPage.tsx:617
+#: src/features/player/NowPlayingPage.tsx:324
+#: src/features/player/NowPlayingPage.tsx:393
+#: src/features/player/NowPlayingPage.tsx:618
 msgid "Forward"
 msgstr "Forward"
 
@@ -681,8 +781,8 @@ msgstr "Generated audio chunks (when using AI TTS that pre-generates audio)"
 msgid "Generating audio..."
 msgstr "Generating audio..."
 
-#: src/features/player/NowPlayingPage.tsx:304
-#: src/features/player/NowPlayingPage.tsx:559
+#: src/features/player/NowPlayingPage.tsx:305
+#: src/features/player/NowPlayingPage.tsx:560
 msgid "Generating..."
 msgstr "Generating..."
 
@@ -694,12 +794,17 @@ msgstr "Get the full app experience"
 #: src/features/discover/FindEbooksPage.tsx:205
 #: src/features/legal/TermsPage.tsx:44
 #: src/features/library/BookDetailPage.tsx:100
-#: src/features/player/NowPlayingPage.tsx:217
+#: src/features/player/NowPlayingPage.tsx:218
 msgid "Go back"
 msgstr "Go back"
 
+#: src/features/discover/GutenbergBookSheet.tsx:197
+msgid "Go to book"
+msgstr "Go to book"
+
+#: src/features/editor/BookEditorPage.tsx:75
 #: src/features/library/BookDetailPage.tsx:29
-#: src/features/player/NowPlayingPage.tsx:203
+#: src/features/player/NowPlayingPage.tsx:204
 msgid "Go to Library"
 msgstr "Go to Library"
 
@@ -725,8 +830,8 @@ msgstr "Half speed"
 msgid "Help & How it works"
 msgstr "Help & How it works"
 
-#: src/features/player/NowPlayingPage.tsx:440
-#: src/features/player/NowPlayingPage.tsx:440
+#: src/features/player/NowPlayingPage.tsx:441
+#: src/features/player/NowPlayingPage.tsx:441
 msgid "Hide lyrics"
 msgstr "Hide lyrics"
 
@@ -746,7 +851,7 @@ msgstr "Highest quality AI voice. Requires powerful GPU for smooth playback."
 msgid "How to install"
 msgstr "How to install"
 
-#: src/features/import/ImportPage.tsx:137
+#: src/features/import/ImportPage.tsx:141
 msgid "Import"
 msgstr "Import"
 
@@ -760,8 +865,8 @@ msgid "Import an EPUB, PDF, or web article to start listening. Your books, gener
 msgstr "Import an EPUB, PDF, or web article to start listening. Your books, generated audio, and settings are stored locally on this device."
 
 #: src/features/import/SectionPreview.tsx:167
-msgid "Import as a single chapter instead"
-msgstr "Import as a single chapter instead"
+#~ msgid "Import as a single chapter instead"
+#~ msgstr "Import as a single chapter instead"
 
 #: src/features/library/LibraryPage.tsx:202
 msgid "Import book"
@@ -771,7 +876,7 @@ msgstr "Import book"
 msgid "Import EPUB, PDF, or web article"
 msgstr "Import EPUB, PDF, or web article"
 
-#: src/features/import/ImportPage.tsx:240
+#: src/features/import/ImportPage.tsx:249
 msgid "Import Failed"
 msgstr "Import Failed"
 
@@ -783,7 +888,7 @@ msgstr "Import from another device"
 msgid "Import Library"
 msgstr "Import Library"
 
-#: src/features/import/ImportPage.tsx:463
+#: src/features/import/ImportPage.tsx:472
 msgid "Import Text"
 msgstr "Import Text"
 
@@ -818,6 +923,16 @@ msgstr "Install app"
 #: src/features/pwa/InstallPromptSheet.tsx:83
 msgid "Install Now"
 msgstr "Install Now"
+
+#: src/features/editor/BookEditorView.tsx:186
+#: src/features/editor/BookEditorView.tsx:333
+msgid "issue"
+msgstr "issue"
+
+#: src/features/editor/BookEditorView.tsx:186
+#: src/features/editor/BookEditorView.tsx:333
+msgid "issues"
+msgstr "issues"
 
 #. placeholder {0}: formatPosition(bookmark)
 #: src/ui/components/BookmarkSheet.tsx:49
@@ -882,6 +997,7 @@ msgid "Learn More"
 msgstr "Learn More"
 
 #: src/features/library/LibraryPage.tsx:35
+#: src/ui/components/AppNav.tsx:16
 msgid "Library"
 msgstr "Library"
 
@@ -893,12 +1009,16 @@ msgstr "License"
 msgid "Lightweight AI voice. Fast on any device, no GPU needed. ~24MB download."
 msgstr "Lightweight AI voice. Fast on any device, no GPU needed. ~24MB download."
 
-#: src/app/AppShell.tsx:161
+#: src/features/discover/BrowsePage.tsx:193
+msgid "Load more"
+msgstr "Load more"
+
+#: src/app/AppShell.tsx:171
 msgid "Loading TTS engine..."
 msgstr "Loading TTS engine..."
 
-#: src/features/player/NowPlayingPage.tsx:303
-#: src/features/player/NowPlayingPage.tsx:555
+#: src/features/player/NowPlayingPage.tsx:304
+#: src/features/player/NowPlayingPage.tsx:556
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -910,7 +1030,7 @@ msgstr "Local storage (what's saved)"
 msgid "Log"
 msgstr "Log"
 
-#: src/features/player/NowPlayingPage.tsx:670
+#: src/features/player/NowPlayingPage.tsx:671
 msgid "Lyrics"
 msgstr "Lyrics"
 
@@ -930,7 +1050,7 @@ msgstr "Major sci-fi/fantasy publisher that sells all ebooks DRM-free. A rare ex
 msgid "Many authors sell directly from their websites or Patreon. Search for \"[author name] buy ebook direct\" — you'd be surprised how many offer this."
 msgstr "Many authors sell directly from their websites or Patreon. Search for \"[author name] buy ebook direct\" — you'd be surprised how many offer this."
 
-#: src/features/player/NowPlayingPage.tsx:335
+#: src/features/player/NowPlayingPage.tsx:336
 msgid "Mark"
 msgstr "Mark"
 
@@ -941,6 +1061,10 @@ msgstr "Maximum caching; may use lots of storage"
 #: src/features/pwa/InstallPromptSheet.tsx:119
 msgid "Maybe later"
 msgstr "Maybe later"
+
+#: src/features/editor/SectionDetailSheet.tsx:176
+msgid "Merge with Next"
+msgstr "Merge with Next"
 
 #: src/features/settings/SettingsPage.tsx:385
 #: src/features/settings/SettingsPage.tsx:655
@@ -956,8 +1080,12 @@ msgid "Multi-page site detected"
 msgstr "Multi-page site detected"
 
 #: src/features/library/LibraryPage.tsx:218
-msgid "Need EPUBs? Find free ebooks →"
-msgstr "Need EPUBs? Find free ebooks →"
+msgid "Need EPUBs? Browse free ebooks →"
+msgstr "Need EPUBs? Browse free ebooks →"
+
+#: src/features/library/LibraryPage.tsx:218
+#~ msgid "Need EPUBs? Find free ebooks →"
+#~ msgstr "Need EPUBs? Find free ebooks →"
 
 #: src/features/legal/TermsPage.tsx:96
 msgid "Network use (what may be downloaded)"
@@ -971,9 +1099,9 @@ msgstr "Neural TTS with 900+ voices. Proper phonemization. ~100MB download."
 msgid "New here? Visit"
 msgstr "New here? Visit"
 
-#: src/features/player/NowPlayingPage.tsx:320
-#: src/features/player/NowPlayingPage.tsx:389
-#: src/features/player/NowPlayingPage.tsx:609
+#: src/features/player/NowPlayingPage.tsx:321
+#: src/features/player/NowPlayingPage.tsx:390
+#: src/features/player/NowPlayingPage.tsx:610
 #: src/features/player/useGlobalShortcuts.tsx:27
 #: src/features/player/useGlobalShortcuts.tsx:116
 msgid "Next chapter"
@@ -983,13 +1111,18 @@ msgstr "Next chapter"
 msgid "No accounts, no tracking, no analytics."
 msgstr "No accounts, no tracking, no analytics."
 
-#: src/features/player/NowPlayingPage.tsx:198
+#: src/features/player/NowPlayingPage.tsx:199
 msgid "No book is currently playing"
 msgstr "No book is currently playing"
 
 #: src/ui/components/BookmarkSheet.tsx:137
 msgid "No bookmarks yet"
 msgstr "No bookmarks yet"
+
+#. placeholder {0}: gutendex.query
+#: src/features/discover/BrowsePage.tsx:164
+msgid "No books found for “{0}”"
+msgstr "No books found for “{0}”"
 
 #: src/features/settings/SettingsPage.tsx:478
 msgid "No books in library"
@@ -998,6 +1131,10 @@ msgstr "No books in library"
 #: src/features/library/LibraryPage.tsx:116
 msgid "No books yet"
 msgstr "No books yet"
+
+#: src/features/discover/GutenbergBookSheet.tsx:132
+msgid "No EPUB available for this book"
+msgstr "No EPUB available for this book"
 
 #: src/features/debug/DebugLogsPage.tsx:171
 msgid "No logs."
@@ -1037,11 +1174,11 @@ msgstr "Open App"
 msgid "Open-source license"
 msgstr "Open-source license"
 
-#: src/features/import/ImportPage.tsx:432
+#: src/features/import/ImportPage.tsx:441
 msgid "optional"
 msgstr "optional"
 
-#: src/features/import/ImportPage.tsx:326
+#: src/features/import/ImportPage.tsx:335
 msgid "or tap to browse files"
 msgstr "or tap to browse files"
 
@@ -1059,17 +1196,17 @@ msgstr "pages selected"
 
 #. placeholder {0}: chunkInfo.current
 #. placeholder {1}: chunkInfo.total
-#: src/features/player/NowPlayingPage.tsx:303
-#: src/features/player/NowPlayingPage.tsx:554
+#: src/features/player/NowPlayingPage.tsx:304
+#: src/features/player/NowPlayingPage.tsx:555
 msgid "Part {0} of {1}"
 msgstr "Part {0} of {1}"
 
 #. placeholder {0}: chunkInfo.current
 #. placeholder {1}: chunkInfo.total
 #. placeholder {2}: Math.round(chunkInfo.progress)
-#: src/features/player/NowPlayingPage.tsx:279
-#: src/features/player/NowPlayingPage.tsx:410
-#: src/features/player/NowPlayingPage.tsx:508
+#: src/features/player/NowPlayingPage.tsx:280
+#: src/features/player/NowPlayingPage.tsx:411
+#: src/features/player/NowPlayingPage.tsx:509
 msgid "Part {0} of {1}, {2}% complete"
 msgstr "Part {0} of {1}, {2}% complete"
 
@@ -1077,21 +1214,21 @@ msgstr "Part {0} of {1}, {2}% complete"
 msgid "Part of the Internet Archive. Offers free borrowing of millions of books, plus unlimited access to public domain titles."
 msgstr "Part of the Internet Archive. Offers free borrowing of millions of books, plus unlimited access to public domain titles."
 
-#: src/features/import/ImportPage.tsx:202
+#: src/features/import/ImportPage.tsx:211
 msgid "Paste"
 msgstr "Paste"
 
-#: src/features/import/ImportPage.tsx:452
+#: src/features/import/ImportPage.tsx:461
 msgid "Paste article text or HTML here..."
 msgstr "Paste article text or HTML here..."
 
-#: src/features/import/ImportPage.tsx:467
+#: src/features/import/ImportPage.tsx:476
 msgid "Paste plain text or HTML from any source. Headings will be used for chapter detection."
 msgstr "Paste plain text or HTML from any source. Headings will be used for chapter detection."
 
 #: src/features/import/SectionPreview.tsx:259
-msgid "Pasted Text"
-msgstr "Pasted Text"
+#~ msgid "Pasted Text"
+#~ msgstr "Pasted Text"
 
 #: src/features/player/MiniPlayer.tsx:66
 msgid "Pause"
@@ -1133,9 +1270,9 @@ msgstr "Playback"
 msgid "Playback paused"
 msgstr "Playback paused"
 
-#: src/features/player/NowPlayingPage.tsx:275
-#: src/features/player/NowPlayingPage.tsx:406
-#: src/features/player/NowPlayingPage.tsx:504
+#: src/features/player/NowPlayingPage.tsx:276
+#: src/features/player/NowPlayingPage.tsx:407
+#: src/features/player/NowPlayingPage.tsx:505
 msgid "Playback progress"
 msgstr "Playback progress"
 
@@ -1155,17 +1292,21 @@ msgstr "Playback started"
 msgid "Playing"
 msgstr "Playing"
 
+#: src/features/discover/BrowsePage.tsx:129
+msgid "Popular on Project Gutenberg"
+msgstr "Popular on Project Gutenberg"
+
 #: src/features/discover/FindEbooksPage.tsx:119
 msgid "Popular platform for creators selling directly. Many authors and publishers use it for DRM-free ebook sales."
 msgstr "Popular platform for creators selling directly. Many authors and publishers use it for DRM-free ebook sales."
 
 #: src/features/import/ImportPage.tsx:133
-msgid "Preview"
-msgstr "Preview"
+#~ msgid "Preview"
+#~ msgstr "Preview"
 
-#: src/features/player/NowPlayingPage.tsx:314
-#: src/features/player/NowPlayingPage.tsx:383
-#: src/features/player/NowPlayingPage.tsx:587
+#: src/features/player/NowPlayingPage.tsx:315
+#: src/features/player/NowPlayingPage.tsx:384
+#: src/features/player/NowPlayingPage.tsx:588
 #: src/features/player/useGlobalShortcuts.tsx:26
 #: src/features/player/useGlobalShortcuts.tsx:108
 msgid "Previous chapter"
@@ -1177,7 +1318,8 @@ msgstr "Previous chapter"
 msgid "Processing Device"
 msgstr "Processing Device"
 
-#: src/features/import/ImportPage.tsx:493
+#: src/features/discover/GutenbergBookSheet.tsx:225
+#: src/features/import/ImportPage.tsx:502
 msgid "Processing..."
 msgstr "Processing..."
 
@@ -1189,7 +1331,7 @@ msgstr "Ready to play"
 msgid "Receive books from another device"
 msgstr "Receive books from another device"
 
-#: src/features/import/ImportPage.tsx:525
+#: src/features/import/ImportPage.tsx:534
 msgid "Redirecting..."
 msgstr "Redirecting..."
 
@@ -1201,9 +1343,17 @@ msgstr "Remove all books, audio, and settings"
 msgid "Remove all generated audio to free up space"
 msgstr "Remove all generated audio to free up space"
 
-#: src/features/player/NowPlayingPage.tsx:311
-#: src/features/player/NowPlayingPage.tsx:380
-#: src/features/player/NowPlayingPage.tsx:579
+#: src/features/editor/BookEditorView.tsx:206
+msgid "Remove Flagged"
+msgstr "Remove Flagged"
+
+#: src/features/editor/BookEditorView.tsx:343
+msgid "Remove section"
+msgstr "Remove section"
+
+#: src/features/player/NowPlayingPage.tsx:312
+#: src/features/player/NowPlayingPage.tsx:381
+#: src/features/player/NowPlayingPage.tsx:580
 msgid "Rewind"
 msgstr "Rewind"
 
@@ -1211,21 +1361,37 @@ msgstr "Rewind"
 msgid "Save"
 msgstr "Save"
 
-#: src/features/import/SectionPreview.tsx:190
+#: src/features/editor/BookEditorView.tsx:246
+msgid "Save Changes"
+msgstr "Save Changes"
+
+#: src/features/editor/BookEditorView.tsx:246
 msgid "Save to Library"
 msgstr "Save to Library"
 
-#: src/features/import/ImportPage.tsx:493
+#: src/features/editor/BookEditorPage.tsx:85
+msgid "Saving changes..."
+msgstr "Saving changes..."
+
+#: src/features/import/ImportPage.tsx:502
 msgid "Saving to Library..."
 msgstr "Saving to Library..."
 
-#: src/features/import/SectionPreview.tsx:124
-msgid "section"
-msgstr "section"
+#: src/features/discover/GutenbergBookSheet.tsx:226
+msgid "Saving..."
+msgstr "Saving..."
+
+#: src/features/discover/BrowsePage.tsx:95
+msgid "Search books, authors..."
+msgstr "Search books, authors..."
 
 #: src/features/import/SectionPreview.tsx:124
-msgid "sections"
-msgstr "sections"
+#~ msgid "section"
+#~ msgstr "section"
+
+#: src/features/import/SectionPreview.tsx:124
+#~ msgid "sections"
+#~ msgstr "sections"
 
 #: src/features/import/PagePicker.tsx:92
 msgid "Select all"
@@ -1235,7 +1401,7 @@ msgstr "Select all"
 #~ msgid "Select EPUB file to import"
 #~ msgstr "Select EPUB file to import"
 
-#: src/features/import/ImportPage.tsx:340
+#: src/features/import/ImportPage.tsx:349
 msgid "Select file to import"
 msgstr "Select file to import"
 
@@ -1247,7 +1413,7 @@ msgstr "Select Kitten Voice"
 msgid "Select none"
 msgstr "Select none"
 
-#: src/features/import/ImportPage.tsx:135
+#: src/features/import/ImportPage.tsx:139
 msgid "Select Pages"
 msgstr "Select Pages"
 
@@ -1281,9 +1447,9 @@ msgstr "Send your books to another device"
 
 #: src/features/library/LibraryPage.tsx:69
 #: src/features/library/LibraryPage.tsx:70
-#: src/features/player/NowPlayingPage.tsx:234
 #: src/features/player/NowPlayingPage.tsx:235
-#: src/features/player/NowPlayingPage.tsx:660
+#: src/features/player/NowPlayingPage.tsx:236
+#: src/features/player/NowPlayingPage.tsx:661
 #: src/features/settings/SettingsPage.tsx:255
 msgid "Settings"
 msgstr "Settings"
@@ -1296,7 +1462,7 @@ msgstr "Share Library"
 msgid "Sherpa (Multi-Speaker)"
 msgstr "Sherpa (Multi-Speaker)"
 
-#: src/features/player/NowPlayingPage.tsx:261
+#: src/features/player/NowPlayingPage.tsx:262
 msgid "Show cover art"
 msgstr "Show cover art"
 
@@ -1304,8 +1470,8 @@ msgstr "Show cover art"
 msgid "Show keyboard shortcuts"
 msgstr "Show keyboard shortcuts"
 
-#: src/features/player/NowPlayingPage.tsx:476
-#: src/features/player/NowPlayingPage.tsx:667
+#: src/features/player/NowPlayingPage.tsx:477
+#: src/features/player/NowPlayingPage.tsx:668
 msgid "Show lyrics"
 msgstr "Show lyrics"
 
@@ -1339,7 +1505,7 @@ msgstr "Skip Forward"
 msgid "Skip Forward Interval"
 msgstr "Skip Forward Interval"
 
-#: src/App.tsx:72
+#: src/App.tsx:74
 msgid "Skip to main content"
 msgstr "Skip to main content"
 
@@ -1351,14 +1517,14 @@ msgstr "Skipped back"
 msgid "Skipped forward"
 msgstr "Skipped forward"
 
-#: src/features/player/NowPlayingPage.tsx:332
-#: src/features/player/NowPlayingPage.tsx:642
+#: src/features/player/NowPlayingPage.tsx:333
+#: src/features/player/NowPlayingPage.tsx:643
 msgid "Sleep"
 msgstr "Sleep"
 
-#: src/features/player/NowPlayingPage.tsx:331
-#: src/features/player/NowPlayingPage.tsx:434
-#: src/features/player/NowPlayingPage.tsx:639
+#: src/features/player/NowPlayingPage.tsx:332
+#: src/features/player/NowPlayingPage.tsx:435
+#: src/features/player/NowPlayingPage.tsx:640
 msgid "Sleep timer"
 msgstr "Sleep timer"
 
@@ -1383,10 +1549,14 @@ msgid "Smoother playback"
 msgstr "Smoother playback"
 
 #: src/features/import/SectionPreview.tsx:152
-msgid "Some sections were detected automatically and may not be perfect."
-msgstr "Some sections were detected automatically and may not be perfect."
+#~ msgid "Some sections were detected automatically and may not be perfect."
+#~ msgstr "Some sections were detected automatically and may not be perfect."
 
-#: src/features/library/BookDetailPage.tsx:183
+#: src/features/discover/GutenbergBookSheet.tsx:209
+msgid "Something went wrong"
+msgstr "Something went wrong"
+
+#: src/features/library/BookDetailPage.tsx:191
 msgid "Start Listening"
 msgstr "Start Listening"
 
@@ -1406,7 +1576,7 @@ msgstr "Supertonic (Recommended)"
 msgid "Supertonic Processing Device"
 msgstr "Supertonic Processing Device"
 
-#: src/features/import/ImportPage.tsx:344
+#: src/features/import/ImportPage.tsx:353
 msgid "Supported formats: EPUB, PDF (text-based and scanned)"
 msgstr "Supported formats: EPUB, PDF (text-based and scanned)"
 
@@ -1414,7 +1584,7 @@ msgstr "Supported formats: EPUB, PDF (text-based and scanned)"
 msgid "Supports indie authors"
 msgstr "Supports indie authors"
 
-#: src/features/import/ImportPage.tsx:247
+#: src/features/import/ImportPage.tsx:256
 msgid "Switch to Paste"
 msgstr "Switch to Paste"
 
@@ -1422,13 +1592,25 @@ msgstr "Switch to Paste"
 msgid "System Default"
 msgstr "System Default"
 
-#: src/features/player/NowPlayingPage.tsx:226
+#: src/features/player/NowPlayingPage.tsx:227
 msgid "Table of contents"
 msgstr "Table of contents"
 
 #: src/ui/components/BookmarkSheet.tsx:138
 msgid "Tap + to bookmark your current position"
 msgstr "Tap + to bookmark your current position"
+
+#: src/features/editor/BookEditorView.tsx:165
+msgid "Tap to edit author"
+msgstr "Tap to edit author"
+
+#: src/features/editor/BookEditorView.tsx:133
+msgid "Tap to edit title"
+msgstr "Tap to edit title"
+
+#: src/features/editor/SectionDetailSheet.tsx:109
+msgid "Tap to rename"
+msgstr "Tap to rename"
 
 #: src/features/legal/TermsPage.tsx:92
 msgid "Technical detail: storage uses your browser's on-device database (IndexedDB). Storage quotas vary by device and browser."
@@ -1487,7 +1669,7 @@ msgstr "Tip: Higher speeds work best with AI voices"
 msgid "Tip: Use <0>window.logConfig</0> in browser console to control logging at runtime."
 msgstr "Tip: Use <0>window.logConfig</0> in browser console to control logging at runtime."
 
-#: src/features/import/ImportPage.tsx:418
+#: src/features/import/ImportPage.tsx:427
 msgid "Title"
 msgstr "Title"
 
@@ -1495,18 +1677,27 @@ msgstr "Title"
 msgid "To make the app work offline and resume reliably, it stores data locally on your device, including:"
 msgstr "To make the app work offline and resume reliably, it stores data locally on your device, including:"
 
+#: src/features/discover/BrowsePage.tsx:152
+#: src/features/discover/GutenbergBookSheet.tsx:215
+msgid "Try again"
+msgstr "Try again"
+
 #: src/features/settings/SettingsPage.tsx:288
 #: src/features/settings/SettingsPage.tsx:529
 #: src/features/settings/SettingsPage.tsx:564
 msgid "TTS Engine"
 msgstr "TTS Engine"
 
+#: src/features/editor/BookEditorView.tsx:259
+msgid "Undo"
+msgstr "Undo"
+
 #: src/features/library/LibraryPage.tsx:275
 #: src/features/library/LibraryPage.tsx:281
 #~ msgid "Upload EPUB"
 #~ msgstr "Upload EPUB"
 
-#: src/features/import/ImportPage.tsx:201
+#: src/features/import/ImportPage.tsx:210
 msgid "URL"
 msgstr "URL"
 
@@ -1530,6 +1721,10 @@ msgstr "Very smooth, uses more storage"
 #: src/features/library/LibraryPage.tsx:54
 msgid "View on GitHub"
 msgstr "View on GitHub"
+
+#: src/features/discover/GutenbergBookSheet.tsx:144
+msgid "View on Project Gutenberg"
+msgstr "View on Project Gutenberg"
 
 #: src/features/settings/SettingsPage.tsx:539
 msgid "View/copy logs on mobile (including TTS worker)"
@@ -1561,8 +1756,8 @@ msgid "We've curated options that respect readers: public domain works are free,
 msgstr "We've curated options that respect readers: public domain works are free, DRM-free stores let you actually own your books, and buying direct from authors supports creators fairly. All of these provide standard EPUB files that work great with this app."
 
 #: src/features/import/SectionPreview.tsx:257
-msgid "Web Article"
-msgstr "Web Article"
+#~ msgid "Web Article"
+#~ msgstr "Web Article"
 
 #: src/features/settings/SettingsPage.tsx:99
 #: src/features/settings/SettingsPage.tsx:107
@@ -1597,11 +1792,11 @@ msgstr "Why these sources?"
 msgid "Wide selection"
 msgstr "Wide selection"
 
-#: src/features/import/SectionPreview.tsx:125
+#: src/features/editor/SectionDetailSheet.tsx:117
 msgid "words"
 msgstr "words"
 
-#: src/features/import/ImportPage.tsx:388
+#: src/features/import/ImportPage.tsx:397
 msgid "Works best with articles and blog posts. Some sites may block access."
 msgstr "Works best with articles and blog posts. Some sites may block access."
 
