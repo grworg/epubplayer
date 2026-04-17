@@ -171,7 +171,12 @@ idle ──LOAD_BOOK──► loading ──LOADED──► ready ──PLAY─�
 
 **Audio backends:**
 - `BrowserTTSBackend`: Web Speech API with silent keepalive for Media Session
-- `AudioBlobBackend`: HTMLAudioElement for pre-generated WAV blobs
+- `AudioBlobBackend`: HTMLAudioElement for pre-generated WAV blobs, also uses silent keepalive
+
+**Silent Audio Keepalive:**
+Both backends use `SilentAudioKeepalive` to maintain the Media Session on Android Chrome.
+Without this, changing `audio.src` between chunks causes Android to kill the media session,
+removing lock screen controls and eventually stopping background playback entirely.
 
 **Resume behavior:**
 - Position saved every second (debounced)

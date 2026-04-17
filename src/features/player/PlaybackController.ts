@@ -25,6 +25,8 @@ import { ttsManager, type TTSEngine } from '@/services/tts'
 import { settingsRepository } from '@/services/storage/settingsRepository'
 import { ttsBufferManager } from './TTSBufferManager'
 import { mediaSessionManager } from './MediaSessionManager'
+import { audioSessionService } from '@/services/audio/audioSessionService'
+import { wakeLockService } from '@/services/audio/wakeLockService'
 
 const log = createLogger('playback')
 
@@ -69,6 +71,7 @@ class PlaybackController {
       onNextTrack: () => this.nextSection(),
       onPreviousTrack: () => this.previousSection(),
       onStop: () => this.stop(),
+      onSeekTo: (time) => this.seekToSectionTime(time),
     })
   }
 
@@ -172,6 +175,9 @@ class PlaybackController {
 
       // Set Media Session metadata for lock screen / background playback
       mediaSessionManager.setBook(book)
+      
+      // Set chapter info for lock screen chapter navigation (Chrome 127+)
+      mediaSessionManager.setChapterInfo(this.sections, book.coverUrl || undefined)
 
       // Load global playback speed (not per-book)
       const globalSpeed = settings.defaultSpeed
@@ -320,6 +326,7 @@ class PlaybackController {
       this.audioBackend.pause()
       this.savePosition()
       mediaSessionManager.setPlaybackState('paused')
+      wakeLockService.release()
     }
   }
 
@@ -343,6 +350,7 @@ class PlaybackController {
       this.savePosition()
       mediaSessionManager.setPlaybackState('paused')
       mediaSessionManager.clearPositionState()
+      wakeLockService.release()
     }
     // Keep buffering while stopped (book still loaded)
     ttsBufferManager.kick()
@@ -490,6 +498,52 @@ class PlaybackController {
 
     await this.savePosition()
 
+    if (wasPlaying) {
+      await this.playCurrentChunk()
+    }
+  }
+
+  /**
+   * Seek to a specific time within the current section.
+   * Used by Media Session API's seekto action for lock screen scrubbing.
+   * 
+   * @param sectionTime - Target time in seconds (relative to section start)
+   */
+  async seekToSectionTime(sectionTime: number): Promise<void> {
+    const state = playbackStateMachine.getState()
+    const wasPlaying = playbackStateMachine.isPlaying() || state.status === 'buffering'
+    
+    // Get chunk position from section time
+    const result = chunkManager.getChunkPositionFromTime(state.sectionIndex, sectionTime)
+    if (!result) {
+      log.warn('Failed to find chunk position for time', { sectionTime })
+      return
+    }
+    
+    log.debug('Seeking to section time', { 
+      sectionTime, 
+      targetChunk: result.chunkIndex, 
+      timeInChunk: result.timeInChunk 
+    })
+    
+    // Stop current playback
+    this.audioBackend.stop()
+    
+    // Update position
+    playbackStateMachine.dispatch({
+      type: 'SEEK_CHUNK',
+      sectionIndex: state.sectionIndex,
+      chunkIndex: result.chunkIndex,
+    })
+    
+    // Set pending seek time for resuming within chunk (for blob-based engines)
+    this.pendingSeekTime = result.timeInChunk
+    
+    // Update buffer target
+    ttsBufferManager.setBufferTarget(state.sectionIndex, result.chunkIndex)
+    
+    await this.savePosition()
+    
     if (wasPlaying) {
       await this.playCurrentChunk()
     }
@@ -840,6 +894,12 @@ class PlaybackController {
     const state = playbackStateMachine.getState()
     const pos = `s${state.sectionIndex}c${state.chunkIndex}`
     
+    // Prepare audio environment for playback
+    // - audioSession: on iOS, bypasses silent switch and signals media playback intent
+    // - wakeLock: prevents screen from dimming while actively playing
+    audioSessionService.setPlaybackMode()
+    wakeLockService.acquire()
+    
     const signal = playbackStateMachine.resetAbortController()
 
     // Get current chunk
@@ -1126,11 +1186,20 @@ class PlaybackController {
   }
 
   private onPlaybackProgress(currentTime: number, duration: number): void {
-    // Update Media Session position state for lock screen seek bar
+    // Calculate section-level progress for lock screen seek bar.
+    // This provides smooth progress that doesn't reset every chunk.
+    const state = playbackStateMachine.getState()
     const store = usePlayerStore.getState()
+    
+    const sectionProgress = chunkManager.getSectionProgress(
+      { sectionIndex: state.sectionIndex, chunkIndex: state.chunkIndex },
+      currentTime,
+      duration
+    )
+
     mediaSessionManager.setPositionState({
-      duration,
-      position: currentTime,
+      duration: sectionProgress.duration,
+      position: sectionProgress.position,
       playbackRate: store.speed,
     })
   }

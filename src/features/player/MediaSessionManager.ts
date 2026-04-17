@@ -11,6 +11,7 @@
 
 import { createLogger } from '@/services/logging'
 import type { Book } from './playerStore'
+import type { Section } from '@/services/storage/db'
 
 const log = createLogger('media')
 
@@ -23,6 +24,7 @@ interface MediaSessionActions {
   onNextTrack: () => void
   onPreviousTrack: () => void
   onStop: () => void
+  onSeekTo?: (time: number) => void
 }
 
 class MediaSessionManager {
@@ -63,6 +65,56 @@ class MediaSessionManager {
   setChapterTitle(title: string): void {
     this.currentChapterTitle = title
     this.updateMetadata()
+  }
+
+  /**
+   * Set chapter information for lock screen chapter navigation (Chrome 127+)
+   * 
+   * This enables users to see and navigate through chapters directly from
+   * the lock screen or system media controls on supported platforms.
+   * 
+   * @param sections - All sections/chapters for the current book
+   * @param bookCoverUrl - Optional cover image URL to use for chapter artwork
+   */
+  setChapterInfo(sections: Section[], bookCoverUrl?: string): void {
+    if (!this.isSupported || !this.currentBook) return
+
+    try {
+      let cumulativeTime = 0
+      const chapterInfo = sections.map(section => {
+        const chapter = {
+          title: section.title,
+          startTime: cumulativeTime,
+          artwork: bookCoverUrl ? [{ src: bookCoverUrl, sizes: '512x512' }] : []
+        }
+        cumulativeTime += section.estimatedDuration
+        return chapter
+      })
+
+      const artwork: MediaImage[] = []
+      if (this.currentBook.coverUrl) {
+        artwork.push(
+          { src: this.currentBook.coverUrl, sizes: '96x96', type: 'image/jpeg' },
+          { src: this.currentBook.coverUrl, sizes: '128x128', type: 'image/jpeg' },
+          { src: this.currentBook.coverUrl, sizes: '192x192', type: 'image/jpeg' },
+          { src: this.currentBook.coverUrl, sizes: '256x256', type: 'image/jpeg' },
+          { src: this.currentBook.coverUrl, sizes: '384x384', type: 'image/jpeg' },
+          { src: this.currentBook.coverUrl, sizes: '512x512', type: 'image/jpeg' }
+        )
+      }
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: this.currentChapterTitle || this.currentBook.title,
+        artist: this.currentBook.author,
+        album: this.currentBook.title,
+        artwork,
+        chapterInfo,
+      } as MediaMetadataInit)
+
+      log.info('Chapter info set', { chapterCount: sections.length, totalDuration: cumulativeTime })
+    } catch (e) {
+      log.debug('Failed to set chapter info (may not be supported)', e)
+    }
   }
 
   /**
@@ -163,13 +215,12 @@ class MediaSessionManager {
       this.actions?.onStop()
     })
 
-    // Optional: Handle seeking to specific position
-    // Some platforms support this for a seek bar
+    // Handle seeking to specific position (for lock screen seek bar)
     try {
       session.setActionHandler('seekto', (details) => {
         if (details?.seekTime !== undefined) {
           log.debug('Media action: seekto', { seekTime: details.seekTime })
-          // We don't have direct seek-to-time, but this shows the handler is set
+          this.actions?.onSeekTo?.(details.seekTime)
         }
       })
     } catch {
@@ -227,7 +278,7 @@ class MediaSessionManager {
     // Clear all action handlers
     const actions: MediaSessionAction[] = [
       'play', 'pause', 'seekforward', 'seekbackward',
-      'nexttrack', 'previoustrack', 'stop'
+      'nexttrack', 'previoustrack', 'stop', 'seekto'
     ]
 
     for (const action of actions) {

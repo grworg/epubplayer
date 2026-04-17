@@ -292,12 +292,22 @@ export function SettingsPage() {
           />
           {/* Voice selection - different for each engine */}
           {settings.ttsEngine === 'browser' && (
-            <SettingsItem
-              icon={<VolumeIcon className="h-5 w-5" />}
-              label={t`Voice`}
-              value={getVoiceName(settings.voiceId)}
-              onClick={() => setActiveSheet('voice')}
-            />
+            <>
+              <SettingsItem
+                icon={<VolumeIcon className="h-5 w-5" />}
+                label={t`Voice`}
+                value={getVoiceName(settings.voiceId)}
+                onClick={() => setActiveSheet('voice')}
+              />
+              {/* Warning about background playback on mobile */}
+              {typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && (
+                <div className="border-b border-border-muted bg-warning/10 px-4 py-3">
+                  <p className="text-sm text-warning">
+                    <Trans>⚠️ Browser TTS doesn't support background playback on mobile. Lock your screen and audio will stop. For background listening, use Supertonic or another AI voice.</Trans>
+                  </p>
+                </div>
+              )}
+            </>
           )}
           {settings.ttsEngine === 'supertonic' && (
             <>

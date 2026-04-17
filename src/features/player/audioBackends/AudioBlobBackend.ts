@@ -3,9 +3,15 @@
  * 
  * Uses HTMLAudioElement to play pre-generated audio blobs.
  * Used for Kokoro and Piper TTS which generate audio files.
+ * 
+ * IMPORTANT: Uses SilentAudioKeepalive to maintain MediaSession between chunks.
+ * Without this, Android Chrome kills the media session when changing audio.src,
+ * causing lock screen controls to disappear and background playback to stop.
+ * See: https://stackoverflow.com/questions/76354522
  */
 
 import type { AudioBackend, PlayOptions, AudioBackendEvents } from './AudioBackend'
+import { silentAudioKeepalive } from './SilentAudioKeepalive'
 
 export class AudioBlobBackend implements AudioBackend {
   private audio: HTMLAudioElement
@@ -15,6 +21,7 @@ export class AudioBlobBackend implements AudioBackend {
   private events: AudioBackendEvents = {}
   private currentAbortHandler: (() => void) | null = null
   private currentPlaybackCleanup: (() => void) | null = null
+  private keepaliveStarted = false
 
   constructor(events?: AudioBackendEvents) {
     if (events) this.events = events
@@ -80,6 +87,14 @@ export class AudioBlobBackend implements AudioBackend {
       if (options?.signal?.aborted) {
         reject(new DOMException('Aborted', 'AbortError'))
         return
+      }
+
+      // Start silent audio keepalive BEFORE changing src.
+      // This maintains MediaSession on Android Chrome which otherwise dies
+      // when the audio element's src changes. Must be started before src change.
+      if (!this.keepaliveStarted) {
+        silentAudioKeepalive.start()
+        this.keepaliveStarted = true
       }
 
       // Clean up previous
@@ -172,11 +187,15 @@ export class AudioBlobBackend implements AudioBackend {
   pause(): void {
     if (this._isPlaying && !this._isPaused) {
       this.audio.pause()
+      // Keep keepalive running but paused - maintains media session in paused state
+      silentAudioKeepalive.pause()
     }
   }
 
   resume(): void {
     if (this._isPaused) {
+      // Resume keepalive first to ensure media session is active
+      silentAudioKeepalive.resume()
       this.audio.play().catch((e) => {
         console.error('[AudioBlobBackend] Resume failed:', e)
       })
@@ -191,6 +210,9 @@ export class AudioBlobBackend implements AudioBackend {
     this.revokeCurrentUrl()
     this.removeAbortHandler()
     this.removePlaybackHandlers()
+    // Stop keepalive when playback is explicitly stopped
+    silentAudioKeepalive.stop()
+    this.keepaliveStarted = false
   }
 
   isPlaying(): boolean {
@@ -240,6 +262,9 @@ export class AudioBlobBackend implements AudioBackend {
   destroy(): void {
     this.stop()
     this.audio.remove()
+    // Ensure keepalive is cleaned up
+    silentAudioKeepalive.stop()
+    this.keepaliveStarted = false
   }
 }
 

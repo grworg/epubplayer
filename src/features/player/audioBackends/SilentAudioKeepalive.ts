@@ -1,16 +1,29 @@
 /**
  * Silent Audio Keepalive
  * 
- * Plays a silent audio track to "claim" the Media Session when using
- * Browser TTS (Web Speech API). This enables:
+ * Plays a silent audio track to "claim" and maintain the Media Session.
+ * This is critical for:
  * - Lock screen metadata and controls
  * - Hardware media button support
- * - More reliable background playback
+ * - Background playback continuity
  * 
- * The Web Speech API doesn't use an <audio> element, so the browser
- * doesn't associate it with Media Session. By playing silent audio
- * alongside the speech, we bridge this gap.
+ * Used by BOTH backends:
+ * 1. BrowserTTSBackend: Web Speech API doesn't use <audio>, so we need this
+ *    to claim Media Session.
+ * 2. AudioBlobBackend: When changing audio.src between chunks, Android Chrome
+ *    kills the Media Session. The keepalive maintains it across src changes.
+ * 
+ * Without this, Android Chrome will:
+ * - Remove lock screen controls after 1-2 chunks
+ * - Stop background playback entirely after a few more chunks
+ * - Force user to unlock phone and manually press play
+ * 
+ * @see https://stackoverflow.com/questions/76354522
  */
+
+import { createLogger } from '@/services/logging'
+
+const log = createLogger('audio')
 
 export class SilentAudioKeepalive {
   private audio: HTMLAudioElement | null = null
@@ -86,25 +99,25 @@ export class SilentAudioKeepalive {
       // Play and handle any autoplay restrictions
       this.audio.play().then(() => {
         this.isActive = true
-        console.log('[SilentKeepalive] Started - Media Session claimed')
+        log.debug('Keepalive started - Media Session claimed')
       }).catch((e) => {
-        console.warn('[SilentKeepalive] Failed to start (autoplay blocked?):', e)
+        log.warn('Keepalive failed to start (autoplay blocked?)', e)
         this.cleanup()
       })
     } catch (e) {
-      console.error('[SilentKeepalive] Error creating audio:', e)
+      log.error('Keepalive error creating audio', e)
     }
   }
 
   /**
    * Stop the silent audio
-   * Call this when Browser TTS stops
+   * Call this when playback stops
    */
   stop(): void {
     if (!this.isActive) return
     
     this.cleanup()
-    console.log('[SilentKeepalive] Stopped')
+    log.debug('Keepalive stopped')
   }
 
   /**

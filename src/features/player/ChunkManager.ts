@@ -31,6 +31,20 @@ export interface ChunkStats {
   progress: number
 }
 
+export interface SectionProgress {
+  /** Current position within section in seconds (estimated) */
+  position: number
+  /** Total section duration in seconds (estimated) */
+  duration: number
+  /** Progress as percentage (0-100) */
+  percent: number
+}
+
+/** Estimate TTS duration from text length. ~13 chars/sec is typical for TTS. */
+function estimateDuration(text: string): number {
+  return Math.max(1, text.length / 13)
+}
+
 // ============================================================================
 // Chunk Manager
 // ============================================================================
@@ -226,6 +240,105 @@ export class ChunkManager {
    */
   isSectionLoaded(sectionIndex: number): boolean {
     return this.sectionTexts.has(sectionIndex)
+  }
+
+  /**
+   * Convert a section time (in seconds) to a chunk position.
+   * This is the inverse of getSectionProgress - used for seeking from lock screen.
+   * 
+   * @param sectionIndex - Section to seek within
+   * @param targetTime - Target time in seconds from section start
+   * @returns Chunk position and time offset within that chunk, or null if invalid
+   */
+  getChunkPositionFromTime(
+    sectionIndex: number,
+    targetTime: number
+  ): { chunkIndex: number; timeInChunk: number } | null {
+    const sectionChunks = this.getSectionChunks(sectionIndex)
+    
+    if (sectionChunks.length === 0) {
+      return null
+    }
+
+    // Calculate estimated durations for all chunks
+    const estimatedDurations = sectionChunks.map(c => estimateDuration(c.text))
+    
+    // Find which chunk contains the target time
+    let accumulatedTime = 0
+    for (let i = 0; i < sectionChunks.length; i++) {
+      const chunkDuration = estimatedDurations[i]
+      
+      if (accumulatedTime + chunkDuration >= targetTime) {
+        // Found the chunk - calculate time offset within it
+        const timeInChunk = Math.max(0, targetTime - accumulatedTime)
+        return {
+          chunkIndex: i,
+          timeInChunk,
+        }
+      }
+      
+      accumulatedTime += chunkDuration
+    }
+    
+    // Target time exceeds section duration - return last chunk at its end
+    const lastIndex = sectionChunks.length - 1
+    return {
+      chunkIndex: lastIndex,
+      timeInChunk: estimatedDurations[lastIndex] ?? 0,
+    }
+  }
+
+  /**
+   * Calculate section-level progress for Media Session lock screen display.
+   * Uses text length estimates to provide smooth progress that doesn't reset every chunk.
+   * 
+   * @param position - Current chunk position
+   * @param currentChunkTime - Current playback time within the chunk (seconds)
+   * @param currentChunkDuration - Actual duration of the current chunk (seconds), if known
+   */
+  getSectionProgress(
+    position: ChunkPosition,
+    currentChunkTime: number,
+    currentChunkDuration?: number
+  ): SectionProgress {
+    const sectionChunks = this.getSectionChunks(position.sectionIndex)
+    
+    if (sectionChunks.length === 0) {
+      return { position: 0, duration: 0, percent: 0 }
+    }
+
+    // Calculate estimated durations for all chunks
+    const estimatedDurations = sectionChunks.map(c => estimateDuration(c.text))
+    const totalDuration = estimatedDurations.reduce((sum, d) => sum + d, 0)
+
+    // Calculate position: sum of completed chunks + current position in current chunk
+    let completedDuration = 0
+    for (let i = 0; i < position.chunkIndex; i++) {
+      completedDuration += estimatedDurations[i] ?? 0
+    }
+
+    // For the current chunk, use actual duration if available, otherwise estimate
+    const currentChunkEstimate = estimatedDurations[position.chunkIndex] ?? 0
+    const actualChunkDuration = currentChunkDuration ?? currentChunkEstimate
+    
+    // Scale the current time proportionally if actual duration differs from estimate
+    // This ensures smooth progress even when actual != estimated
+    let scaledCurrentTime = currentChunkTime
+    if (actualChunkDuration > 0 && currentChunkEstimate > 0) {
+      // What fraction through the current chunk are we?
+      const chunkProgress = currentChunkTime / actualChunkDuration
+      // Apply that fraction to the estimated duration for consistent section progress
+      scaledCurrentTime = chunkProgress * currentChunkEstimate
+    }
+
+    const currentPosition = completedDuration + scaledCurrentTime
+    const percent = totalDuration > 0 ? (currentPosition / totalDuration) * 100 : 0
+
+    return {
+      position: currentPosition,
+      duration: totalDuration,
+      percent: Math.min(100, percent),
+    }
   }
 }
 
